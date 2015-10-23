@@ -1,24 +1,30 @@
 package org.swerverobotics.library.examples;
 
-import com.qualcomm.robotcore.hardware.*;
-import com.qualcomm.robotcore.util.*;
-import org.swerverobotics.library.*;
-import org.swerverobotics.library.interfaces.*;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.Range;
+
+import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
+import org.swerverobotics.library.interfaces.IFunc;
+import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
  * An example of a synchronous opmode that implements a simple drive-a-bot. 
  */
-@TeleOp(name="SynchTeleOp", group="Swerve Examples")
-public class SynchTeleOp extends SynchronousOpMode
+@TeleOp(name="SixMotorTeleop", group="Swerve Examples")
+@Disabled
+public class SixMotorTeleOp extends SynchronousOpMode
     {
     // All hardware variables can only be initialized inside the main() function,
     // not here at their member variable declarations.
     DcMotor Motor1 = null;
-    DcMotor Motor2 = null;
-    DcMotor Motor3 = null;
-    DcMotor Motor4 = null;
-    DcMotor Motor5 = null;
-    DcMotor Motor6 = null;
+    DcMotor motor2 = null;
+    DcMotor motor3 = null;
+    DcMotor motor4 = null;
+    DcMotor motor5 = null;
+    DcMotor motor6 = null;
 
     @Override protected void main() throws InterruptedException
         {
@@ -26,27 +32,27 @@ public class SynchTeleOp extends SynchronousOpMode
         // to 'get' must correspond to the names you assigned during the robot configuration
         // step you did in the FTC Robot Controller app on the phone.
         this.Motor1 = this.hardwareMap.dcMotor.get("Motor1");
-        this.Motor2 = this.hardwareMap.dcMotor.get("Motor2");
-        this.Motor3 = this.hardwareMap.dcMotor.get("Motor3");
-        this.Motor4 = this.hardwareMap.dcMotor.get("Motor4");
-        this.Motor5 = this.hardwareMap.dcMotor.get("Motor5");
-        this.Motor6 = this.hardwareMap.dcMotor.get("Motor6");
+        this.motor2 = this.hardwareMap.dcMotor.get("motor2");
+        this.motor3 = this.hardwareMap.dcMotor.get("motor3");
+        this.motor4 = this.hardwareMap.dcMotor.get("motor4");
+        this.motor5 = this.hardwareMap.dcMotor.get("motor5");
+        this.motor6 = this.hardwareMap.dcMotor.get("motor6");
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact.
-        this.Motor1.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor2.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor3.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor4.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor5.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor6.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.Motor1.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        this.motor2.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        this.motor3.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.motor4.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.motor5.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.motor6.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
         this.Motor1.setDirection(DcMotor.Direction.REVERSE);
-        this.Motor3.setDirection(DcMotor.Direction.REVERSE);
-        this.Motor4.setDirection(DcMotor.Direction.REVERSE);
+        this.motor5.setDirection(DcMotor.Direction.REVERSE);
+        this.motor6.setDirection(DcMotor.Direction.REVERSE);
 
         // Configure the dashboard however we want it
         this.configureDashboard();
@@ -111,11 +117,11 @@ public class SynchTeleOp extends SynchronousOpMode
 
         // Tell the motors
         this.Motor1.setPower(power1);
-        this.Motor5.setPower(power1);
-        this.Motor6.setPower(power1);
-        this.Motor2.setPower(power2);
-        this.Motor3.setPower(power2);
-        this.Motor4.setPower(power2);
+        this.motor5.setPower(power1);
+        this.motor6.setPower(power1);
+        this.motor2.setPower(power2);
+        this.motor3.setPower(power2);
+        this.motor4.setPower(power2);
         }
 
     float xformDrivingPowerLevels(float level)
