@@ -37,21 +37,20 @@ public class TutorialAutonomous extends SynchronousOpMode
         // Initialize servos
         armServo = hardwareMap.servo.get("armServo");
 
-        LowerArm();
+        RaiseArm();
 
         // Wait for the game to start
         waitForStart();
 
         // Go go gadget robot!
+
         DriveForwardTime(DRIVE_POWER, 4000);
-        TurnLeft(DRIVE_POWER);
-        wait(500);
+        TurnLeftTime(DRIVE_POWER, 500);
         DriveForwardTime(DRIVE_POWER, 4000);
-        TurnRight(DRIVE_POWER);
-        wait(500);
-        RaiseArm();
+        TurnRightTime(DRIVE_POWER, 500);
         DriveForwardTime(DRIVE_POWER, 4000);
         StopDriving();
+        LowerArm();
     }
 
     double DRIVE_POWER = 1.0;
@@ -65,7 +64,7 @@ public class TutorialAutonomous extends SynchronousOpMode
     public void DriveForwardTime(double power, long time) throws InterruptedException
     {
         DriveForward(power);
-        wait(time);
+        Thread.sleep(time);
     }
 
     public void StopDriving()
@@ -79,18 +78,33 @@ public class TutorialAutonomous extends SynchronousOpMode
         motorRight.setPower(power);
     }
 
+    public void TurnLeftTime(double power, long time) throws InterruptedException
+    {
+        TurnLeft(power);
+        Thread.sleep(time);
+    }
+
     public void TurnRight(double power)
     {
         TurnLeft(-power);
     }
 
+    public void TurnRightTime(double power, long time) throws InterruptedException
+    {
+        TurnRight(power);
+        Thread.sleep(time);
+    }
+
+    double ARM_HIGH_POS = 0.8;
+    double ARM_LOW_POS = 0.2;
+
     public void RaiseArm()
     {
-        armServo.setPosition(.8);
+        armServo.setPosition(ARM_HIGH_POS);
     }
 
     public void LowerArm()
     {
-        armServo.setPosition(.2);
+        armServo.setPosition(ARM_LOW_POS);
     }
 }
