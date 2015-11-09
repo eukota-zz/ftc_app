@@ -8,46 +8,32 @@ import org.swerverobotics.library.interfaces.*;
 /**
  * An example of a synchronous opmode that implements a simple drive-a-bot. 
  */
-
-@TeleOp(name="SynchTeleOp", group="Swerve Examples")
+@TeleOp(name="TeleOp (sync)", group="Swerve Examples")
+@Disabled
 public class SynchTeleOp extends SynchronousOpMode
     {
     // All hardware variables can only be initialized inside the main() function,
     // not here at their member variable declarations.
-    DcMotor Motor1 = null;
-    DcMotor Motor2 = null;
-    DcMotor Motor3 = null;
-    DcMotor Motor4 = null;
-    DcMotor Motor5 = null;
-    DcMotor Motor6 = null;
+    DcMotor motorLeft = null;
+    DcMotor motorRight = null;
 
     @Override protected void main() throws InterruptedException
         {
         // Initialize our hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names you assigned during the robot configuration
         // step you did in the FTC Robot Controller app on the phone.
-        this.Motor1 = this.hardwareMap.dcMotor.get("Motor1");
-        this.Motor2 = this.hardwareMap.dcMotor.get("Motor2");
-        this.Motor3 = this.hardwareMap.dcMotor.get("Motor3");
-        this.Motor4 = this.hardwareMap.dcMotor.get("Motor4");
-        this.Motor5 = this.hardwareMap.dcMotor.get("Motor5");
-        this.Motor6 = this.hardwareMap.dcMotor.get("Motor6");
+        this.motorLeft = this.hardwareMap.dcMotor.get("motorLeft");
+        this.motorRight = this.hardwareMap.dcMotor.get("motorRight");
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact.
-        this.Motor1.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor2.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor3.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor4.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor5.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.Motor6.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.motorLeft.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.motorRight.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
-        this.Motor1.setDirection(DcMotor.Direction.REVERSE);
-        this.Motor3.setDirection(DcMotor.Direction.REVERSE);
-        this.Motor4.setDirection(DcMotor.Direction.REVERSE);
+        this.motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
         // Configure the dashboard however we want it
         this.configureDashboard();
@@ -107,16 +93,12 @@ public class SynchTeleOp extends SynchronousOpMode
 
         // Figure out how much power to send to each motor. Be sure
         // not to ask for too much, or the motor will throw an exception.
-        float power1  = Range.clip(ctlPower - ctlSteering, -1f, 1f);
-        float power2 = Range.clip(ctlPower + ctlSteering, -1f, 1f);
+        float powerLeft  = Range.clip(ctlPower - ctlSteering, -1f, 1f);
+        float powerRight = Range.clip(ctlPower + ctlSteering, -1f, 1f);
 
         // Tell the motors
-        this.Motor1.setPower(power1);
-        this.Motor5.setPower(power1);
-        this.Motor6.setPower(power1);
-        this.Motor2.setPower(power2);
-        this.Motor3.setPower(power2);
-        this.Motor4.setPower(power2);
+        this.motorLeft.setPower(powerLeft);
+        this.motorRight.setPower(powerRight);
         }
 
     float xformDrivingPowerLevels(float level)
@@ -142,21 +124,21 @@ public class SynchTeleOp extends SynchronousOpMode
                 {
                 @Override public Object value()
                     {
-                    return format(Motor1.getPower());
+                    return format(motorLeft.getPower());
                     }
                 }),
             this.telemetry.item("right: ", new IFunc<Object>()
                 {
                 @Override public Object value()
                     {
-                    return format(Motor1.getPower());
+                    return format(motorLeft.getPower());
                     }
                 }),
             this.telemetry.item("mode: ", new IFunc<Object>()
                 {
                 @Override public Object value()
                     {
-                    return Motor1.getChannelMode();
+                    return motorLeft.getChannelMode();
                     }
                 })
             );
