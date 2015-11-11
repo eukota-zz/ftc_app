@@ -19,8 +19,8 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     DcMotor MotorRightBack = null;
     DcMotor MotorLeftBack = null;
     DcMotor MotorLeftTriangle = null;
-    DcMotor ClimberLeft = null;
-    DcMotor ClimberRight = null;
+    DcMotor MotorLeftClimber = null;
+    DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
 
     @Override
@@ -28,35 +28,35 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         // Initialize our hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names you assigned during the robot configuration
         // step you did in the FTC Robot Controller app on the phone.
-        this.MotorRightBack = this.hardwareMap.dcMotor.get("Motor1"); // MotorRightBack
-        this.MotorLeftBack = this.hardwareMap.dcMotor.get("Motor2");
-        this.MotorLeftTriangle = this.hardwareMap.dcMotor.get("Motor3");
-        this.ClimberLeft = this.hardwareMap.dcMotor.get("Motor4");
-        this.ClimberRight = this.hardwareMap.dcMotor.get("Motor5");
-        this.MotorRightTriangle = this.hardwareMap.dcMotor.get("Motor6");
+        this.MotorRightBack = this.hardwareMap.dcMotor.get("MotorRightBack");
+        this.MotorLeftBack = this.hardwareMap.dcMotor.get("MotorLeftBack");
+        this.MotorLeftTriangle = this.hardwareMap.dcMotor.get("MotorLeftTriangle");
+        this.MotorLeftClimber = this.hardwareMap.dcMotor.get("MotorLeftClimber");
+        this.MotorRightClimber = this.hardwareMap.dcMotor.get("MotorRightClimber");
+        this.MotorRightTriangle = this.hardwareMap.dcMotor.get("MotorRightTriangle");
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact.
-        this.MotorRightBack.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        this.MotorLeftBack.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        this.MotorLeftTriangle.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.ClimberLeft.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.ClimberRight.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.MotorRightTriangle.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.MotorRightBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        this.MotorLeftBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        this.MotorLeftTriangle.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.MotorLeftClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.MotorRightClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.MotorRightTriangle.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
         this.MotorLeftBack.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
-        this.ClimberLeft.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
         this.MotorRightBack.setPower(0);
-        this.ClimberRight.setPower(0);
+        this.MotorRightClimber.setPower(0);
         this.MotorRightTriangle.setPower(0);
         this.MotorLeftBack.setPower(0);
         this.MotorLeftTriangle.setPower(0);
-        this.ClimberLeft.setPower(0);
+        this.MotorLeftClimber.setPower(0);
 
         // Configure the dashboard however we want it
         this.configureDashboard();
@@ -127,20 +127,20 @@ public class Synch6220TeleOp extends SynchronousOpMode {
 
         if (pad.left_bumper)
         {
-            ClimberLeft.setPower(-.7);
+            MotorLeftClimber.setPower(-.7);
         }
         else
         {
-            ClimberLeft.setPower(climberPowerLeft);
+            MotorLeftClimber.setPower(climberPowerLeft);
         }
 
         if (pad.right_bumper)
         {
-            ClimberRight.setPower(-.7);
+            MotorRightClimber.setPower(-.7);
         }
         else
         {
-            ClimberRight.setPower(climberPowerRight);
+            MotorRightClimber.setPower(climberPowerRight);
         }
 
 
