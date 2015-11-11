@@ -22,8 +22,8 @@ public class Synch6220Autonomous extends SynchronousOpMode {
     DcMotor MotorRightBack = null;
     DcMotor MotorLeftBack = null;
     DcMotor Motor3 = null;
-    DcMotor MotorLeftFront = null;
-    DcMotor MotorRightFront = null;
+    DcMotor ClimberLeft = null;
+    DcMotor ClimberRight = null;
     DcMotor Motor6 = null;
 
     // Our sensors, motors, and other devices go here, along with other long term state
@@ -49,8 +49,8 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         this.MotorRightBack = this.hardwareMap.dcMotor.get("Motor1");
         this.MotorLeftBack = this.hardwareMap.dcMotor.get("Motor2");
         this.Motor3 = this.hardwareMap.dcMotor.get("Motor3");
-        this.MotorLeftFront = this.hardwareMap.dcMotor.get("Motor4");
-        this.MotorRightFront = this.hardwareMap.dcMotor.get("Motor5");
+        this.ClimberLeft = this.hardwareMap.dcMotor.get("Motor4");
+        this.ClimberRight = this.hardwareMap.dcMotor.get("Motor5");
         this.Motor6 = this.hardwareMap.dcMotor.get("Motor6");
 
         // Configure the knobs of the hardware according to how you've wired your
@@ -59,15 +59,15 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         this.MotorRightBack.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         this.MotorLeftBack.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         this.Motor3.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.MotorLeftFront.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.MotorRightFront.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.ClimberLeft.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.ClimberRight.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.Motor6.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
         this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
-        //this.Motor3.setDirection(DcMotor.Direction.REVERSE);
-        //this.MotorLeftFront.setDirection(DcMotor.Direction.REVERSE);
+        //this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
+        //this.ClimberLeft.setDirection(DcMotor.Direction.REVERSE);
 
         // We are expecting the IMU to be attached to an I2C port on  a core device interface
         // module and named "imu". Retrieve that raw I2cDevice and then wrap it in an object that
@@ -109,21 +109,21 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         drive(power, power);
         // Tell the motors
 //        this.MotorRightBack.setPower(power);
-//        this.MotorLeftFront.setPower(0);
-//        this.MotorRightFront.setPower(0);
-//        //this.Motor6.setPower(power1);
+//        this.ClimberLeft.setPower(0);
+//        this.ClimberRight.setPower(0);
+//        //this.MotorRightTriangle.setPower(power1);
 //        this.MotorLeftBack.setPower(power);
-//        //this.Motor3.setPower(power2);
+//        //this.MotorLeftTriangle.setPower(power2);
     }
 
     void drive(double leftpower, double rightpower) {
         // Tell the motors
         this.MotorRightBack.setPower(leftpower);
-        this.MotorLeftFront.setPower(0);
-        this.MotorRightFront.setPower(0);
-        //this.Motor6.setPower(power1);
+        this.ClimberLeft.setPower(0);
+        this.ClimberRight.setPower(0);
+        //this.MotorRightTriangle.setPower(power1);
         this.MotorLeftBack.setPower(rightpower);
-        //this.Motor3.setPower(power2);
+        //this.MotorLeftTriangle.setPower(power2);
     }
 
     double normalizeAngle180(double angle) {
