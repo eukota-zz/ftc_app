@@ -3,6 +3,7 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.swerverobotics.library.SynchronousOpMode;
@@ -22,6 +23,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     DcMotor MotorLeftClimber = null;
     DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
+    Servo CollectorServo = null;
 
     @Override
     protected void main() throws InterruptedException {
@@ -124,6 +126,12 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         float powerLeftBack = Range.clip(ctlPower + ctlSteering, -1f, 1f);
         climberPowerRight = Range.clip(climberPowerRight, -1f, 1f);
         climberPowerLeft = Range.clip(climberPowerLeft, -1f, 1f);
+
+        //if (this.gamepad1.a)
+        //{
+        //    CollectorServo.setPosition(1);
+        //}
+        //else CollectorServo.setPosition(0.5);
 
         if (pad.left_bumper)
         {
