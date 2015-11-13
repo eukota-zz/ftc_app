@@ -31,7 +31,8 @@ public class BlueBeaconClimber extends SynchronousOpMode
 
     // Declare sensors
     ColorSensor colorSensorBeacon = null;
-    LightSensor followLineSensor = null;
+    ColorSensor followLineSensorFront = null;
+    ColorSensor followLineSensorBack = null;
 
 
     double DRIVE_POWER = 1.0;
@@ -40,6 +41,7 @@ public class BlueBeaconClimber extends SynchronousOpMode
 
     // TODO Change this
     int FOO = 1;
+    double BAR = 1;
 
     @Override public void main() throws InterruptedException
     {
@@ -59,7 +61,8 @@ public class BlueBeaconClimber extends SynchronousOpMode
         // Initialize sensors
         colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
         colorSensorBeacon.enableLed(false);
-        followLineSensor = hardwareMap.lightSensor.get("followLineSensor");
+        followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
+        followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
 
         // Initialize servos
         //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
@@ -149,8 +152,25 @@ public class BlueBeaconClimber extends SynchronousOpMode
         }
     }
 
-    public void FollowLine()
+    public void FollowLine() throws InterruptedException
     {
-        followLineSensor.getLightDetected();
+        while(true)
+        {
+            this.telemetry.update();
+
+            int green = colorSensorBeacon.green();
+            int blue = colorSensorBeacon.blue();
+            int red = colorSensorBeacon.red();
+
+            telemetry.addData("Green", green);
+            telemetry.addData("Blue", blue);
+            telemetry.addData("Red", red);
+        }
+    }
+
+    enum test {ALWAYS, NOT, EVER}
+    public void EnumTest()
+    {
+        //colorSensorBeacon.green()
     }
 }
