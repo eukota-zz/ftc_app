@@ -51,10 +51,10 @@ public class BlueBeaconClimber extends SynchronousOpMode
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
 
-        motorLeft.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        motorRight.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        motorCollector.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorScorer.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        motorCollector.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorScorer.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
@@ -79,13 +79,15 @@ public class BlueBeaconClimber extends SynchronousOpMode
          * dump climbers
          */
 
+        /*
         DriveForwardDistance(DRIVE_POWER, FOO);
         TurnRightDistance(DRIVE_POWER, FOO);
         FollowLine();
         StopDriving();
         PressBeaconButton();
         DumpClimbers();
-
+        */
+        FollowLine();
     }
 
     public void DriveForward(double power) {
@@ -158,9 +160,9 @@ public class BlueBeaconClimber extends SynchronousOpMode
         {
             this.telemetry.update();
 
-            int green = colorSensorBeacon.green();
-            int blue = colorSensorBeacon.blue();
-            int red = colorSensorBeacon.red();
+            int green = followLineSensorFront.green();
+            int blue = followLineSensorFront.blue();
+            int red = followLineSensorBack.red();
 
             telemetry.addData("Green", green);
             telemetry.addData("Blue", blue);
