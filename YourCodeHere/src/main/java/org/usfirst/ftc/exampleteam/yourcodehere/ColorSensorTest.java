@@ -1,9 +1,7 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
@@ -17,36 +15,18 @@ public class ColorSensorTest extends SynchronousOpMode
 {
     // Declare sensors
     ColorSensor colorSensorBeacon = null;
-    ColorSensor followLineSensorFront = null;
-    ColorSensor followLineSensorBack = null;
-
-
-
-
-
+    DigitalChannel LED = null;
 
     @Override public void main() throws InterruptedException
     {
         // Initialize sensors
         colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
-        colorSensorBeacon.enableLed(false);
-        //followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
-        //followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
+        LED = hardwareMap.digitalChannel.get("LED");
 
-        // Initialize servos
-        //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
-        //servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
 
         waitForStart();
 
-        /*
-         * drive to beacon
-         * turn to face beacon
-         * follow line to wall
-         * determine beacon color
-         * press correct button
-         * dump climbers
-         */
+
 
         while(this.opModeIsActive())
         {
@@ -54,21 +34,19 @@ public class ColorSensorTest extends SynchronousOpMode
         }
     }
 
-
     public void FollowLine() throws InterruptedException
     {
-        while(true)
+
+
+        while (opModeIsActive())
         {
-            this.telemetry.update();
-
-            int green = colorSensorBeacon.green();
-            int blue = colorSensorBeacon.blue();
-            int red = colorSensorBeacon.red();
-
-            telemetry.addData("Green", green);
-            telemetry.addData("Blue", blue);
-            telemetry.addData("Red", red);
+            this.LED.setState(false);
+            telemetry.addData("red", this.colorSensorBeacon.red());
+            telemetry.addData("green", this.colorSensorBeacon.green());
+            telemetry.addData("blue",  this.colorSensorBeacon.blue());
+            telemetry.addData("alpha", this.colorSensorBeacon.alpha());
+            telemetry.update();
+            this.idle();
         }
     }
-
 }
