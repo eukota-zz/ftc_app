@@ -1,23 +1,19 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.ftcrobotcontroller.opmodes.ColorSensorDriver;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
-import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
  * Robot starts on blue side, goes to beacon,
  * presses beacon button, and scores climber
  */
-@Autonomous(name="BlueBeaconClimber")
-public class BlueBeaconClimber extends SynchronousOpMode
+@Autonomous(name="AutoBlueInsideRampWait")
+public class AutoBlueInsideRampWait extends SynchronousOpMode
 {
     // Declare motors
     DcMotor motorLeft = null;
@@ -79,14 +75,13 @@ public class BlueBeaconClimber extends SynchronousOpMode
          * dump climbers
          */
 
-
+        wait(5000);
         DriveForwardDistance(DRIVE_POWER, FOO);
         TurnRightDistance(DRIVE_POWER, FOO);
-        FollowLine();
+        DriveForwardDistance(DRIVE_POWER, FOO);
+        TurnRightDistance(DRIVE_POWER, FOO);
+        DriveForwardDistance(DRIVE_POWER, FOO);
         StopDriving();
-        PressBeaconButton();
-        DumpClimbers();
-        FollowLine();
     }
 
     public void DriveForward(double power) {
