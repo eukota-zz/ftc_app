@@ -55,6 +55,10 @@ public class MainTeleOp8923 extends SynchronousOpMode
         // Reverse left motors so we don't spin in a circle
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
+        // Initialize zipline servos to be up
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+
         // Configure dashboard
         telemetry.addLine
                 (
