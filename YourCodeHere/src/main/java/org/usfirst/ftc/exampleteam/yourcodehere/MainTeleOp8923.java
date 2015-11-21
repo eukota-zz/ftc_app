@@ -22,11 +22,11 @@ public class MainTeleOp8923 extends SynchronousOpMode
     Servo servoLeftZipline = null;
     Servo servoRightZipline = null;
 
-    // Variable declarations
+    // Declare variables
     boolean ziplineLeftIsOut = false;
     boolean ziplineRightIsOut = false;
 
-    // Constant decarations
+    // Declare constants
     double POWER_FULL = 1.0;
     double POWER_STOP = 0.0;
     double POWER_SCORER = 0.4;
@@ -44,7 +44,6 @@ public class MainTeleOp8923 extends SynchronousOpMode
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
         servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
-
 
         // Set motor channel modes
         motorLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -84,11 +83,11 @@ public class MainTeleOp8923 extends SynchronousOpMode
         {
             if(this.updateGamepads())
             {
-                // Main drive code
+                // Tank drive based on joysticks of controller 1
                 motorLeft.setPower(gamepad1.left_stick_y);
                 motorRight.setPower(gamepad1.right_stick_y);
 
-                // Move collector based on triggers
+                // Move collector based on triggers on controller 2
                 if(gamepad2.right_trigger > 0)
                     motorCollector.setPower(POWER_FULL);
                 else if(gamepad2.left_trigger > 0)
@@ -96,7 +95,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 else
                     motorCollector.setPower(POWER_STOP);
 
-                // Move scorer based on D-pad
+                // Move scorer based on D-pad on controller 2
                 if(gamepad2.dpad_left)
                     motorScorer.setPower(-POWER_SCORER);
                 else if(gamepad2.dpad_right)
@@ -104,8 +103,8 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 else
                     motorScorer.setPower(POWER_STOP);
 
-                // Move servos based on R and L buttons\
-                if (gamepad1.left_bumper)
+                // Move servos based on left and right bumpers on controller 2
+                if (gamepad2.left_bumper)
                 {
                     ziplineLeftIsOut = !ziplineLeftIsOut;
                     if(ziplineLeftIsOut)
@@ -113,7 +112,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
                     else
                         servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
                 }
-                if(gamepad1.right_bumper)
+                if(gamepad2.right_bumper)
                 {
                     ziplineRightIsOut = !ziplineRightIsOut;
                     if (ziplineRightIsOut)
