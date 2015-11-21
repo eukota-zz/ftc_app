@@ -19,18 +19,21 @@ public class MainTeleOp8923 extends SynchronousOpMode
     DcMotor motorRight = null;
     DcMotor motorCollector = null;
     DcMotor motorScorer = null;
-    Servo ziplinerReleaseLeft = null;
-    Servo ziplinerReleaseRight = null;
+    Servo servoLeftZipline = null;
+    Servo servoRightZipline = null;
 
     // Variable declarations
+    boolean ziplineLeftIsOut = false;
+    boolean ziplineRightIsOut = false;
+
+    // Constant decarations
     double POWER_FULL = 1.0;
     double POWER_STOP = 0.0;
     double POWER_SCORER = 0.4;
-    double SERVO_UP_LEFT = 1.0;
-    double SERVO_UP_RIGHT = 0.0;
-    double SERVO_OUT = 0.5;
-    boolean SERVO_POSITION_RIGHT = true;
-    boolean SERVO_POSITION_LEFT = true;
+    double ZIPLINE_LEFT_UP = 1.0;
+    double ZIPLINE_LEFT_OUT = 0.7;
+    double ZIPLINE_RIGHT_UP = 0.0;
+    double ZIPLINE_RIGHT_OUT = 0.3;
 
     @Override protected void main() throws InterruptedException
     {
@@ -39,8 +42,8 @@ public class MainTeleOp8923 extends SynchronousOpMode
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
-        ziplinerReleaseLeft = hardwareMap.servo.get("servoLeftZipline");
-        ziplinerReleaseRight = hardwareMap.servo.get("servoRightZipline");
+        servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
+        servoRightZipline = hardwareMap.servo.get("servoRightZipline");
 
 
         // Set motor channel modes
@@ -98,32 +101,21 @@ public class MainTeleOp8923 extends SynchronousOpMode
                     motorScorer.setPower(POWER_STOP);
 
                 // Move servos based on R and L buttons\
-                if (gamepad1.right_bumper)
+                if (gamepad1.left_bumper)
                 {
-                    SERVO_POSITION_RIGHT = !SERVO_POSITION_RIGHT;
-                    if(SERVO_POSITION_RIGHT == true)
-                    {
-                        ziplinerReleaseRight.setPosition(SERVO_UP_RIGHT);
-                    }
-
-                    else if(SERVO_POSITION_RIGHT != true)
-                    {
-                        ziplinerReleaseRight.setPosition(SERVO_OUT);
-                    }
+                    ziplineLeftIsOut = !ziplineLeftIsOut;
+                    if(ziplineLeftIsOut)
+                        servoLeftZipline.setPosition(ZIPLINE_LEFT_OUT);
+                    else
+                        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
                 }
-
-                if(gamepad1.left_bumper)
+                if(gamepad1.right_bumper)
                 {
-                    SERVO_POSITION_LEFT = !SERVO_POSITION_LEFT
-                    if (SERVO_POSITION_LEFT == true)
-                    {
-                        ziplinerReleaseLeft.setPosition(SERVO_UP_LEFT);
-                    }
-
-                    else if(SERVO_POSITION_LEFT != true)
-                    {
-                        ziplinerReleaseLeft.setPosition(SERVO_OUT);
-                    }
+                    ziplineRightIsOut = !ziplineRightIsOut;
+                    if (ziplineRightIsOut)
+                        servoRightZipline.setPosition(ZIPLINE_RIGHT_OUT);
+                    else
+                        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
                 }
             }
 
