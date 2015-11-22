@@ -69,7 +69,7 @@ public class AutoBlueInsideRamp extends SynchronousOpMode
         DriveForwardTime(DRIVE_POWER, 2850);
         StopDriving();
         Thread.sleep(20);
-        TurnLeftTime(DRIVE_POWER, 800);
+        TurnLeftTime(DRIVE_POWER, 850);
         StopDriving();
         Thread.sleep(20);
         DriveForwardTime(-DRIVE_POWER, 1500);
