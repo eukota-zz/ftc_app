@@ -15,7 +15,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
 /**
  * An example of a synchronous opmode that implements a simple drive-a-bot.
  */
-@TeleOp(name = "6220Auto", group = "Swerve Examples")
+@TeleOp(name = "Synch6220Autonomous", group = "Swerve Examples")
 public class Synch6220Autonomous extends SynchronousOpMode {
     // All hardware variables can only be initialized inside the main() function,
     // not here at their member variable declarations.
@@ -66,6 +66,8 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
         this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorRightTriangle.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorRightClimber.setDirection(DcMotor.Direction.REVERSE);
         //this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
         //this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
@@ -222,10 +224,10 @@ public class Synch6220Autonomous extends SynchronousOpMode {
             }
         } else //go right: moving in positive direction around compass
         {
-            //if the dest is normalized to a value less than than the current heading,
-            //it means that the compass will pass 0 on the way to the dest.
-            //When that happens, the current heading will jump from 359 to 0.
-            //We will offset our angles to ensure that we don't have that problem.
+            /*if the dest is normalized to a value less than than the current heading,
+            it means that the compass will pass 0 on the way to the dest.
+            When that happens, the current heading will jump from 359 to 0.
+            We will offset our angles to ensure that we don't have that problem.*/
             if (cur > dest) {
                 offset = (360 - cur) + GUARD; //put cur at GUARD, move dest by the same amount
             } else {

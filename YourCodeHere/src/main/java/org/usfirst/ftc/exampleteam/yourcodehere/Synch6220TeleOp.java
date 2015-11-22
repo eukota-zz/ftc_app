@@ -23,7 +23,12 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     DcMotor MotorLeftClimber = null;
     DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
-    Servo CollectorServo = null;
+    //Servo CollectorServo = null;
+
+    boolean driveClimbMode = false;
+    int dirFactor = 1;
+    boolean aJustPressed   = false;
+
 
     @Override
     protected void main() throws InterruptedException {
@@ -37,6 +42,8 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         this.MotorRightClimber = this.hardwareMap.dcMotor.get("MotorRightClimber");
         this.MotorRightTriangle = this.hardwareMap.dcMotor.get("MotorRightTriangle");
 
+        //this.CollectorServo = this.hardwareMap.servo.get("CollectorServo");
+
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact.
@@ -49,9 +56,10 @@ public class Synch6220TeleOp extends SynchronousOpMode {
 
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
-        this.MotorLeftBack.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
+
 
         this.MotorRightBack.setPower(0);
         this.MotorRightClimber.setPower(0);
@@ -59,6 +67,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         this.MotorLeftBack.setPower(0);
         this.MotorLeftTriangle.setPower(0);
         this.MotorLeftClimber.setPower(0);
+
 
         // Configure the dashboard however we want it
         this.configureDashboard();
@@ -73,6 +82,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
 
             if (this.updateGamepads())
             {
+
                 // There is (likely) new gamepad input available.
                 // Do something with that! Here, we just drive.
                 this.doManualDrivingControl(this.gamepad1);
@@ -93,18 +103,112 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     void doManualDrivingControl(Gamepad pad) throws InterruptedException {
         // Remember that the gamepad sticks range from -1 to +1, and that the motor
         // power levels range over the same amount
-        float ctlPower = pad.left_stick_y;
+        /*float ctlPower = pad.left_stick_y;
         float ctlSteering = pad.right_stick_x;
-        float climberPowerLeft = this.xformDrivingPowerLevels(pad.left_trigger);
-        float climberPowerRight = this.xformDrivingPowerLevels(pad.right_trigger);
+        */
+        double WHEEL_CLIIMB_FACT = 0.5;
+        double WHEEL_DRIVE_FACT = 0.5;
+        double wheelPowerLeft = 0;
+        double wheelPowerRight = 0;
+        double wheelClimberLeft = 0;
+        double wheelClimberRight = 0;
+        double trianglePowerLeft = 0;
+        double trianglePowerRight = 0;
+        double trianglePowerFactor = 0;
+        double climberPowerFactor = 0;
+        double wheelPowerFactor = 0;
+        //false= sticks for tank  /// true = sticks for climbing
+
+        //toggle collector mode
+        if (pad.a /*&& !aJustPressed*/) {
+            driveClimbMode = false;
+            dirFactor = 1;
+        }
+        //toggle "ready" mode for getting ready to climb the ramp
+        else if (pad.b /*&& !aJustPressed*/) {
+            driveClimbMode = false;
+            dirFactor = -1;
+        }
+        //toggle drive climb mode
+        else if (pad.y /*&& !aJustPressed*/) {
+            driveClimbMode = true;
+            dirFactor = -1;
+        }
 
 
+        double  sty2 = deadZoneShift(pad.left_stick_y);
+        double  sty1 = deadZoneShift(pad.right_stick_y);
+
+        trianglePowerFactor = deadZoneShift(pad.left_trigger);
+        wheelPowerFactor = (float) deadZoneShift(pad.left_trigger * WHEEL_CLIIMB_FACT);
+        climberPowerFactor = deadZoneShift(pad.right_trigger);
+        //check for reversal modifier and set the power factor for climbing
+        if (pad.left_bumper){
+            trianglePowerFactor *= -1;
+            wheelPowerFactor    *= -1;
+            //pad.left_bumper.
+        }
+        if (pad.right_bumper){
+            climberPowerFactor *= -1;
+        }
+
+        //collector mode
+        if ((!driveClimbMode)&(dirFactor==1)) {
+            //on-field driving
+            wheelPowerLeft = sty1 * WHEEL_DRIVE_FACT * dirFactor;
+            wheelPowerRight = sty2 * WHEEL_DRIVE_FACT * dirFactor;
+
+            trianglePowerLeft = sty1 * dirFactor;
+            trianglePowerRight = sty2* dirFactor;
+
+            wheelClimberLeft = climberPowerFactor * dirFactor;
+            wheelClimberRight = climberPowerFactor * dirFactor;
+        }
+        //"ready" mode for getting ready to climb the ramp
+        else if ((!driveClimbMode)&(dirFactor==-1)){
+            //mountain driving
+            wheelPowerLeft = sty2 * WHEEL_DRIVE_FACT * dirFactor;
+            wheelPowerRight = sty1 * WHEEL_DRIVE_FACT * dirFactor;
+
+            trianglePowerLeft = sty2 * dirFactor;
+            trianglePowerRight = sty1 * dirFactor;
+
+            wheelClimberLeft =  climberPowerFactor * dirFactor;
+            wheelClimberRight = climberPowerFactor * dirFactor;
+        }
+        //drive climb mode
+        else if ((driveClimbMode)&(dirFactor==-1)){
+            //mountain driving
+            wheelPowerLeft = sty2 * WHEEL_DRIVE_FACT * dirFactor;
+            wheelPowerRight = sty1 * WHEEL_DRIVE_FACT * dirFactor;
+
+            trianglePowerLeft = sty2 * dirFactor;
+            trianglePowerRight = sty1 * dirFactor;
+
+            wheelClimberLeft =  sty2 * dirFactor;
+            wheelClimberRight = sty1 * dirFactor;
+        }
+
+        //if(pad.a == true)
+        //{
+            //boolean aIsPressed = true;
+        //}
+
+
+
+        MotorRightBack.setPower(wheelPowerRight + wheelPowerFactor);
+        MotorLeftBack.setPower( wheelPowerLeft  + wheelPowerFactor);
+        MotorRightTriangle.setPower(trianglePowerRight + trianglePowerFactor);
+        MotorLeftTriangle.setPower( trianglePowerLeft  + trianglePowerFactor);
+        MotorLeftClimber.setPower(  wheelClimberLeft );
+        MotorRightClimber.setPower( wheelClimberRight );
         // We're going to assume that the deadzone processing has been taken care of for us
         // already by the underlying system (that appears to be the intent). Were that not
         // the case, then we would here process ctlPower and ctlSteering to be exactly zero
         // within the deadzone.
 
         // Map the power and steering to have more oomph at low values (optional)
+        /*
         ctlPower = this.xformDrivingPowerLevels(ctlPower);
         ctlSteering = this.xformDrivingPowerLevels(ctlSteering);
 
@@ -127,11 +231,11 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         climberPowerRight = Range.clip(climberPowerRight, -1f, 1f);
         climberPowerLeft = Range.clip(climberPowerLeft, -1f, 1f);
 
-        //if (this.gamepad1.a)
-        //{
-        //    CollectorServo.setPosition(1);
-        //}
-        //else CollectorServo.setPosition(0.5);
+        if (this.gamepad1.a)
+        {
+            CollectorServo.setPosition(1);
+        }
+        else CollectorServo.setPosition(0.5);
 
         if (pad.left_bumper)
         {
@@ -157,6 +261,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         this.MotorRightTriangle.setPower(powerRightBack);
         this.MotorLeftBack.setPower(powerLeftBack);
         this.MotorLeftTriangle.setPower(powerLeftBack);
+        */
 
     }
 
@@ -173,8 +278,26 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         float oneToTen = zeroToOne * 9 + 1;
         return (float) (Math.log10(oneToTen) * Math.signum(level));
     }
+    int getSign(double value){
+        return (int)(Math.abs(value) / value);
+    }
+    double deadZoneShift(double value){
+        double deadZone = 0.05;
+        double newSlope = (1 - deadZone);
+        double output = 0;
+
+        if (Math.abs(value) > deadZone) {
+            output = newSlope * (value + getSign(value) * deadZone);
+        }
+        return output;
+    }
 
     void configureDashboard() {
+
+
+        this.telemetry.log.setDisplayOldToNew(false);   // And we show the log in new to old order, just because we want to
+        this.telemetry.log.setCapacity(10);             // We can control the number of lines used by the log
+
         // Configure the dashboard. Here, it will have one line, which will contain three items
         this.telemetry.addLine
                 (
@@ -198,6 +321,8 @@ public class Synch6220TeleOp extends SynchronousOpMode {
                         })
                 );
     }
+
+
 
     // Handy functions for formatting data for the dashboard
     String format(double d) {
