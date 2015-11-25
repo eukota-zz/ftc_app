@@ -31,9 +31,9 @@ public class MainTeleOp8923 extends SynchronousOpMode
     double POWER_STOP = 0.0;
     double POWER_SCORER = 0.4;
     double ZIPLINE_LEFT_UP = 1.0;
-    double ZIPLINE_LEFT_OUT = 0.7;
+    double ZIPLINE_LEFT_OUT = 0.4;
     double ZIPLINE_RIGHT_UP = 0.0;
-    double ZIPLINE_RIGHT_OUT = 0.3;
+    double ZIPLINE_RIGHT_OUT = 0.6;
 
     @Override protected void main() throws InterruptedException
     {

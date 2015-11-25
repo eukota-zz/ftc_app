@@ -13,8 +13,9 @@ import org.swerverobotics.library.interfaces.Disabled;
  * Robot starts on blue side, goes to beacon,
  * presses beacon button, and scores climber
  */
-@Autonomous(name="AutoBlueInsideRamp")
-public class AutoBlueInsideRamp extends SynchronousOpMode
+@Autonomous(name="AutoBlueInsideRampTEST")
+@Disabled
+public class AutoBlueInsideRampTEST extends SynchronousOpMode
 {
     // Declare motors
     DcMotor motorLeft = null;
@@ -67,7 +68,10 @@ public class AutoBlueInsideRamp extends SynchronousOpMode
 
         waitForStart();
 
-        DriveForwardTime(DRIVE_POWER, 2850);
+        DriveForwardTime(DRIVE_POWER, 3350);
+        StopDriving();
+        Thread.sleep(20);
+        DriveForwardTime(-DRIVE_POWER, 500);
         StopDriving();
         Thread.sleep(20);
         TurnLeftTime(DRIVE_POWER, 850);
