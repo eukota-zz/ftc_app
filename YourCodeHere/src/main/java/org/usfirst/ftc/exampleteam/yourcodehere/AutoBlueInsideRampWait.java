@@ -52,13 +52,13 @@ public class AutoBlueInsideRampWait extends SynchronousOpMode
         motorCollector.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorScorer.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize sensors
-        colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
-        colorSensorBeacon.enableLed(false);
-        followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
-        followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
+        //colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
+        //colorSensorBeacon.enableLed(false);
+        //followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
+        //followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
 
         // Initialize servos
         //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
@@ -66,21 +66,14 @@ public class AutoBlueInsideRampWait extends SynchronousOpMode
 
         waitForStart();
 
-        /*
-         * drive to beacon
-         * turn to face beacon
-         * follow line to wall
-         * determine beacon color
-         * press correct button
-         * dump climbers
-         */
-
-        wait(5000);
-        DriveForwardDistance(DRIVE_POWER, FOO);
-        TurnRightDistance(DRIVE_POWER, FOO);
-        DriveForwardDistance(DRIVE_POWER, FOO);
-        TurnRightDistance(DRIVE_POWER, FOO);
-        DriveForwardDistance(DRIVE_POWER, FOO);
+        Thread.sleep(15000);
+        DriveForwardTime(DRIVE_POWER, 2850);
+        StopDriving();
+        Thread.sleep(20);
+        TurnLeftTime(DRIVE_POWER, 850);
+        StopDriving();
+        Thread.sleep(20);
+        DriveForwardTime(-DRIVE_POWER, 1500);
         StopDriving();
     }
 
@@ -97,6 +90,12 @@ public class AutoBlueInsideRampWait extends SynchronousOpMode
             // Wait until distance is reached
         }
         StopDriving();
+    }
+
+    public void DriveForwardTime(double power, long time) throws InterruptedException
+    {
+        DriveForward(power);
+        Thread.sleep(time);
     }
 
     public void TurnLeft(double power)
@@ -125,8 +124,20 @@ public class AutoBlueInsideRampWait extends SynchronousOpMode
         StopDriving();
     }
 
-    public void TurnRightDistance(double power, int distance) {
+    public void TurnRightDistance(double power, int distance)
+    {
         TurnLeftDistance(-power, distance);
+    }
+
+    public void TurnLeftTime(double power, long time) throws InterruptedException
+    {
+        TurnLeft(power);
+        Thread.sleep(time);
+    }
+
+    public void TurnRightTime(double power, long time) throws InterruptedException
+    {
+        TurnLeftTime(-power, time);
     }
 
     public void DumpClimbers() throws InterruptedException
