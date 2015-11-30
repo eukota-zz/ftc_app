@@ -26,7 +26,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     //Servo CollectorServo = null;
 
     boolean driveClimbMode = false;
-    int dirFactor = 1;
+    double dirFactor = 1;
     boolean aJustPressed   = false;
 
 
@@ -148,12 +148,23 @@ public class Synch6220TeleOp extends SynchronousOpMode {
             wheelPowerFactor    *= -1;
             //pad.left_bumper.
         }
-        if (pad.right_bumper){
+        if (pad.x){
             climberPowerFactor *= -1;
         }
 
+        //slowmode
+        if (pad.right_bumper){
+            if ( (dirFactor == 1) || (dirFactor == -1) ){
+                dirFactor = getSign(dirFactor) * 0.3;
+            }
+        }
+        else{
+            if ( (dirFactor == 0.3) || (dirFactor == -0.3) ){
+                dirFactor = getSign(dirFactor);
+            }
+        }
         //collector mode
-        if ((!driveClimbMode)&(dirFactor==1)) {
+        if ((!driveClimbMode)&(dirFactor>0)) {
             //on-field driving
             wheelPowerLeft = sty1 * WHEEL_DRIVE_FACT * dirFactor;
             wheelPowerRight = sty2 * WHEEL_DRIVE_FACT * dirFactor;
@@ -165,7 +176,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
             wheelClimberRight = climberPowerFactor * dirFactor;
         }
         //"ready" mode for getting ready to climb the ramp
-        else if ((!driveClimbMode)&(dirFactor==-1)){
+        else if ((!driveClimbMode)&(dirFactor<0)){
             //mountain driving
             wheelPowerLeft = sty2 * WHEEL_DRIVE_FACT * dirFactor;
             wheelPowerRight = sty1 * WHEEL_DRIVE_FACT * dirFactor;
@@ -177,7 +188,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
             wheelClimberRight = climberPowerFactor * dirFactor;
         }
         //drive climb mode
-        else if ((driveClimbMode)&(dirFactor==-1)){
+        else if ((driveClimbMode)&(dirFactor<0)){
             //mountain driving
             wheelPowerLeft = sty2 * WHEEL_DRIVE_FACT * dirFactor;
             wheelPowerRight = sty1 * WHEEL_DRIVE_FACT * dirFactor;
@@ -278,9 +289,11 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         float oneToTen = zeroToOne * 9 + 1;
         return (float) (Math.log10(oneToTen) * Math.signum(level));
     }
-    int getSign(double value){
-        return (int)(Math.abs(value) / value);
+    double getSign(double value)
+    {
+        return (Math.abs(value) / value);
     }
+
     double deadZoneShift(double value){
         double deadZone = 0.05;
         double newSlope = (1 - deadZone);
