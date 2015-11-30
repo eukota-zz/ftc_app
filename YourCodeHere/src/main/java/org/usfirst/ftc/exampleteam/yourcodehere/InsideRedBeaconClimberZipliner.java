@@ -15,31 +15,6 @@ public class InsideRedBeaconClimberZipliner extends BeaconClimberZiplinerSkeleto
 {
     @Override public void main() throws InterruptedException
     {
-        // Initialize motors
-        motorLeft = hardwareMap.dcMotor.get("motorLeft");
-        motorRight = hardwareMap.dcMotor.get("motorRight");
-        motorCollector = hardwareMap.dcMotor.get("motorCollector");
-        motorScorer = hardwareMap.dcMotor.get("motorScorer");
-
-        motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        motorCollector.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorScorer.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
-
-        // Initialize sensors
-        colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
-        colorSensorBeacon.enableLed(false);
-        followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
-        followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
-
-        // Initialize servos
-        //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
-        //servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
-
-        waitForStart();
-
         /*
          * drive to beacon
          * turn to face beacon
