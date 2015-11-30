@@ -1,11 +1,8 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
 
 /**
@@ -13,8 +10,8 @@ import org.swerverobotics.library.interfaces.Autonomous;
  * presses beacon button, and scores climber,
  * parks in floor goal
  */
-@Autonomous(name="InsideBlueBeaconClimberZipliner")
-public class InsideBlueBeaconClimberZipliner extends BeaconClimberZiplinerSkeleton
+@Autonomous(name="InsideRedBeaconClimberZipliner")
+public class InsideRedBeaconClimberZipliner extends BeaconClimberZiplinerSkeleton
 {
     @Override public void main() throws InterruptedException
     {
@@ -57,13 +54,13 @@ public class InsideBlueBeaconClimberZipliner extends BeaconClimberZiplinerSkelet
 
 
         DriveForwardDistance(DRIVE_POWER, FOO);
-        TurnRightDistance(DRIVE_POWER, FOO);
+        TurnLeftDistance(DRIVE_POWER, FOO);
         FollowLine();
         StopDriving();
         PressBeaconButton();
         DumpClimbers();
         DriveForwardDistance(-DRIVE_POWER, FOO);
-        TurnRightDistance(DRIVE_POWER, FOO);
+        TurnLeftDistance(DRIVE_POWER, FOO);
         DriveForwardDistance(DRIVE_POWER, FOO);
         StopDriving();
     }
