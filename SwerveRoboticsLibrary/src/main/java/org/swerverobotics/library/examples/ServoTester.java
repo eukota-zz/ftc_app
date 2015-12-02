@@ -47,8 +47,14 @@
             // Enter a loop processing all the input we receive
             while (this.opModeIsActive()) {
                 if (this.updateGamepads()) {
-                    if (this.gamepad1.a) {
+                    if (this.gamepad1.a)
+                    {
                         CollectorServo.setPosition(0.0);
+                        this.telemetry.update();
+                    }
+                    else
+                    {
+                        CollectorServo.setPosition(0.5);
                         this.telemetry.update();
                     }
 
