@@ -26,7 +26,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     //Servo CollectorServo = null;
 
     boolean driveClimbMode = false;
-    double dirFactor = 1;
+    double dirFactor = 1.0;
     boolean aJustPressed   = false;
 
 
@@ -108,31 +108,31 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         */
         double WHEEL_CLIIMB_FACT = 0.5;
         double WHEEL_DRIVE_FACT = 0.5;
-        double wheelPowerLeft = 0;
-        double wheelPowerRight = 0;
-        double wheelClimberLeft = 0;
-        double wheelClimberRight = 0;
-        double trianglePowerLeft = 0;
-        double trianglePowerRight = 0;
-        double trianglePowerFactor = 0;
-        double climberPowerFactor = 0;
-        double wheelPowerFactor = 0;
+        double wheelPowerLeft = 0.0;
+        double wheelPowerRight = 0.0;
+        double wheelClimberLeft = 0.0;
+        double wheelClimberRight = 0.0;
+        double trianglePowerLeft = 0.0;
+        double trianglePowerRight = 0.0;
+        double trianglePowerFactor = 0.0;
+        double climberPowerFactor = 0.0;
+        double wheelPowerFactor = 0.0;
         //false= sticks for tank  /// true = sticks for climbing
 
         //toggle collector mode
         if (pad.a /*&& !aJustPressed*/) {
             driveClimbMode = false;
-            dirFactor = 1;
+            dirFactor = 1.0;
         }
         //toggle "ready" mode for getting ready to climb the ramp
         else if (pad.b /*&& !aJustPressed*/) {
             driveClimbMode = false;
-            dirFactor = -1;
+            dirFactor = -1.0;
         }
         //toggle drive climb mode
         else if (pad.y /*&& !aJustPressed*/) {
             driveClimbMode = true;
-            dirFactor = -1;
+            dirFactor = -1.0;
         }
 
 
@@ -144,17 +144,17 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         climberPowerFactor = deadZoneShift(pad.right_trigger);
         //check for reversal modifier and set the power factor for climbing
         if (pad.left_bumper){
-            trianglePowerFactor *= -1;
-            wheelPowerFactor    *= -1;
+            trianglePowerFactor *= -1.0;
+            wheelPowerFactor    *= -1.0;
             //pad.left_bumper.
         }
         if (pad.x){
-            climberPowerFactor *= -1;
+            climberPowerFactor *= -1.0;
         }
 
         //slowmode
         if (pad.right_bumper){
-            if ( (dirFactor == 1) || (dirFactor == -1) ){
+            if ( (dirFactor == 1.0) || (dirFactor == -1.0) ){
                 dirFactor = getSign(dirFactor) * 0.3;
             }
         }
@@ -296,8 +296,8 @@ public class Synch6220TeleOp extends SynchronousOpMode {
 
     double deadZoneShift(double value){
         double deadZone = 0.05;
-        double newSlope = (1 - deadZone);
-        double output = 0;
+        double newSlope = (1.0 - deadZone);
+        double output = 0.0;
 
         if (Math.abs(value) > deadZone) {
             output = newSlope * (value + getSign(value) * deadZone);
