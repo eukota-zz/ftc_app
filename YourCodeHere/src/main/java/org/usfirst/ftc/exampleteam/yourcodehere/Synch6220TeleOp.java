@@ -9,12 +9,11 @@ import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
- * An example of a synchronous opmode that implements a simple drive-a-bot.
+ * 6220's TeleOp for driving our triangle wheels robot.
  */
 @TeleOp(name = "Synch6220TeleOp", group = "Swerve Examples")
-public class Synch6220TeleOp extends SynchronousOpMode {
-    // All hardware variables can only be initialized inside the main() function,
-    // not here at their member variable declarations.
+public class Synch6220TeleOp extends SynchronousOpMode
+{
     DcMotor MotorRightBack = null;
     DcMotor MotorLeftBack = null;
     DcMotor MotorLeftTriangle = null;
@@ -22,27 +21,31 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
     //Servo CollectorServo = null;
+    //TO DO: add this servo later
 
-    enum DriveMode
+    enum DriveModeEnum
     {
-        FieldDriving,
-        BackwardsDriving,
-        RampClimbing
+        DriveModeField,
+        DriveModeBackwards,
+        DriveModeRamp
     };
 
-    DriveMode currentDriveMode = DriveMode.FieldDriving;
+    DriveModeEnum currentDriveMode = DriveModeEnum.DriveModeField;
 
-    //variables to control motor power to support normal speed and slow speed driving
-    double FULL_POWER = 1.0;
-    double LOW_POWER = 0.3;
-    double currentDrivePowerFactor = FULL_POWER;
+    //constants to control motor power to support normal speed and slow speed driving
+    static final double FULL_POWER = 1.0;
+    static final double LOW_POWER = 0.3;
 
+    static double currentDrivePowerFactor = FULL_POWER;
+
+    //the drive wheels are larger than the triangle wheels so we drive them at less power
+    double WHEEL_DRIVE_MULTIPLIER = 0.5;
 
     @Override
     protected void main() throws InterruptedException
     {
         //Initialize our hardware
-        InitializeHardware();
+        this.initializeHardware();
 
         // Configure the dashboard however we want it
         this.configureDashboard();
@@ -56,12 +59,12 @@ public class Synch6220TeleOp extends SynchronousOpMode {
             if (this.updateGamepads())
             {
                 // There is (likely) new gamepad input available.
-                SetDrivingMode(this.gamepad1);
+                this.setDrivingMode(this.gamepad1);
 
                 this.doManualDrivingControl(this.gamepad1);
             }
 
-            // Emit telemetry with the freshest possible values
+            // Emit telemetry with the newest possible values
             this.telemetry.update();
 
             // Let the rest of the system run until there's a stimulus from the robot controller runtime.
@@ -69,7 +72,7 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         }
     }
 
-    private void InitializeHardware()
+    private void initializeHardware()
     {
         // Initialize our hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names you assigned during the robot configuration
@@ -81,11 +84,9 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         this.MotorRightClimber = this.hardwareMap.dcMotor.get("MotorRightClimber");
         this.MotorRightTriangle = this.hardwareMap.dcMotor.get("MotorRightTriangle");
 
-        //this.CollectorServo = this.hardwareMap.servo.get("CollectorServo");
-
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
-        // so we inform the motor objects of that fact.
+        // so we inform the motor objects of that fact (we might use encoders later.)
         this.MotorRightBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         this.MotorLeftBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         this.MotorLeftTriangle.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -93,12 +94,16 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         this.MotorRightClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorRightTriangle.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
-        // One of the two motors (here, the left) should be set to reversed direction
-        // so that it can take the same power level values as the other motor.
+        //the correct motors should be reversed, since they are on the opposite side of the robot.
         this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
+        stopAllMotors();
+    }
+
+    private void stopAllMotors()
+    {
         this.MotorRightBack.setPower(0);
         this.MotorRightClimber.setPower(0);
         this.MotorRightTriangle.setPower(0);
@@ -108,30 +113,11 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     }
 
     /**
-     * Implement a simple two-motor driving logic using the left and right
-     * right joysticks on the indicated game pad.
+     * This function is used to make field driving easier
+     * and available as a method able to be called.
      */
-    void doManualDrivingControl(Gamepad pad) throws InterruptedException
+    private void driveForwards(double leftSidePower, double rightSidePower, double leftTrianglePower, double rightTrianglePower)
     {
-        // Remember that the gamepad sticks range from -1 to +1, and that the motor
-        // power levels range over the same amount
-
-        /**
-         * Useful constants for setting motor power
-         */
-
-        //direction constants
-        int DIRECTION_FORWARDS = 1;
-        int DIRECTION_BACKWARDS = -1;
-
-        //the drive wheels are larger than the triangle wheels so we drive them at less power
-        double WHEEL_DRIVE_FACT = 0.5;
-
-
-        /**
-         * Useful variables for setting motor power
-         */
-
         //motor powers
         double wheelPowerLeft = 0.0;
         double wheelPowerRight = 0.0;
@@ -139,6 +125,44 @@ public class Synch6220TeleOp extends SynchronousOpMode {
         double wheelClimberRight = 0.0;
         double trianglePowerLeft = 0.0;
         double trianglePowerRight = 0.0;
+
+        wheelPowerLeft = rightSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor;
+        wheelPowerRight = leftSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor;
+
+        trianglePowerLeft = rightSidePower * currentDrivePowerFactor;
+        trianglePowerRight = leftSidePower * currentDrivePowerFactor;
+
+        wheelClimberLeft = leftTrianglePower * currentDrivePowerFactor;
+        wheelClimberRight = rightTrianglePower * currentDrivePowerFactor;
+
+        //set the powers on the motors
+        MotorRightBack.setPower( wheelPowerRight );
+        MotorLeftBack.setPower( wheelPowerLeft );
+        MotorRightTriangle.setPower( trianglePowerRight );
+        MotorLeftTriangle.setPower( trianglePowerLeft );
+        MotorLeftClimber.setPower(  wheelClimberLeft );
+        MotorRightClimber.setPower( wheelClimberRight );
+    }
+
+    /**
+     * This does the same thing as the driveForwards function,
+     * but it prepares to drive onto the ramp
+     *
+     */
+    private void driveBackwards(double leftSidePower, double rightSidePower, double leftTrianglePower, double rightTrianglePower)
+    {
+       driveForwards(-1*leftSidePower, -1*rightSidePower, -1*leftTrianglePower, -1*rightTrianglePower);
+    }
+
+    /**
+     * This is the body of the TeleOp that allows the driver to control the robot.
+     */
+    //TO DO:  we need to finish refactoring this.
+    void doManualDrivingControl(Gamepad pad) throws InterruptedException
+    {
+        // Remember that the gamepad sticks range from -1 to +1, and that the motor
+        // power levels range over the same amount
+
 
         //read input from the controller
         double  leftSidePower = ignoreControllerDeadZone(pad.left_stick_y);
@@ -150,70 +174,41 @@ public class Synch6220TeleOp extends SynchronousOpMode {
          */
 
         //field driving mode
-        if (currentDriveMode == DriveMode.FieldDriving)
+        if (currentDriveMode == DriveModeEnum.DriveModeField)
         {
-            wheelPowerLeft = rightSidePower * WHEEL_DRIVE_FACT * DIRECTION_FORWARDS * currentDrivePowerFactor;
-            wheelPowerRight = leftSidePower * WHEEL_DRIVE_FACT * DIRECTION_FORWARDS * currentDrivePowerFactor;
-
-            trianglePowerLeft = rightSidePower * DIRECTION_FORWARDS * currentDrivePowerFactor;
-            trianglePowerRight = leftSidePower * DIRECTION_FORWARDS * currentDrivePowerFactor;
-
-            wheelClimberLeft = climberPower * DIRECTION_FORWARDS * currentDrivePowerFactor;
-            wheelClimberRight = climberPower * DIRECTION_FORWARDS * currentDrivePowerFactor;
+            driveForwards(leftSidePower, rightSidePower, climberPower, climberPower);
         }
         //"ready" mode for getting ready to climb the ramp
         //we need to drive backwards when aligning with the ramp
-        else if (currentDriveMode == DriveMode.BackwardsDriving)
+        else if (currentDriveMode == DriveModeEnum.DriveModeBackwards)
         {
-            wheelPowerLeft = leftSidePower * WHEEL_DRIVE_FACT * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-            wheelPowerRight = rightSidePower * WHEEL_DRIVE_FACT * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-
-            trianglePowerLeft = leftSidePower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-            trianglePowerRight = rightSidePower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-
-            wheelClimberLeft =  climberPower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-            wheelClimberRight = climberPower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
+           driveBackwards(leftSidePower, rightSidePower, climberPower, climberPower);
         }
         //drive climb mode
-        else if (currentDriveMode == DriveMode.RampClimbing)
+        else if (currentDriveMode == DriveModeEnum.DriveModeRamp)
         {
-            wheelPowerLeft = leftSidePower * WHEEL_DRIVE_FACT * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-            wheelPowerRight = rightSidePower * WHEEL_DRIVE_FACT * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-
-            trianglePowerLeft = leftSidePower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-            trianglePowerRight = rightSidePower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-
-            wheelClimberLeft =  leftSidePower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
-            wheelClimberRight = rightSidePower * DIRECTION_BACKWARDS * currentDrivePowerFactor;
+            driveBackwards(leftSidePower, rightSidePower, leftSidePower, rightSidePower);
         }
-
-        //set the powers on the motors
-        MotorRightBack.setPower( wheelPowerRight );
-        MotorLeftBack.setPower( wheelPowerLeft );
-        MotorRightTriangle.setPower( trianglePowerRight );
-        MotorLeftTriangle.setPower( trianglePowerLeft );
-        MotorLeftClimber.setPower(  wheelClimberLeft );
-        MotorRightClimber.setPower( wheelClimberRight );
 
     }
 
-    private void SetDrivingMode(Gamepad pad)
+    private void setDrivingMode(Gamepad pad)
     {
         //toggle field driving mode
         if (pad.a )
         {
-            SetFieldDrivingMode();
+            setFieldDrivingMode();
         }
         //toggle "ready" mode for getting ready to climb the ramp
         //need to drive backwards so we can line up against the ramp
         else if (pad.b)
         {
-            SetBackwardsDriveMode();
+            setBackwardsDriveMode();
         }
         //toggle drive climb mode
         else if (pad.y)
         {
-            SetRampClimbingMode();
+            setRampClimbingMode();
         }
 
         //reduce power so we can go slower ("slow mode") and have more control
@@ -229,23 +224,27 @@ public class Synch6220TeleOp extends SynchronousOpMode {
     }
 
     //This is the driving mode for going up the ramp
-    private void SetRampClimbingMode()
+    private void setRampClimbingMode()
     {
-        currentDriveMode = DriveMode.RampClimbing;
+        setDriveMode(DriveModeEnum.DriveModeRamp);
     }
 
     //This is the driving mode we use when we want to drive backwards to align with the ramp
-    private void SetBackwardsDriveMode()
+    private void setBackwardsDriveMode()
     {
-        currentDriveMode = DriveMode.BackwardsDriving;
+        setDriveMode(DriveModeEnum.DriveModeBackwards);
     }
 
     //This is the driving mode we use when driving around the field
-    private void SetFieldDrivingMode()
+    private void setFieldDrivingMode()
     {
-        currentDriveMode = DriveMode.FieldDriving;;
+        setDriveMode(DriveModeEnum.DriveModeField);
     }
 
+    private void setDriveMode(DriveModeEnum mode)
+    {
+        currentDriveMode = mode;
+    }
 
     //Ignore the controller region that is very close to zero; treat it as a dead zone
     double ignoreControllerDeadZone(double value)

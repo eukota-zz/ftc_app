@@ -58,10 +58,17 @@
                         this.telemetry.update();
                     }
 
-                    //if (this.gamepad1.x) {
-                    //   LeftZiplineHitter.setPosition(.25);
-                    //   this.telemetry.update();
-                    //}
+                    if (this.gamepad1.right_bumper)
+                    {
+                       LeftZiplineHitter.setPosition(90);
+                       this.telemetry.update();
+                    }
+
+                    if (this.gamepad1.left_bumper)
+                    {
+                        LeftZiplineHitter.setPosition(-90);
+                        this.telemetry.update();
+                    }
                 }
 
                 /*CollectorServo.setPosition(0);
