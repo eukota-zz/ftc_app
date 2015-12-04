@@ -3,6 +3,7 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
@@ -29,9 +30,10 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     Servo servoClimberDump = null;
 
     // Declare sensors
-    ColorSensor colorSensorBeacon = null;
-    ColorSensor followLineSensorFront = null;
-    ColorSensor followLineSensorBack = null;
+    //ColorSensor colorSensorBeacon = null;
+    //ColorSensor followLineSensorFront = null;
+    //ColorSensor followLineSensorBack = null;
+    I2cDevice multiplexer = null;
 
 
     double DRIVE_POWER = 1.0;
@@ -58,10 +60,10 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize sensors
-        colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
-        colorSensorBeacon.enableLed(false);
-        followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
-        followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
+        //colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
+        //colorSensorBeacon.enableLed(false);
+        //followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
+        //followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
 
         // Initialize servos
         //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
@@ -69,7 +71,31 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 
         waitForStart();
 
-    }
+
+        /*
+         * drive to beacon
+         * turn to face beacon
+         * follow line to wall
+         * determine beacon color
+         * press correct button
+         * dump climbers
+         * back up
+         * turn towards floor goal
+         * drive into floor goal
+         */
+
+
+            DriveForwardDistance(DRIVE_POWER, FOO);
+            TurnRightDistance(DRIVE_POWER, FOO);
+            //FollowLine();
+            StopDriving();
+            //PressBeaconButton();
+            DumpClimbers();
+            DriveForwardDistance(-DRIVE_POWER, FOO);
+            TurnRightDistance(DRIVE_POWER, FOO);
+            DriveForwardDistance(DRIVE_POWER, FOO);
+            StopDriving();
+        }
 
     public void DriveForward(double power) {
         motorLeft.setPower(power);
@@ -123,6 +149,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         //servoClimberDump.setPosition(CLIMBER_RETURN_POSITION);
     }
 
+    /*
     public void PressBeaconButton()
     {
         if(colorSensorBeacon.blue() <= 3)
@@ -134,6 +161,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
             servoPressBeaconButton.setPosition(0.2);
         }
     }
+
 
     public void FollowLine() throws InterruptedException
     {
@@ -149,5 +177,19 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
             telemetry.addData("Blue", blue);
             telemetry.addData("Red", red);
         }
+    }
+    */
+
+    public void multiplexerTest()
+    {
+        byte[] portSwitch = new byte[1];
+
+        portSwitch[0] = 0x00; //port 0
+
+        multiplexer.enableI2cWriteMode(0x70,0,1);
+        multiplexer.copyBufferIntoWriteBuffer(portSwitch);
+        multiplexer.writeI2cCacheToController();
+
+
     }
 }
