@@ -3,37 +3,39 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.Disabled;
 
-/**
- * Robot starts on blue side, goes to beacon,
- * presses beacon button, and scores climber,
- * parks in floor goal
+/*
+ *
  */
 @Autonomous(name="BeaconClimberZiplinerSkeleton")
 @Disabled
 public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 {
     // Declare motors
-    DcMotor motorLeft = null;
-    DcMotor motorRight = null;
-    DcMotor motorCollector = null;
-    DcMotor motorScorer = null;
+    DcMotor motorLeft;
+    DcMotor motorRight;
+    DcMotor motorCollector;
+    DcMotor motorScorer;
 
     // Declare servos
-    Servo servoPressBeaconButton = null;
-    Servo servoClimberDump = null;
+    Servo servoPressBeaconButton;
+    Servo servoClimberDump;
 
     // Declare sensors
-    ColorSensor colorSensorBeacon = null;
-    ColorSensor followLineSensorFront = null;
-    ColorSensor followLineSensorBack = null;
-    I2cDevice multiplexer = null;
+    ColorSensor colorSensorBeacon;
+    LightSensor followLineSensorFront;
+    LightSensor followLineSensorBack;
+
+    //Declare Other Objects
+    colorSensorCalibration calibrate = new colorSensorCalibration();
+    int calibratedBlue;
+    int calibratedRed;
 
 
     double DRIVE_POWER = 1.0;
@@ -62,13 +64,15 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         // Initialize sensors
         colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
         colorSensorBeacon.enableLed(false);
-        followLineSensorFront = hardwareMap.colorSensor.get("followLineSensorFront");
-        followLineSensorBack = hardwareMap.colorSensor.get("followLineSensorBack");
+        followLineSensorFront = hardwareMap.lightSensor.get("followLineSensorFront");
+        followLineSensorBack = hardwareMap.lightSensor.get("followLineSensorBack");
 
         // Initialize servos
         //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
         //servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
 
+        calibratedRed = calibrate.calibrateRed();
+        calibratedBlue = calibrate.calibrateBlue();
         waitForStart();
 
         }
@@ -80,12 +84,26 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 
     public void DriveForwardDistance(double power, int distance)
     {
+        motorLeft.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorRight.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+
+        motorLeft.setTargetPosition(distance);
+        motorRight.setTargetPosition(distance);
+
+        motorLeft.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+        motorRight.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+
         DriveForward(power);
-        while(motorLeft.getCurrentPosition() < distance)
+
+        while(motorLeft.isBusy() && motorRight.isBusy())
         {
             // Wait until distance is reached
         }
+
         StopDriving();
+
+        motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
     }
 
     public void TurnLeft(double power)
@@ -141,31 +159,6 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 
     public void FollowLine() throws InterruptedException
     {
-        while(true)
-        {
-            this.telemetry.update();
-
-            int green = followLineSensorFront.green();
-            int blue = followLineSensorFront.blue();
-            int red = followLineSensorBack.red();
-
-            telemetry.addData("Green", green);
-            telemetry.addData("Blue", blue);
-            telemetry.addData("Red", red);
-        }
-    }
-
-
-    public void multiplexerTest()
-    {
-        byte[] portSwitch = new byte[1];
-
-        portSwitch[0] = 0x00; //port 0
-
-        multiplexer.enableI2cWriteMode(0x70,0,1);
-        multiplexer.copyBufferIntoWriteBuffer(portSwitch);
-        multiplexer.writeI2cCacheToController();
-
 
     }
 }
