@@ -18,6 +18,7 @@ public class multiplexerTest extends SynchronousOpMode
     {
         I2cDevice multiplexer = null;
         ColorSensor colorSensor1 = null;
+        ColorSensor colorSensor2 = null;
 
     @Override public void main() throws InterruptedException
         {
@@ -44,6 +45,18 @@ public class multiplexerTest extends SynchronousOpMode
                                     }
                                 }));
                     }
+                    if (gamepad1.b)
+                    {
+                        setMultiplexerPort((byte)0x04);
+                        telemetry.addLine(
+                                telemetry.item("Color: ", new IFunc<Object>() {
+                                    @Override
+                                    public Object value() {
+                                        return "r: " + colorSensor2.red() + "g: " + colorSensor2.green() + "b: " + colorSensor2.blue();
+                                    }
+                                }));
+
+                    }
                 }
 
             telemetry.update();
@@ -60,8 +73,6 @@ public class multiplexerTest extends SynchronousOpMode
             multiplexer.enableI2cWriteMode(0x70, 0, 1);
             multiplexer.copyBufferIntoWriteBuffer(portSwitch);
             multiplexer.writeI2cCacheToController();
-
-
 
         }
     }

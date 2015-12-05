@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
@@ -17,6 +18,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * presses beacon button, and scores climber
  */
 @Autonomous(name="BlueBeaconClimber")
+@Disabled
 public class BlueBeaconClimber extends SynchronousOpMode
 {
     // Declare motors

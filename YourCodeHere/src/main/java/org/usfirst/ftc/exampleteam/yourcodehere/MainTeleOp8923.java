@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -12,6 +13,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Main TeleOp file for 8923 bot
  */
 @TeleOp(name="8923 Main TeleOp")
+@Disabled
 public class MainTeleOp8923 extends SynchronousOpMode
 {
     // Declare motors and servos

@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 
 /**
  * Robot starts on blue side, goes to beacon,
  * presses beacon button, and scores climber
  */
 @Autonomous(name="RightMotorTest")
+@Disabled
 public class RightMotorTest extends SynchronousOpMode
 {
     // Declare motors

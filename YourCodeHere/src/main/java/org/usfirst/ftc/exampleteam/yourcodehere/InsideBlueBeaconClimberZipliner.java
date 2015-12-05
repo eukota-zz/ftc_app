@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 
 /**
  * Robot starts on blue side, goes to beacon,
@@ -14,6 +15,7 @@ import org.swerverobotics.library.interfaces.Autonomous;
  * parks in floor goal
  */
 @Autonomous(name="InsideBlueBeaconClimberZipliner")
+@Disabled
 public class InsideBlueBeaconClimberZipliner extends BeaconClimberZiplinerSkeleton
 {
     @Override public void main() throws InterruptedException

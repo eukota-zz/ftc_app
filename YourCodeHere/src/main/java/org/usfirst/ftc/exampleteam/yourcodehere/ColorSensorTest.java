@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -14,6 +15,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * presses beacon button, and scores climber
  */
 @Autonomous(name = "ColorSensorTest")
+@Disabled
 public class ColorSensorTest extends SynchronousOpMode {
     ColorSensor sensorRGB = null;
     DigitalChannel sensorLED = null;
