@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.Disabled;
-import org.swerverobotics.library.interfaces.IFunc;
 
 
 /**
@@ -15,8 +14,8 @@ import org.swerverobotics.library.interfaces.IFunc;
  * to suit your needs, or create sibling OpModes adjacent to this one in the same
  * Java package.
  */
-@Autonomous(name="colorSensorCalibration")
-public class colorSensorCalibration extends SynchronousOpMode {
+@Autonomous(name="ColorSensorCalibration")
+public class ColorSensorCalibration extends SynchronousOpMode {
 
     ColorSensor colorSensorBeacon;
     @Override
@@ -25,12 +24,23 @@ public class colorSensorCalibration extends SynchronousOpMode {
 
         waitForStart();
 
-        calibrateBlue();
-        calibrateRed();
-        while (true) {
-            telemetry.update();
-            this.idle();
+        while(opModeIsActive())
+        {
+            if(updateGamepads())
+            {
+                if (gamepad1.x)
+                {
+                    calibrateBlue();
+                    telemetry.addData("Blue is ", "Calibrated!");
+                }
+                if(gamepad1.b)
+                {
+                    calibrateRed();
+                    telemetry.addData("Red is ", "Calibrated!");
+                }
+            }
         }
+
     }
 
     public int calibrateBlue() {
@@ -46,7 +56,5 @@ public class colorSensorCalibration extends SynchronousOpMode {
         telemetry.log.add("red: " + red);
         return red;
     }
-
-
 }
 

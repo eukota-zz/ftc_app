@@ -33,7 +33,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     LightSensor followLineSensorBack;
 
     //Declare Other Objects
-    colorSensorCalibration calibrate = new colorSensorCalibration();
+    ColorSensorCalibration calibrate = new ColorSensorCalibration();
     int calibratedBlue;
     int calibratedRed;
 
