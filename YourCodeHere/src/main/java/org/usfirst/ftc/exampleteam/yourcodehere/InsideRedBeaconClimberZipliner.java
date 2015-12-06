@@ -33,6 +33,7 @@ public class InsideRedBeaconClimberZipliner extends BeaconClimberZiplinerSkeleto
         DriveForwardDistance(DRIVE_POWER, FOO);
         TurnLeftDistance(DRIVE_POWER, FOO);
         FollowLine();
+        DriveForwardDistance(DRIVE_POWER, FOO);
         StopDriving();
         PressBeaconButton();
         DumpClimbers();

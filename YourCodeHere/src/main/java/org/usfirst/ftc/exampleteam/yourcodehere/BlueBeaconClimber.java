@@ -85,6 +85,7 @@ public class BlueBeaconClimber extends SynchronousOpMode
         DriveForwardDistance(DRIVE_POWER, FOO);
         TurnRightDistance(DRIVE_POWER, FOO);
         FollowLine();
+        DriveForwardDistance(DRIVE_POWER, FOO);
         StopDriving();
         PressBeaconButton();
         DumpClimbers();

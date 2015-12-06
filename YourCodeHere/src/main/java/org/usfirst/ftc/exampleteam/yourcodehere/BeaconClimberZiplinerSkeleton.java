@@ -29,13 +29,16 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 
     // Declare sensors
     ColorSensor colorSensorBeacon;
-    LightSensor followLineSensorFront;
-    LightSensor followLineSensorBack;
+    LightSensor lightSensorFront;
+    LightSensor lightSensorBack;
 
     //Declare Other Objects
-    ColorSensorCalibration calibrate = new ColorSensorCalibration();
+    ColorSensorCalibration colorCalibrate = new ColorSensorCalibration();
     int calibratedBlue;
     int calibratedRed;
+
+    LightSensorCalibration lightCalibrate = new LightSensorCalibration();
+    double calibratedWhite;
 
 
     double DRIVE_POWER = 1.0;
@@ -64,15 +67,20 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         // Initialize sensors
         colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
         colorSensorBeacon.enableLed(false);
-        followLineSensorFront = hardwareMap.lightSensor.get("followLineSensorFront");
-        followLineSensorBack = hardwareMap.lightSensor.get("followLineSensorBack");
+        lightSensorFront = hardwareMap.lightSensor.get("lightSensorFront");
+        lightSensorBack = hardwareMap.lightSensor.get("lightSensorBack");
 
         // Initialize servos
         //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
         //servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
 
-        calibratedRed = calibrate.calibrateRed();
-        calibratedBlue = calibrate.calibrateBlue();
+
+
+        calibratedRed = colorCalibrate.calibrateRed();
+        calibratedBlue = colorCalibrate.calibrateBlue();
+
+        calibratedWhite = lightCalibrate.calibrateWhite();
+
         waitForStart();
 
         }
@@ -159,6 +167,13 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 
     public void FollowLine() throws InterruptedException
     {
-
+        while (lightSensorBack.getLightDetected() > calibratedWhite) {
+            DriveForward(DRIVE_POWER);
+        }
+        StopDriving();
+        while (lightSensorFront.getLightDetected() > calibratedWhite) {
+            motorRight.setPower(DRIVE_POWER);
+        }
+        StopDriving();
     }
 }

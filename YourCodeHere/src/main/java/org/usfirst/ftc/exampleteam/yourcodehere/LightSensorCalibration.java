@@ -26,28 +26,16 @@ public class LightSensorCalibration extends SynchronousOpMode {
 
             if (updateGamepads()){
                 if (gamepad1.a){
-                    calibrateBlack();
-                }
-                if (gamepad1.b){
                     calibrateWhite();
                 }
-
             }
         }
 
-        calibrateBlack();
         calibrateWhite();
         while (true) {
             telemetry.update();
             this.idle();
         }
-    }
-
-    public double calibrateBlack() {
-        double black;
-        black = LightSensorCalibrator.getLightDetected();
-        telemetry.log.add("black: " + black);
-        return black;
     }
 
     public double calibrateWhite() {
