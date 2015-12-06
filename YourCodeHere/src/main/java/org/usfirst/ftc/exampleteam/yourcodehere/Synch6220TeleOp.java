@@ -35,7 +35,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
     DriveModeEnum currentDriveMode = DriveModeEnum.DriveModeField;
 
-    //constants to control motor power to support normal speed and slow speed driving
+    //constants to control motor power to support normal speed and slow speed driving.
     static final double FULL_POWER = 1.0;
     static final double LOW_POWER = 0.3;
 
