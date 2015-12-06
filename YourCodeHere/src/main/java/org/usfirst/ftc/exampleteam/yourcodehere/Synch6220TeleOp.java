@@ -3,6 +3,7 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.IFunc;
@@ -20,8 +21,10 @@ public class Synch6220TeleOp extends SynchronousOpMode
     DcMotor MotorLeftClimber = null;
     DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
-    //Servo CollectorServo = null;
-    //TO DO: add this servo later
+    // Declare servo
+    Servo CollectorServo = null;
+    Servo LeftZiplineHitter = null;
+    Servo RightZiplineHitter = null;
 
     enum DriveModeEnum
     {
@@ -59,7 +62,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
             if (this.updateGamepads())
             {
                 // There is (likely) new gamepad input available.
-                this.setDrivingMode(this.gamepad1);
+                this.handleDriverInput(this.gamepad1, this.gamepad2);
 
                 this.doManualDrivingControl(this.gamepad1);
             }
@@ -100,6 +103,11 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
         stopAllMotors();
+
+        this.CollectorServo = this.hardwareMap.servo.get("CollectorServo");
+        this.LeftZiplineHitter = this.hardwareMap.servo.get("LeftZiplineHitter");
+        this.RightZiplineHitter = this.hardwareMap.servo.get("RightZiplineHitter");
+        RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
     }
 
     private void stopAllMotors()
@@ -192,27 +200,61 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
     }
 
-    private void setDrivingMode(Gamepad pad)
+    private void handleDriverInput(Gamepad pad1, Gamepad pad2)
     {
+        if (pad2.a)
+        {
+            CollectorServo.setPosition(0.0);
+            this.telemetry.update();
+        }
+        else
+        {
+            CollectorServo.setPosition(0.5);
+            this.telemetry.update();
+        }
+
+        if (pad2.left_bumper)
+        {
+            LeftZiplineHitter.setPosition(90);
+            this.telemetry.update();
+        }
+
+        if ((pad2.left_trigger > 0.2))
+        {
+            LeftZiplineHitter.setPosition(-90);
+            this.telemetry.update();
+        }
+        //The RightZiplineHitter reads from (0-1), which is different than the LeftZiplineHitter(0-360)
+        if (pad2.right_bumper)
+        {
+            RightZiplineHitter.setPosition(0.75);
+            this.telemetry.update();
+        }
+
+        if ((pad2.right_trigger > 0.2))
+        {
+            RightZiplineHitter.setPosition(-0.75);
+            this.telemetry.update();
+        }
         //toggle field driving mode
-        if (pad.a )
+        if (pad1.a )
         {
             setFieldDrivingMode();
         }
         //toggle "ready" mode for getting ready to climb the ramp
         //need to drive backwards so we can line up against the ramp
-        else if (pad.b)
+        else if (pad1.b)
         {
             setBackwardsDriveMode();
         }
         //toggle drive climb mode
-        else if (pad.y)
+        else if (pad1.y)
         {
             setRampClimbingMode();
         }
 
         //reduce power so we can go slower ("slow mode") and have more control
-        if (pad.right_bumper)
+        if (pad1.right_bumper)
         {
             currentDrivePowerFactor = LOW_POWER;
         }
