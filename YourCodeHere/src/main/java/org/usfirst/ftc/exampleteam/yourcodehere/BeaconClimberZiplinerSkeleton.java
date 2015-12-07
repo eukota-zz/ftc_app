@@ -152,16 +152,24 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     }
 
 
-    public void PressBeaconButton()
+    public void PressBeaconButton() throws InterruptedException
     {
-        if(colorSensorBeacon.blue() <= 3)
+        // Check for a range of blue
+        if(colorSensorBeacon.blue() <= calibratedBlue + 50 && colorSensorBeacon.blue() < calibratedBlue - 50)
         {
+            // Press Blue
             servoPressBeaconButton.setPosition(0.8);
+            Thread.sleep(500);
+            servoPressBeaconButton.setPosition(0.5);
         }
         else
         {
+            // Otherwise press Red
             servoPressBeaconButton.setPosition(0.2);
+            Thread.sleep(500);
+            servoPressBeaconButton.setPosition(0.5);
         }
+
     }
 
 
