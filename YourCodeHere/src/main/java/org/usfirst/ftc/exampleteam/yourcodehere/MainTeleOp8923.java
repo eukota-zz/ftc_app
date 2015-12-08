@@ -13,7 +13,6 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Main TeleOp file for 8923 bot
  */
 @TeleOp(name="8923 Main TeleOp")
-@Disabled
 public class MainTeleOp8923 extends SynchronousOpMode
 {
     // Declare motors and servos
@@ -58,7 +57,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
         motorScorer.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // Reverse left motors so we don't spin in a circle
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize zipline servos to be up
         servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
