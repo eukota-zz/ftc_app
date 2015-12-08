@@ -21,8 +21,10 @@ public class MainTeleOp8923 extends SynchronousOpMode
     DcMotor motorRight = null;
     DcMotor motorCollector = null;
     DcMotor motorScorer = null;
+    DcMotor motorTapeMeasure = null;
     Servo servoLeftZipline = null;
     Servo servoRightZipline = null;
+    Servo servoTapeMeasureElevation = null;
 
     // Declare variables
     boolean ziplineLeftIsOut = false;
@@ -44,8 +46,10 @@ public class MainTeleOp8923 extends SynchronousOpMode
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
+        motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
         servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
+        servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
 
         // Set motor channel modes
         motorLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -88,6 +92,30 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 // Tank drive based on joysticks of controller 1
                 motorLeft.setPower(gamepad1.left_stick_y);
                 motorRight.setPower(gamepad1.right_stick_y);
+
+                // Tape Measure of Doom extension based on controller 1
+                if(gamepad1.left_trigger > 0)
+                {
+                    motorTapeMeasure.setPower(POWER_FULL);
+                }
+                else if(gamepad1.right_trigger > 0)
+                {
+                    motorTapeMeasure.setPower(-POWER_FULL);
+                }
+                else
+                {
+                    motorTapeMeasure.setPower(POWER_STOP);
+                }
+
+                // Tape Measure of Doom elevation based on controller 1
+                if(gamepad1.right_bumper && servoTapeMeasureElevation.getPosition() < 1)
+                {
+                    servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() + 0.1);
+                }
+                else if(gamepad1.left_bumper && servoTapeMeasureElevation.getPosition() > 0)
+                {
+                    servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - 0.1);
+                }
 
                 // Move collector based on triggers on controller 2
                 if(gamepad2.right_trigger > 0)
