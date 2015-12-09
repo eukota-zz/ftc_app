@@ -20,10 +20,10 @@ public class MainTeleOp8923 extends SynchronousOpMode
     DcMotor motorRight = null;
     DcMotor motorCollector = null;
     DcMotor motorScorer = null;
-    //DcMotor motorTapeMeasure = null;
+    DcMotor motorTapeMeasure = null;
     Servo servoLeftZipline = null;
     Servo servoRightZipline = null;
-    //Servo servoTapeMeasureElevation = null;
+    Servo servoTapeMeasureElevation = null;
     Servo servoCollectorHinge = null;
 
     // Declare variables
@@ -49,10 +49,10 @@ public class MainTeleOp8923 extends SynchronousOpMode
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
-        //motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
+        motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
         servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
-        //servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
+        servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
         servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
 
         // Set motor channel modes
@@ -98,13 +98,13 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 motorRight.setPower(gamepad1.right_stick_y);
 
                 // Tape Measure of Doom extension based on controller 1
-                /*if(gamepad1.left_trigger > 0)
+                if(gamepad1.left_trigger > 0)
                 {
-                    motorTapeMeasure.setPower(POWER_FULL);
+                    motorTapeMeasure.setPower(-POWER_FULL);
                 }
                 else if(gamepad1.right_trigger > 0)
                 {
-                    motorTapeMeasure.setPower(-POWER_FULL);
+                    motorTapeMeasure.setPower(POWER_FULL);
                 }
                 else
                 {
@@ -112,14 +112,14 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 }
 
                 // Tape Measure of Doom elevation based on controller 1
-                if(gamepad1.right_bumper && servoTapeMeasureElevation.getPosition() < 1)
+                if(gamepad1.right_bumper && servoTapeMeasureElevation.getPosition() <= 0.9)
                 {
                     servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() + 0.1);
                 }
-                else if(gamepad1.left_bumper && servoTapeMeasureElevation.getPosition() > 0)
+                else if(gamepad1.left_bumper && servoTapeMeasureElevation.getPosition() >= 0.1)
                 {
                     servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - 0.1);
-                }*/
+                }
 
                 // Move collector based on triggers on controller 2 if the bottom isn't up
                 if(gamepad2.right_trigger > 0 && !collectorHingeIsUp)

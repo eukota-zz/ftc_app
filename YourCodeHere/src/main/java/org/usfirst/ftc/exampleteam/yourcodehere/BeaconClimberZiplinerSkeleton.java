@@ -85,12 +85,12 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 
         }
 
-    public void DriveForward(double power) {
+    public void driveForward(double power) {
         motorLeft.setPower(power);
         motorRight.setPower(power);
     }
 
-    public void DriveForwardDistance(double power, int distance)
+    public void driveForwardDistance(double power, int distance)
     {
         motorLeft.setMode(DcMotorController.RunMode.RESET_ENCODERS);
         motorRight.setMode(DcMotorController.RunMode.RESET_ENCODERS);
@@ -101,7 +101,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         motorLeft.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
         motorRight.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
 
-        DriveForward(power);
+        driveForward(power);
 
         while(motorLeft.isBusy() && motorRight.isBusy())
         {
@@ -127,7 +127,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 
     public void StopDriving()
     {
-        DriveForward(0);
+        driveForward(0);
     }
 
     public void TurnLeftDistance(double power, int distance)
@@ -140,7 +140,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         StopDriving();
     }
 
-    public void TurnRightDistance(double power, int distance) {
+    public void turnRightDistance(double power, int distance) {
         TurnLeftDistance(-power, distance);
     }
 
@@ -176,7 +176,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     public void FollowLine() throws InterruptedException
     {
         while (lightSensorBack.getLightDetected() > calibratedWhite) {
-            DriveForward(DRIVE_POWER);
+            driveForward(DRIVE_POWER);
         }
         StopDriving();
         while (lightSensorFront.getLightDetected() > calibratedWhite) {

@@ -1,11 +1,5 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.Disabled;
 
@@ -34,16 +28,16 @@ public class InsideBlueBeaconClimberZipliner extends BeaconClimberZiplinerSkelet
          */
 
 
-        DriveForwardDistance(DRIVE_POWER, FOO);
-        TurnRightDistance(DRIVE_POWER, FOO);
+        driveForwardDistance(DRIVE_POWER, FOO);
+        turnRightDistance(DRIVE_POWER, FOO);
         FollowLine();
-        DriveForwardDistance(DRIVE_POWER, FOO);
+        driveForwardDistance(DRIVE_POWER, FOO);
         StopDriving();
         PressBeaconButton();
         DumpClimbers();
-        DriveForwardDistance(-DRIVE_POWER, FOO);
-        TurnRightDistance(DRIVE_POWER, FOO);
-        DriveForwardDistance(DRIVE_POWER, FOO);
+        driveForwardDistance(-DRIVE_POWER, FOO);
+        turnRightDistance(DRIVE_POWER, FOO);
+        driveForwardDistance(DRIVE_POWER, FOO);
         StopDriving();
     }
 }
