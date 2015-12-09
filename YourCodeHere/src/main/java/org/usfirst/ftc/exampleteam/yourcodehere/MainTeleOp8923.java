@@ -20,14 +20,16 @@ public class MainTeleOp8923 extends SynchronousOpMode
     DcMotor motorRight = null;
     DcMotor motorCollector = null;
     DcMotor motorScorer = null;
-    DcMotor motorTapeMeasure = null;
+    //DcMotor motorTapeMeasure = null;
     Servo servoLeftZipline = null;
     Servo servoRightZipline = null;
-    Servo servoTapeMeasureElevation = null;
+    //Servo servoTapeMeasureElevation = null;
+    Servo servoCollectorHinge = null;
 
     // Declare variables
     boolean ziplineLeftIsOut = false;
     boolean ziplineRightIsOut = false;
+    boolean collectorHingeIsUp = false;
 
     // Declare constants
     double POWER_FULL = 1.0;
@@ -37,6 +39,8 @@ public class MainTeleOp8923 extends SynchronousOpMode
     double ZIPLINE_LEFT_OUT = 0.4;
     double ZIPLINE_RIGHT_UP = 0.0;
     double ZIPLINE_RIGHT_OUT = 0.6;
+    double COLLECTOR_HINGE_DOWN = 0.0;
+    double COLLECTOR_HINGE_UP = 0.1;
 
     @Override protected void main() throws InterruptedException
     {
@@ -45,10 +49,11 @@ public class MainTeleOp8923 extends SynchronousOpMode
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
-        motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
+        //motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
         servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
-        servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
+        //servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
+        servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
 
         // Set motor channel modes
         motorLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -93,7 +98,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 motorRight.setPower(gamepad1.right_stick_y);
 
                 // Tape Measure of Doom extension based on controller 1
-                if(gamepad1.left_trigger > 0)
+                /*if(gamepad1.left_trigger > 0)
                 {
                     motorTapeMeasure.setPower(POWER_FULL);
                 }
@@ -114,10 +119,10 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 else if(gamepad1.left_bumper && servoTapeMeasureElevation.getPosition() > 0)
                 {
                     servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - 0.1);
-                }
+                }*/
 
-                // Move collector based on triggers on controller 2
-                if(gamepad2.right_trigger > 0)
+                // Move collector based on triggers on controller 2 if the bottom isn't up
+                if(gamepad2.right_trigger > 0 && !collectorHingeIsUp)
                     motorCollector.setPower(POWER_FULL);
                 else if(gamepad2.left_trigger > 0)
                     motorCollector.setPower(-POWER_FULL);
@@ -148,6 +153,17 @@ public class MainTeleOp8923 extends SynchronousOpMode
                         servoRightZipline.setPosition(ZIPLINE_RIGHT_OUT);
                     else
                         servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+                }
+
+                // Move collector bottom up and down
+                if(gamepad2.x && gamepad2.right_trigger < 0 && gamepad2.left_trigger < 0)
+                {
+                    wait(500);
+                    collectorHingeIsUp = !collectorHingeIsUp;
+                    if (collectorHingeIsUp)
+                        servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
+                    else
+                        servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
                 }
             }
 
