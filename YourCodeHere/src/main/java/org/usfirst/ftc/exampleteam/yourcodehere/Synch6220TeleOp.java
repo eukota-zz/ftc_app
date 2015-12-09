@@ -64,7 +64,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
                 // There is (likely) new gamepad input available.
                 this.handleDriverInput(this.gamepad1, this.gamepad2);
 
-                this.doManualDrivingControl(this.gamepad1);
+                this.driveRobot(this.gamepad1);
             }
 
             // Emit telemetry with the newest possible values
@@ -108,6 +108,9 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.LeftZiplineHitter = this.hardwareMap.servo.get("LeftZiplineHitter");
         this.RightZiplineHitter = this.hardwareMap.servo.get("RightZiplineHitter");
         RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
+
+        LeftZiplineHitter.setPosition(-10.0);
+        RightZiplineHitter.setPosition(-0.75);
     }
 
     private void stopAllMotors()
@@ -150,6 +153,8 @@ public class Synch6220TeleOp extends SynchronousOpMode
         MotorLeftTriangle.setPower( trianglePowerLeft );
         MotorLeftClimber.setPower(  wheelClimberLeft );
         MotorRightClimber.setPower( wheelClimberRight );
+
+        this.gamepad1.setJoystickDeadzone(0.05f);
     }
 
     /**
@@ -166,16 +171,16 @@ public class Synch6220TeleOp extends SynchronousOpMode
      * This is the body of the TeleOp that allows the driver to control the robot.
      */
     //TO DO:  we need to finish refactoring this.
-    void doManualDrivingControl(Gamepad pad) throws InterruptedException
+    void driveRobot(Gamepad pad) throws InterruptedException
     {
         // Remember that the gamepad sticks range from -1 to +1, and that the motor
         // power levels range over the same amount
 
 
         //read input from the controller
-        double  leftSidePower = ignoreControllerDeadZone(pad.left_stick_y);
-        double rightSidePower = ignoreControllerDeadZone(pad.right_stick_y);
-        double climberPower = ignoreControllerDeadZone(pad.right_trigger);
+        double  leftSidePower = pad.left_stick_y;
+        double rightSidePower = pad.right_stick_y;
+        double climberPower = pad.right_trigger;
 
         /**
          * Calculate motor power based on drive mode and controller input
@@ -190,7 +195,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
         //we need to drive backwards when aligning with the ramp
         else if (currentDriveMode == DriveModeEnum.DriveModeBackwards)
         {
-           driveBackwards(leftSidePower, rightSidePower, climberPower, climberPower);
+           driveBackwards(rightSidePower, leftSidePower, climberPower, climberPower);
         }
         //drive climb mode
         else if (currentDriveMode == DriveModeEnum.DriveModeRamp)
@@ -288,19 +293,6 @@ public class Synch6220TeleOp extends SynchronousOpMode
         currentDriveMode = mode;
     }
 
-    //Ignore the controller region that is very close to zero; treat it as a dead zone
-    double ignoreControllerDeadZone(double value)
-    {
-        double deadZone = 0.05;
-        double newSlope = (1.0 - deadZone);
-        double output = 0.0;
-
-        if (Math.abs(value) > deadZone)
-        {
-            output = newSlope * (value + Math.signum(value) * deadZone);
-        }
-        return output;
-    }
 
     void configureDashboard()
     {
