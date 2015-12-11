@@ -2,6 +2,7 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
@@ -25,11 +26,13 @@ public class MainTeleOp8923 extends SynchronousOpMode
     Servo servoRightZipline = null;
     Servo servoTapeMeasureElevation = null;
     Servo servoCollectorHinge = null;
+    //Servo servoClimberArm = null;
 
     // Declare variables
     boolean ziplineLeftIsOut = false;
     boolean ziplineRightIsOut = false;
     boolean collectorHingeIsUp = false;
+    boolean climberArmOut = false;
 
     // Declare constants
     double POWER_FULL = 1.0;
@@ -39,8 +42,11 @@ public class MainTeleOp8923 extends SynchronousOpMode
     double ZIPLINE_LEFT_OUT = 0.4;
     double ZIPLINE_RIGHT_UP = 0.0;
     double ZIPLINE_RIGHT_OUT = 0.6;
-    double COLLECTOR_HINGE_DOWN = 0.0;
-    double COLLECTOR_HINGE_UP = 0.1;
+    double COLLECTOR_HINGE_DOWN = 0.7;
+    double COLLECTOR_HINGE_UP = 0.84;
+    double TAPE_MEASURE_ELEVATION_RATE = 0.05;
+    double CLIMBER_ARM_OUT = 0.5;
+    double CLIMBER_ARM_IN = 0.0;
 
     @Override protected void main() throws InterruptedException
     {
@@ -54,6 +60,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
         servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
         servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
+        //servoClimberArm = hardwareMap.servo.get("servoClimberArm");
 
         // Set motor channel modes
         motorLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -67,6 +74,8 @@ public class MainTeleOp8923 extends SynchronousOpMode
         // Initialize zipline servos to be up
         servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
         servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+        servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
+        //servoClimberArm.setPosition(CLIMBER_ARM_IN);
 
         // Configure dashboard
         telemetry.addLine
@@ -80,7 +89,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
                         this.telemetry.item("Right: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return motorLeft.getPower();
+                                return motorRight.getPower();
                             }
                         })
                 );
@@ -93,83 +102,105 @@ public class MainTeleOp8923 extends SynchronousOpMode
         {
             if(this.updateGamepads())
             {
-                // Tank drive based on joysticks of controller 1
-                motorLeft.setPower(gamepad1.left_stick_y);
-                motorRight.setPower(gamepad1.right_stick_y);
-
-                // Tape Measure of Doom extension based on controller 1
-                if(gamepad1.left_trigger > 0)
-                {
-                    motorTapeMeasure.setPower(-POWER_FULL);
-                }
-                else if(gamepad1.right_trigger > 0)
-                {
-                    motorTapeMeasure.setPower(POWER_FULL);
-                }
-                else
-                {
-                    motorTapeMeasure.setPower(POWER_STOP);
-                }
-
-                // Tape Measure of Doom elevation based on controller 1
-                if(gamepad1.right_bumper && servoTapeMeasureElevation.getPosition() <= 0.9)
-                {
-                    servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() + 0.1);
-                }
-                else if(gamepad1.left_bumper && servoTapeMeasureElevation.getPosition() >= 0.1)
-                {
-                    servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - 0.1);
-                }
-
-                // Move collector based on triggers on controller 2 if the bottom isn't up
-                if(gamepad2.right_trigger > 0 && !collectorHingeIsUp)
-                    motorCollector.setPower(POWER_FULL);
-                else if(gamepad2.left_trigger > 0)
-                    motorCollector.setPower(-POWER_FULL);
-                else
-                    motorCollector.setPower(POWER_STOP);
-
-                // Move scorer based on D-pad on controller 2
-                if(gamepad2.dpad_left)
-                    motorScorer.setPower(-POWER_SCORER);
-                else if(gamepad2.dpad_right)
-                    motorScorer.setPower(POWER_SCORER);
-                else
-                    motorScorer.setPower(POWER_STOP);
-
-                // Move servos based on left and right bumpers on controller 2
-                if (gamepad2.left_bumper)
-                {
-                    ziplineLeftIsOut = !ziplineLeftIsOut;
-                    if(ziplineLeftIsOut)
-                        servoLeftZipline.setPosition(ZIPLINE_LEFT_OUT);
-                    else
-                        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-                }
-                if(gamepad2.right_bumper)
-                {
-                    ziplineRightIsOut = !ziplineRightIsOut;
-                    if (ziplineRightIsOut)
-                        servoRightZipline.setPosition(ZIPLINE_RIGHT_OUT);
-                    else
-                        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
-                }
-
-                // Move collector bottom up and down
-                if(gamepad2.x && gamepad2.right_trigger < 0 && gamepad2.left_trigger < 0)
-                {
-                    wait(500);
-                    collectorHingeIsUp = !collectorHingeIsUp;
-                    if (collectorHingeIsUp)
-                        servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
-                    else
-                        servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
-                }
+                driver1Controls();
+                driver2Controls();
             }
 
             // Emit the latest telemetry and wait, letting other things run
             this.telemetry.update();
             this.idle();
         }
+    }
+
+    public void driver1Controls()
+    {
+        // Tank drive based on joysticks of controller 1
+        motorLeft.setPower(gamepad1.left_stick_y);
+        motorRight.setPower(gamepad1.right_stick_y);
+
+        // Tape Measure of Doom extension based on controller 1
+        if(gamepad1.left_trigger > 0)
+        {
+            motorTapeMeasure.setPower(-POWER_FULL);
+        }
+        else if(gamepad1.right_trigger > 0)
+        {
+            motorTapeMeasure.setPower(POWER_FULL);
+        }
+        else
+        {
+            motorTapeMeasure.setPower(POWER_STOP);
+        }
+
+        // Tape Measure of Doom elevation based on controller 1
+        if(gamepad1.left_bumper && servoTapeMeasureElevation.getPosition() <= 1 - TAPE_MEASURE_ELEVATION_RATE)
+        {
+            servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() + TAPE_MEASURE_ELEVATION_RATE);
+        }
+        else if(gamepad1.right_bumper && servoTapeMeasureElevation.getPosition() >= 0 + TAPE_MEASURE_ELEVATION_RATE)
+        {
+            servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - TAPE_MEASURE_ELEVATION_RATE);
+        }
+    }
+
+    public void driver2Controls() throws InterruptedException
+    {
+        // Move collector based on triggers on controller 2 if the bottom isn't up
+        if(gamepad2.right_trigger > 0 && !collectorHingeIsUp)
+            motorCollector.setPower(POWER_FULL);
+        else if(gamepad2.left_trigger > 0 && !collectorHingeIsUp)
+            motorCollector.setPower(-POWER_FULL);
+        else
+            motorCollector.setPower(POWER_STOP);
+
+        // Move scorer based on D-pad on controller 2
+        if(gamepad2.dpad_left)
+            motorScorer.setPower(-POWER_SCORER);
+        else if(gamepad2.dpad_right)
+            motorScorer.setPower(POWER_SCORER);
+        else
+            motorScorer.setPower(POWER_STOP);
+
+        // Move zipline servos based on left and right bumpers
+        if (gamepad2.left_bumper)
+        {
+            ziplineLeftIsOut = !ziplineLeftIsOut;
+            if(ziplineLeftIsOut)
+                servoLeftZipline.setPosition(ZIPLINE_LEFT_OUT);
+            else
+                servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        }
+        if(gamepad2.right_bumper)
+        {
+            ziplineRightIsOut = !ziplineRightIsOut;
+            if (ziplineRightIsOut)
+                servoRightZipline.setPosition(ZIPLINE_RIGHT_OUT);
+            else
+                servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+        }
+
+        // Move collector ramp up and down based on x and y
+        if(gamepad2.y)
+        {
+            collectorHingeIsUp = true;
+            motorCollector.setPower(POWER_STOP);
+            Thread.sleep(250);
+            servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
+        }
+        else if(gamepad2.x)
+        {
+            collectorHingeIsUp = false;
+            servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
+        }
+        /*
+        // Toggle climber dumper servo position
+        if (gamepad2.a)
+        {
+            climberArmOut = !climberArmOut;
+            if(climberArmOut)
+                servoClimberArm.setPosition(CLIMBER_ARM_OUT);
+            else
+                servoClimberArm.setPosition(CLIMBER_ARM_IN);
+        }*/
     }
 }
