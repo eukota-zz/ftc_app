@@ -21,10 +21,11 @@ public class Synch6220TeleOp extends SynchronousOpMode
     DcMotor MotorLeftClimber = null;
     DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
-    // Declare servo
+    // Declare servos
     Servo CollectorServo = null;
     Servo LeftZiplineHitter = null;
     Servo RightZiplineHitter = null;
+    Servo HikerDropper = null;
 
     enum DriveModeEnum
     {
@@ -107,10 +108,12 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.CollectorServo = this.hardwareMap.servo.get("CollectorServo");
         this.LeftZiplineHitter = this.hardwareMap.servo.get("LeftZiplineHitter");
         this.RightZiplineHitter = this.hardwareMap.servo.get("RightZiplineHitter");
+        this.HikerDropper = this.hardwareMap.servo.get("HikerDropper");
         RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
         LeftZiplineHitter.setPosition(-10.0);
         RightZiplineHitter.setPosition(-0.75);
+        HikerDropper.setPosition(0.95);
     }
 
     private void stopAllMotors()
@@ -207,6 +210,17 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
     private void handleDriverInput(Gamepad pad1, Gamepad pad2)
     {
+        if (pad2.y)
+        {
+            HikerDropper.setPosition(-1.0);
+            this.telemetry.update();
+        }
+        else
+        {
+            HikerDropper.setPosition(0.95);
+            this.telemetry.update();
+        }
+
         if (pad2.a)
         {
             CollectorServo.setPosition(0.0);
