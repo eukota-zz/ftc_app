@@ -11,10 +11,12 @@ import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.Disabled;
 
 /*
- *
+ * Skeleton program to be used for specific autonomous programs
+ * Drives to beacon repair zone
+ * Presses beacon button
+ * Dumps climbers into basket
+ * Drives into floor goal and triggers low zipliner
  */
-@Autonomous(name="BeaconClimberZiplinerSkeleton")
-@Disabled
 public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
 {
     // Declare motors
