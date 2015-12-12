@@ -26,7 +26,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
     Servo servoRightZipline = null;
     Servo servoTapeMeasureElevation = null;
     Servo servoCollectorHinge = null;
-    //Servo servoClimberArm = null;
+    Servo servoClimberArm = null;
 
     // Declare variables
     boolean ziplineLeftIsOut = false;
@@ -37,15 +37,15 @@ public class MainTeleOp8923 extends SynchronousOpMode
     // Declare constants
     double POWER_FULL = 1.0;
     double POWER_STOP = 0.0;
-    double POWER_SCORER = 0.4;
+    double POWER_SCORER = 0.25;
     double ZIPLINE_LEFT_UP = 1.0;
     double ZIPLINE_LEFT_OUT = 0.4;
     double ZIPLINE_RIGHT_UP = 0.0;
     double ZIPLINE_RIGHT_OUT = 0.6;
     double COLLECTOR_HINGE_DOWN = 0.7;
-    double COLLECTOR_HINGE_UP = 0.84;
+    double COLLECTOR_HINGE_UP = 1.0;
     double TAPE_MEASURE_ELEVATION_RATE = 0.05;
-    double CLIMBER_ARM_OUT = 0.5;
+    double CLIMBER_ARM_OUT = 0.1;
     double CLIMBER_ARM_IN = 0.0;
 
     @Override protected void main() throws InterruptedException
@@ -60,7 +60,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
         servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
         servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
-        //servoClimberArm = hardwareMap.servo.get("servoClimberArm");
+        servoClimberArm = hardwareMap.servo.get("servoClimberArm");
 
         // Set motor channel modes
         motorLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -147,17 +147,17 @@ public class MainTeleOp8923 extends SynchronousOpMode
     {
         // Move collector based on triggers on controller 2 if the bottom isn't up
         if(gamepad2.right_trigger > 0 && !collectorHingeIsUp)
-            motorCollector.setPower(POWER_FULL);
+            motorCollector.setPower(gamepad2.right_trigger);
         else if(gamepad2.left_trigger > 0 && !collectorHingeIsUp)
-            motorCollector.setPower(-POWER_FULL);
+            motorCollector.setPower(-gamepad2.left_trigger);
         else
             motorCollector.setPower(POWER_STOP);
 
         // Move scorer based on D-pad on controller 2
         if(gamepad2.dpad_left)
-            motorScorer.setPower(-POWER_SCORER);
-        else if(gamepad2.dpad_right)
             motorScorer.setPower(POWER_SCORER);
+        else if(gamepad2.dpad_right)
+            motorScorer.setPower(-POWER_SCORER);
         else
             motorScorer.setPower(POWER_STOP);
 
@@ -192,7 +192,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
             collectorHingeIsUp = false;
             servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
         }
-        /*
+
         // Toggle climber dumper servo position
         if (gamepad2.a)
         {
@@ -201,6 +201,6 @@ public class MainTeleOp8923 extends SynchronousOpMode
                 servoClimberArm.setPosition(CLIMBER_ARM_OUT);
             else
                 servoClimberArm.setPosition(CLIMBER_ARM_IN);
-        }*/
+        }
     }
 }
