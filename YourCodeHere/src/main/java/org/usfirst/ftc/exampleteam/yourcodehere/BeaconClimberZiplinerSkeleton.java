@@ -67,16 +67,14 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize sensors
-        colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
-        colorSensorBeacon.enableLed(false);
+        //colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
+        //colorSensorBeacon.enableLed(false);
         lightSensorFront = hardwareMap.lightSensor.get("lightSensorFront");
         lightSensorBack = hardwareMap.lightSensor.get("lightSensorBack");
 
         // Initialize servos
-        //servoClimberDump = hardwareMap.servo.get("servoClimberDump");
+        servoClimberDump = hardwareMap.servo.get("servoClimberDump");
         //servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
-
-
 
         calibratedRed = colorCalibrate.calibrateRed();
         calibratedBlue = colorCalibrate.calibrateBlue();
@@ -110,51 +108,51 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
             // Wait until distance is reached
         }
 
-        StopDriving();
+        stopDriving();
 
         motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
     }
 
-    public void TurnLeft(double power)
+    public void turnLeft(double power)
     {
         motorLeft.setPower(-power);
         motorRight.setPower(power);
     }
 
-    public void TurnRight(double power)
+    public void turnRight(double power)
     {
-        TurnLeft(-power);
+        turnLeft(-power);
     }
 
-    public void StopDriving()
+    public void stopDriving()
     {
         driveForward(0);
     }
 
-    public void TurnLeftDistance(double power, int distance)
+    public void turnLeftDistance(double power, int distance)
     {
-        TurnLeft(power);
+        turnLeft(power);
         while(motorLeft.getCurrentPosition() < distance)
         {
             // Wait until distance is reached
         }
-        StopDriving();
+        stopDriving();
     }
 
     public void turnRightDistance(double power, int distance) {
-        TurnLeftDistance(-power, distance);
+        turnLeftDistance(-power, distance);
     }
 
-    public void DumpClimbers() throws InterruptedException
+    public void dumpClimbers() throws InterruptedException
     {
-        //servoClimberDump.setPosition(CLIMBER_DUMP_POSITION);
+        servoClimberDump.setPosition(CLIMBER_DUMP_POSITION);
         wait(1000);
-        //servoClimberDump.setPosition(CLIMBER_RETURN_POSITION);
+        servoClimberDump.setPosition(CLIMBER_RETURN_POSITION);
     }
 
 
-    public void PressBeaconButton() throws InterruptedException
+    public void pressBeaconButton() throws InterruptedException
     {
         // Check for a range of blue
         if(colorSensorBeacon.blue() <= calibratedBlue + 50 && colorSensorBeacon.blue() < calibratedBlue - 50)
@@ -175,15 +173,15 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     }
 
 
-    public void FollowLine() throws InterruptedException
+    public void followLine() throws InterruptedException
     {
         while (lightSensorBack.getLightDetected() > calibratedWhite) {
             driveForward(DRIVE_POWER);
         }
-        StopDriving();
+        stopDriving();
         while (lightSensorFront.getLightDetected() > calibratedWhite) {
             motorRight.setPower(DRIVE_POWER);
         }
-        StopDriving();
+        stopDriving();
     }
 }
