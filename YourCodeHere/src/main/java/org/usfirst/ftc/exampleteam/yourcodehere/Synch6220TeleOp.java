@@ -21,11 +21,21 @@ public class Synch6220TeleOp extends SynchronousOpMode
     DcMotor MotorLeftClimber = null;
     DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
+    DcMotor MotorHanger = null;
+
     // Declare servos
-    Servo CollectorServo = null;
+    //Servo CollectorServo = null;
     Servo LeftZiplineHitter = null;
     Servo RightZiplineHitter = null;
     Servo HikerDropper = null;
+    Servo HangerServo = null;
+    Servo HolderServoLeft = null;
+    Servo HolderServoRight = null;
+
+    boolean LeftZiplineHitterDeployed = false;
+    boolean RightZiplineHitterDeployed = false;
+    boolean HolderServoLeftDeployed = false;
+    boolean HolderServoRightDeployed = false;
 
     enum DriveModeEnum
     {
@@ -87,6 +97,8 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.MotorLeftClimber = this.hardwareMap.dcMotor.get("MotorLeftClimber");
         this.MotorRightClimber = this.hardwareMap.dcMotor.get("MotorRightClimber");
         this.MotorRightTriangle = this.hardwareMap.dcMotor.get("MotorRightTriangle");
+        this.MotorHanger = this.hardwareMap.dcMotor.get("MotorRightTriangle");
+
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
@@ -97,6 +109,8 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.MotorLeftClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorRightClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorRightTriangle.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.MotorHanger.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+
 
         //the correct motors should be reversed, since they are on the opposite side of the robot.
         this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
@@ -105,15 +119,23 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
         stopAllMotors();
 
-        this.CollectorServo = this.hardwareMap.servo.get("CollectorServo");
+        //this.CollectorServo = this.hardwareMap.servo.get("CollectorServo");
         this.LeftZiplineHitter = this.hardwareMap.servo.get("LeftZiplineHitter");
         this.RightZiplineHitter = this.hardwareMap.servo.get("RightZiplineHitter");
         this.HikerDropper = this.hardwareMap.servo.get("HikerDropper");
+        this.HangerServo = this.hardwareMap.servo.get("HangerServo");
+        this.HolderServoLeft = this.hardwareMap.servo.get("HolderServoLeft");
+        this.HolderServoRight = this.hardwareMap.servo.get("HolderServoRight");
+
         RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
         LeftZiplineHitter.setPosition(-10.0);
         RightZiplineHitter.setPosition(-0.75);
         HikerDropper.setPosition(0.95);
+        HangerServo.setPosition(0);
+        HolderServoLeft.setPosition(0);
+        HolderServoRight.setPosition(0);
+
     }
 
     private void stopAllMotors()
@@ -124,6 +146,8 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.MotorLeftBack.setPower(0);
         this.MotorLeftTriangle.setPower(0);
         this.MotorLeftClimber.setPower(0);
+        this.MotorHanger.setPower(0);
+
     }
 
     /**
@@ -221,7 +245,54 @@ public class Synch6220TeleOp extends SynchronousOpMode
             this.telemetry.update();
         }
 
-        if (pad2.a)
+        if (pad2.dpad_left)
+        {
+            HangerServo.setPosition(1.0);
+            this.telemetry.update();
+        }
+        else if (pad2.dpad_right)
+        {
+            HangerServo.setPosition(-1.0);
+            this.telemetry.update();
+        }
+
+        if (pad2.dpad_down) {
+            MotorHanger.setPower(-100.0);
+            this.telemetry.update();
+        }
+        else if (pad2.dpad_up) {
+            MotorHanger.setPower(100.0);
+            this.telemetry.update();
+        }
+
+        //deploy the holder
+        if (pad2.b & !HolderServoRightDeployed)
+        {
+            HolderServoRight.setPosition(90);
+            HolderServoRightDeployed = true;
+            this.telemetry.update();
+        }
+        else if (pad2.b & HolderServoRightDeployed)
+        {
+            HolderServoRight.setPosition(-45);
+            HolderServoRightDeployed = false;
+            this.telemetry.update();
+        }
+
+        if (pad2.x & !HolderServoLeftDeployed)
+        {
+            HolderServoLeft.setPosition(-90);
+            HolderServoLeftDeployed = true;
+            this.telemetry.update();
+        }
+        else if (pad2.x & HolderServoLeftDeployed)
+        {
+            HolderServoLeft.setPosition(45);
+            HolderServoLeftDeployed = false;
+            this.telemetry.update();
+        }
+
+        /*if (pad2.a)
         {
             CollectorServo.setPosition(0.0);
             this.telemetry.update();
@@ -230,29 +301,31 @@ public class Synch6220TeleOp extends SynchronousOpMode
         {
             CollectorServo.setPosition(0.5);
             this.telemetry.update();
-        }
+        }*/
 
-        if (pad2.left_bumper)
+        if (pad2.left_bumper & !LeftZiplineHitterDeployed)
         {
             LeftZiplineHitter.setPosition(90);
+            LeftZiplineHitterDeployed = true;
             this.telemetry.update();
         }
-
-        if ((pad2.left_trigger > 0.2))
+        else if (pad2.left_bumper & LeftZiplineHitterDeployed)
         {
             LeftZiplineHitter.setPosition(-90);
+            LeftZiplineHitterDeployed = false;
             this.telemetry.update();
         }
         //The RightZiplineHitter reads from (0-1), which is different than the LeftZiplineHitter(0-360)
-        if (pad2.right_bumper)
+        if (pad2.right_bumper & !RightZiplineHitterDeployed)
         {
             RightZiplineHitter.setPosition(0.75);
+            RightZiplineHitterDeployed = true;
             this.telemetry.update();
         }
-
-        if ((pad2.right_trigger > 0.2))
+        else if (pad2.right_bumper & RightZiplineHitterDeployed)
         {
             RightZiplineHitter.setPosition(-0.75);
+            RightZiplineHitterDeployed = false;
             this.telemetry.update();
         }
         //toggle field driving mode
