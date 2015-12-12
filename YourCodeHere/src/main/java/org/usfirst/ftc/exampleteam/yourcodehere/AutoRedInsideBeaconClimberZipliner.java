@@ -8,9 +8,9 @@ import org.swerverobotics.library.interfaces.Disabled;
  * presses beacon button, and scores climber,
  * parks in floor goal
  */
-@Autonomous(name="InsideRedBeaconClimberZipliner")
+@Autonomous(name="AutoRedInsideBeaconClimberZipliner")
 @Disabled
-public class InsideRedBeaconClimberZipliner extends BeaconClimberZiplinerSkeleton
+public class AutoRedInsideBeaconClimberZipliner extends BeaconClimberZiplinerSkeleton
 {
     @Override public void main() throws InterruptedException
     {
