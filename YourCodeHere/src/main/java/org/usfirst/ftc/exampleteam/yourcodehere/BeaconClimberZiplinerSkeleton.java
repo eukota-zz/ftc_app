@@ -51,7 +51,9 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     int FOO = 1;
     double BAR = 1;
 
-    @Override public void main() throws InterruptedException
+    @Override public void main() throws InterruptedException {}
+
+    public void initHardware()
     {
         // Initialize motors
         motorLeft = hardwareMap.dcMotor.get("motorLeft");
@@ -80,10 +82,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
         calibratedBlue = colorCalibrate.calibrateBlue();
 
         calibratedWhite = lightCalibrate.calibrateWhite();
-
-        waitForStart();
-
-        }
+    }
 
     public void driveForward(double power) {
         motorLeft.setPower(power);

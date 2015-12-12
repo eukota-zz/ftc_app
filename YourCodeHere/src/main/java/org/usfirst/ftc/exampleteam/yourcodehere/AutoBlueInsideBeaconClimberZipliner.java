@@ -13,6 +13,10 @@ public class AutoBlueInsideBeaconClimberZipliner extends BeaconClimberZiplinerSk
 {
     @Override public void main() throws InterruptedException
     {
+        initHardware();
+
+        waitForStart();
+        
         driveForwardDistance(DRIVE_POWER, FOO);
         turnRightDistance(DRIVE_POWER, FOO);
         followLine();
