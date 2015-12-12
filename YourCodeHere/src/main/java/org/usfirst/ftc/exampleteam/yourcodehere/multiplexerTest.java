@@ -14,6 +14,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Java package.
  */
 @TeleOp(name="multiplexerTest")
+@Disabled
 public class multiplexerTest extends SynchronousOpMode
     {
         I2cDevice multiplexer = null;

@@ -12,6 +12,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Java package.
  */
 @TeleOp(name="Servo Test")
+@Disabled
 public class ServoTest extends SynchronousOpMode
 {
     /* Declare here any fields you might find useful. */

@@ -14,7 +14,7 @@ import org.swerverobotics.library.interfaces.IFunc;
  * presses beacon button, and scores climber
  */
 @Autonomous(name="LightSensorTest")
-
+@Disabled
 public class LightSensorTest extends SynchronousOpMode
 {
     LightSensor lightSensorFront = null;
