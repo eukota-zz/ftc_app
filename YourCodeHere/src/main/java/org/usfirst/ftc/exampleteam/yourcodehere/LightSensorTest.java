@@ -8,17 +8,19 @@ import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
+import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
  * Robot starts on blue side, goes to beacon,
  * presses beacon button, and scores climber
  */
-@Autonomous(name="LightSensorTest")
-@Disabled
+@TeleOp(name="LightSensorTest")
 public class LightSensorTest extends SynchronousOpMode
 {
     LightSensor lightSensorFront = null;
     LightSensor lightSensorBack = null;
+
+    boolean toggle = true;
 
     @Override public void main() throws InterruptedException
     {
@@ -28,12 +30,23 @@ public class LightSensorTest extends SynchronousOpMode
         // Set up our dashboard computations
         composeDashboard();
 
+        lightSensorBack.enableLed(toggle);
+        lightSensorFront.enableLed(toggle);
+
         waitForStart();
 
         while(opModeIsActive())
         {
+            if(updateGamepads())
+            {
+                if(gamepad1.a)
+                {
+                    toggle = ! toggle;
+                    lightSensorBack.enableLed(toggle);
+                    lightSensorFront.enableLed(toggle);
+                }
+            }
             telemetry.update();
-
             idle();
         }
     }
