@@ -22,6 +22,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
     DcMotor motorCollector = null;
     DcMotor motorScorer = null;
     DcMotor motorTapeMeasure = null;
+
     Servo servoLeftZipline = null;
     Servo servoRightZipline = null;
     Servo servoTapeMeasureElevation = null;
@@ -33,6 +34,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
     boolean ziplineRightIsOut = false;
     boolean collectorHingeIsUp = false;
     boolean climberArmOut = false;
+    double slowModeFactor = 1.0;
 
     // Declare constants
     double POWER_FULL = 1.0;
@@ -40,12 +42,12 @@ public class MainTeleOp8923 extends SynchronousOpMode
     double POWER_SCORER = 0.25;
     double ZIPLINE_LEFT_UP = 1.0;
     double ZIPLINE_LEFT_OUT = 0.4;
-    double ZIPLINE_RIGHT_UP = 0.0;
-    double ZIPLINE_RIGHT_OUT = 0.6;
-    double COLLECTOR_HINGE_DOWN = 0.7;
-    double COLLECTOR_HINGE_UP = 1.0;
+    double ZIPLINE_RIGHT_UP = 0.1;
+    double ZIPLINE_RIGHT_OUT = 0.7;
+    double COLLECTOR_HINGE_DOWN = 0.6;
+    double COLLECTOR_HINGE_UP = 0.8;
     double TAPE_MEASURE_ELEVATION_RATE = 0.05;
-    double CLIMBER_ARM_OUT = 0.1;
+    double CLIMBER_ARM_OUT = 1.0;
     double CLIMBER_ARM_IN = 0.0;
 
     @Override protected void main() throws InterruptedException
@@ -56,6 +58,7 @@ public class MainTeleOp8923 extends SynchronousOpMode
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
         motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
+
         servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
         servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
@@ -77,19 +80,36 @@ public class MainTeleOp8923 extends SynchronousOpMode
         servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
         //servoClimberArm.setPosition(CLIMBER_ARM_IN);
 
-        // Configure dashboard
+        // Left drive motor info
         telemetry.addLine
                 (
-                        this.telemetry.item("Left:", new IFunc<Object>() {
+                        this.telemetry.item("Left Power:", new IFunc<Object>() {
                             @Override
                             public Object value() {
                                 return motorLeft.getPower();
                             }
                         }),
-                        this.telemetry.item("Right: ", new IFunc<Object>() {
+                        this.telemetry.item("Left Position: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return motorLeft.getCurrentPosition();
+                            }
+                        })
+                );
+
+        // Right drive motor info
+        telemetry.addLine
+                (
+                        this.telemetry.item("Right Power: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
                                 return motorRight.getPower();
+                            }
+                        }),
+                        this.telemetry.item("Right Position: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return motorRight.getCurrentPosition();
                             }
                         })
                 );
@@ -115,8 +135,18 @@ public class MainTeleOp8923 extends SynchronousOpMode
     public void driver1Controls()
     {
         // Tank drive based on joysticks of controller 1
+        if(gamepad1.y)
+        {
+            slowModeFactor = 2.5;
+        }
+        else if(gamepad1.a)
+        {
+            slowModeFactor = 1.0;
+        }
+
+        // Motors aren't even, so only right motor needs power reduction
         motorLeft.setPower(gamepad1.left_stick_y);
-        motorRight.setPower(gamepad1.right_stick_y);
+        motorRight.setPower(gamepad1.right_stick_y / slowModeFactor);
 
         // Tape Measure of Doom extension based on controller 1
         if(gamepad1.left_trigger > 0)
