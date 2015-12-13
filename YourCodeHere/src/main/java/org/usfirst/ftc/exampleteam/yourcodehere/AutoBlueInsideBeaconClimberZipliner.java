@@ -16,17 +16,50 @@ public class AutoBlueInsideBeaconClimberZipliner extends BeaconClimberZiplinerSk
         initHardware();
 
         waitForStart();
-        
-        driveForwardDistance(DRIVE_POWER, FOO);
-        turnRightDistance(DRIVE_POWER, FOO);
+
+        servoClimberDump.setPosition(CLIMBER_RETURN_POSITION);
+        servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+
+        driveBackwardDistance(DRIVE_POWER, 12000);
+        driveForward(-DRIVE_POWER / 4);
+        lightSensorBack.enableLed(true);
+        lightSensorFront.enableLed(true);
+        while(lightSensorBack.getLightDetected() > 0.6)
+        {
+            // Wait until back light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        turnRight(DRIVE_POWER / 2);
+        while(lightSensorFront.getLightDetected() > 0.6)
+        {
+            // Wait until front light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        while(lightSensorFront.getLightDetected() < 0.6)
+        {
+            // Wait until front light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        driveBackwardDistance(DRIVE_POWER / 4, 400);
+        stopDriving();
+        dumpClimbers();
+        int distance = (int) ultrasonicSensor.getUltrasonicLevel();
+        driveForwardDistance(DRIVE_POWER, 500);
+        stopDriving();
+        /*
         followLine();
-        driveForwardDistance(DRIVE_POWER, FOO);
+        driveBackwardDistance(DRIVE_POWER, FOO);
         stopDriving();
         pressBeaconButton();
         dumpClimbers();
         driveForwardDistance(-DRIVE_POWER, FOO);
         turnRightDistance(DRIVE_POWER, FOO);
         driveForwardDistance(DRIVE_POWER, FOO);
-        stopDriving();
+        stopDriving();*/
     }
 }
