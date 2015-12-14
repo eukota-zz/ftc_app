@@ -226,7 +226,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
         //read input from the controller
         double  leftSidePower = pad.left_stick_y;
         double rightSidePower = pad.right_stick_y;
-        double climberPower = pad.right_trigger;
+        double climberPower = pad.right_trigger * -1;
 
         /**
          * Calculate motor power based on drive mode and controller input
@@ -235,6 +235,9 @@ public class Synch6220TeleOp extends SynchronousOpMode
         //field driving mode
         if (currentDriveMode == DriveModeEnum.DriveModeField)
         {
+            leftSidePower = pad.right_stick_y;
+            rightSidePower = pad.left_stick_y;
+            climberPower = pad.right_trigger;
             driveForwards(leftSidePower, rightSidePower, climberPower, climberPower);
         }
         //"ready" mode for getting ready to climb the ramp
