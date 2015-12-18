@@ -83,7 +83,16 @@ public class BeaconClimberZiplinerSkeleton extends GlobalRobotAttributes
                             }
                         })
                 );
+
+        telemetry.addLine
+                (
+                        this.telemetry.item("Ultrasonic: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return ultrasonicSensor.getUltrasonicLevel();
+                            }
+                        })
+                );
     }
-
-
+    
 }
