@@ -1,12 +1,5 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -14,71 +7,11 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Main TeleOp file for 8923 bot
  */
 @TeleOp(name="8923 Main TeleOp")
-public class MainTeleOp8923 extends SynchronousOpMode
+public class MainTeleOp8923 extends GlobalRobotAttributes
 {
-    // Declare motors and servos
-    DcMotor motorLeft = null;
-    DcMotor motorRight = null;
-    DcMotor motorCollector = null;
-    DcMotor motorScorer = null;
-    DcMotor motorTapeMeasure = null;
-
-    Servo servoLeftZipline = null;
-    Servo servoRightZipline = null;
-    Servo servoTapeMeasureElevation = null;
-    Servo servoCollectorHinge = null;
-    Servo servoClimberArm = null;
-
-    // Declare variables
-    boolean ziplineLeftIsOut = false;
-    boolean ziplineRightIsOut = false;
-    boolean collectorHingeIsUp = false;
-    boolean climberArmOut = false;
-    double slowModeFactor = 1.0;
-
-    // Declare constants
-    double POWER_FULL = 1.0;
-    double POWER_STOP = 0.0;
-    double POWER_SCORER = 0.25;
-    double ZIPLINE_LEFT_UP = 1.0;
-    double ZIPLINE_LEFT_OUT = 0.4;
-    double ZIPLINE_RIGHT_UP = 0.1;
-    double ZIPLINE_RIGHT_OUT = 0.7;
-    double COLLECTOR_HINGE_DOWN = 0.6;
-    double COLLECTOR_HINGE_UP = 0.8;
-    double TAPE_MEASURE_ELEVATION_RATE = 0.05;
-    double CLIMBER_ARM_OUT = 1.0;
-    double CLIMBER_ARM_IN = 0.0;
-
     @Override protected void main() throws InterruptedException
     {
-        // Initialize motors and servos
-        motorLeft = hardwareMap.dcMotor.get("motorLeft");
-        motorRight = hardwareMap.dcMotor.get("motorRight");
-        motorCollector = hardwareMap.dcMotor.get("motorCollector");
-        motorScorer = hardwareMap.dcMotor.get("motorScorer");
-        motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
-
-        servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
-        servoRightZipline = hardwareMap.servo.get("servoRightZipline");
-        servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
-        servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
-        servoClimberArm = hardwareMap.servo.get("servoClimberArm");
-
-        // Set motor channel modes
-        motorLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorCollector.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorScorer.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-
-        // Reverse left motors so we don't spin in a circle
-        motorRight.setDirection(DcMotor.Direction.REVERSE);
-
-        // Initialize zipline servos to be up
-        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
-        servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
-        //servoClimberArm.setPosition(CLIMBER_ARM_IN);
+        robotInit();
 
         // Left drive motor info
         telemetry.addLine
@@ -228,9 +161,9 @@ public class MainTeleOp8923 extends SynchronousOpMode
         {
             climberArmOut = !climberArmOut;
             if(climberArmOut)
-                servoClimberArm.setPosition(CLIMBER_ARM_OUT);
+                servoClimberDumper.setPosition(CLIMBER_ARM_OUT);
             else
-                servoClimberArm.setPosition(CLIMBER_ARM_IN);
+                servoClimberDumper.setPosition(CLIMBER_ARM_IN);
         }
     }
 }
