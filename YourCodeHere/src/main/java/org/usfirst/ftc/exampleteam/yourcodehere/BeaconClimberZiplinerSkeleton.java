@@ -36,10 +36,10 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     Servo servoCollectorHinge = null;
 
     // Declare sensors
-    ColorSensor colorSensorBeacon;
-    LightSensor lightSensorFront;
-    LightSensor lightSensorBack;
-    UltrasonicSensor ultrasonicSensor;
+    ColorSensor colorSensorBeacon = null;
+    LightSensor lightSensorFront = null;
+    LightSensor lightSensorBack = null;
+    UltrasonicSensor ultrasonicSensor = null;
 
     //Declare Other Objects
     //ColorSensorCalibration colorCalibrate = new ColorSensorCalibration();
@@ -167,6 +167,16 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
                             }
                         })
                 );
+
+        telemetry.addLine
+                (
+                        this.telemetry.item("Ultrasonic: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return ultrasonicSensor.getUltrasonicLevel();
+                            }
+                        })
+                );
     }
 
     public void driveForward(double power) {
@@ -255,6 +265,7 @@ public class BeaconClimberZiplinerSkeleton extends SynchronousOpMode
     public void dumpClimbers() throws InterruptedException
     {
         servoClimberDump.setPosition(CLIMBER_DUMP_POSITION);
+        Thread.sleep(1000);
     }
 
 
