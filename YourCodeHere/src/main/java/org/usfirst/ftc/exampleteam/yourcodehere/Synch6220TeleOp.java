@@ -87,34 +87,11 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
     DriveModeEnum currentDriveMode = DriveModeEnum.DriveModeField;
 
-    //constants to control motor power to support normal speed and slow speed driving.
-    static final double FULL_POWER = 1.0;
-    static final double LOW_POWER = 0.3;
-    static final double STOP = 0.0;
-
-    static double currentDrivePowerFactor = FULL_POWER;
+    static double currentDrivePowerFactor = Constants.FULL_POWER;
 
     //the drive wheels are larger than the triangle wheels so we drive them at less power
     //TODO change this multiplier to a more accurate number, perhaps closer to 0.8
     double WHEEL_DRIVE_MULTIPLIER = 0.3;
-
-    //servo constants
-    static final double LEFT_ZIPLINEHITTER_NOTDEPLOYED = -1.0;
-    static final double LEFT_ZIPLINEHITTER_DEPLOYED = 0.6;
-    static final double RIGHT_ZIPLINEHITTER_NOTDEPLOYED = -1.0;
-    static final double RIGHT_ZIPLINEHITTER_DEPLOYED = 0.6;
-    static final double HIKER_DROPPER_NOTDEPLOYED = -1.0;
-    static final double HIKER_DROPPER_DEPLOYED = 1.0;
-    static final double HANGER_SERVO_NOTDEPLOYED = 0.0;
-    static final double HANGER_SERVO_STOP = 0.5;
-    static final double HANGER_SERVO_DEPLOYED = 1.0;
-    static final double HOLDER_SERVO_LEFT_NOTDEPLOYED = -1.0;
-    static final double HOLDER_SERVO_LEFT_DEPLOYED = 1.0;
-    static final double HOLDER_SERVO_RIGHT_NOTDEPLOYED = 1.0;
-    static final double HOLDER_SERVO_RIGHT_DEPLOYED = -1.0;
-
-    //deadzone constant
-    static final float JOYSTICK_DEADZONE = 0.05f;
 
     @Override
     protected void main() throws InterruptedException {
@@ -163,15 +140,15 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
         RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
-        LeftZiplineHitter.setPosition(LEFT_ZIPLINEHITTER_NOTDEPLOYED);
-        RightZiplineHitter.setPosition(RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
-        HikerDropper.setPosition(HIKER_DROPPER_NOTDEPLOYED);
-        HangerServo.setPosition(HANGER_SERVO_STOP);
-        HolderServoLeft.setPosition(HOLDER_SERVO_LEFT_NOTDEPLOYED);
-        HolderServoRight.setPosition(HOLDER_SERVO_RIGHT_NOTDEPLOYED);
+        LeftZiplineHitter.setPosition(Constants.LEFT_ZIPLINEHITTER_NOTDEPLOYED);
+        RightZiplineHitter.setPosition(Constants.RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
+        HikerDropper.setPosition(Constants.HIKER_DROPPER_NOTDEPLOYED);
+        HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
+        HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_NOTDEPLOYED);
+        HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_NOTDEPLOYED);
 
-        this.gamepad1.setJoystickDeadzone(JOYSTICK_DEADZONE);
-        this.gamepad2.setJoystickDeadzone(JOYSTICK_DEADZONE);
+        this.gamepad1.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);
+        this.gamepad2.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);
     }
 
     private void stopAllMotors()
@@ -253,52 +230,52 @@ public class Synch6220TeleOp extends SynchronousOpMode
     {
         if (pad2.y)
         {
-            HikerDropper.setPosition(HIKER_DROPPER_DEPLOYED);
+            HikerDropper.setPosition(Constants.HIKER_DROPPER_DEPLOYED);
         } else
         {
-            HikerDropper.setPosition(HIKER_DROPPER_NOTDEPLOYED);
+            HikerDropper.setPosition(Constants.HIKER_DROPPER_NOTDEPLOYED);
         }
 
         if (pad2.dpad_left)
         {
-            HangerServo.setPosition(HANGER_SERVO_DEPLOYED);
+            HangerServo.setPosition(Constants.HANGER_SERVO_DEPLOYED);
         } else if (pad2.dpad_right)
         {
-            HangerServo.setPosition(HANGER_SERVO_NOTDEPLOYED);
+            HangerServo.setPosition(Constants.HANGER_SERVO_NOTDEPLOYED);
         } else
         {
-            HangerServo.setPosition(HANGER_SERVO_STOP);
+            HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
         }
 
         if (pad2.dpad_down)
         {
-            MotorHanger.setPower(-1 * FULL_POWER);
+            MotorHanger.setPower(-1 * Constants.FULL_POWER);
         } else if (pad2.dpad_up)
         {
-            MotorHanger.setPower(FULL_POWER);
+            MotorHanger.setPower(Constants.FULL_POWER);
         } else
         {
-            MotorHanger.setPower(STOP);
+            MotorHanger.setPower(Constants.STOP);
         }
 
         //deploy the holder
         if (pad2.b & !HolderServoRightDeployed)
         {
-            HolderServoRight.setPosition(HOLDER_SERVO_RIGHT_DEPLOYED);
+            HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_DEPLOYED);
             HolderServoRightDeployed = true;
         } else if (pad2.b & HolderServoRightDeployed)
         {
-            HolderServoRight.setPosition(HOLDER_SERVO_RIGHT_NOTDEPLOYED);
+            HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_NOTDEPLOYED);
             HolderServoRightDeployed = false;
         }
 
         if (pad2.x & !HolderServoLeftDeployed)
         {
-            HolderServoLeft.setPosition(HOLDER_SERVO_LEFT_DEPLOYED);
+            HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_DEPLOYED);
             HolderServoLeftDeployed = true;
         } else if (pad2.x & HolderServoLeftDeployed)
         {
-            HolderServoLeft.setPosition(HOLDER_SERVO_LEFT_NOTDEPLOYED);
+            HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_NOTDEPLOYED);
             HolderServoLeftDeployed = false;
         }
 
@@ -313,12 +290,12 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
         if (pad2.left_bumper & !LeftZiplineHitterDeployed)
         {
-            LeftZiplineHitter.setPosition(LEFT_ZIPLINEHITTER_DEPLOYED);
+            LeftZiplineHitter.setPosition(Constants.LEFT_ZIPLINEHITTER_DEPLOYED);
             LeftZiplineHitterDeployed = true;
             telemetry.log.add("left bumper:deployed");
         } else if (pad2.left_bumper & LeftZiplineHitterDeployed)
         {
-            LeftZiplineHitter.setPosition(LEFT_ZIPLINEHITTER_NOTDEPLOYED);
+            LeftZiplineHitter.setPosition(Constants.LEFT_ZIPLINEHITTER_NOTDEPLOYED);
             LeftZiplineHitterDeployed = false;
             telemetry.log.add("left bumper:notdeployed");
         } else telemetry.log.add("no bumper");
@@ -326,11 +303,11 @@ public class Synch6220TeleOp extends SynchronousOpMode
         //The RightZiplineHitter reads from (0-1), which is different than the LeftZiplineHitter(0-360)
         if (pad2.right_bumper & !RightZiplineHitterDeployed)
         {
-            RightZiplineHitter.setPosition(RIGHT_ZIPLINEHITTER_DEPLOYED);
+            RightZiplineHitter.setPosition(Constants.RIGHT_ZIPLINEHITTER_DEPLOYED);
             RightZiplineHitterDeployed = true;
         } else if (pad2.right_bumper & RightZiplineHitterDeployed)
         {
-            RightZiplineHitter.setPosition(RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
+            RightZiplineHitter.setPosition(Constants.RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
             RightZiplineHitterDeployed = false;
         }
         //toggle field driving mode
@@ -353,10 +330,10 @@ public class Synch6220TeleOp extends SynchronousOpMode
         //reduce power so we can go slower ("slow mode") and have more control
         if (pad1.right_bumper)
         {
-            currentDrivePowerFactor = LOW_POWER;
+            currentDrivePowerFactor = Constants.LOW_POWER;
         } else
         {
-            currentDrivePowerFactor = FULL_POWER;
+            currentDrivePowerFactor = Constants.FULL_POWER;
         }
     }
 
