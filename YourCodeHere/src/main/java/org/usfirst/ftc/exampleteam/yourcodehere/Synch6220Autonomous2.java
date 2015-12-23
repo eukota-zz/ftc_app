@@ -12,19 +12,23 @@ import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.Position;
 import org.swerverobotics.library.interfaces.TeleOp;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * An example of a synchronous opmode that implements a simple drive-a-bot.
  */
-@TeleOp(name = "Synch6220Autonomous", group = "Swerve Examples")
-public class Synch6220Autonomous extends SynchronousOpMode {
+@TeleOp(name = "Synch6220AutonomousGood", group = "Swerve Examples")
+public class Synch6220Autonomous2 extends SynchronousOpMode
+{
     // All hardware variables can only be initialized inside the main() function,
     // not here at their member variable declarations.
     DcMotor MotorRightBack = null;
     DcMotor MotorLeftBack = null;
     DcMotor MotorLeftTriangle = null;
+    DcMotor MotorRightTriangle = null;
     DcMotor MotorLeftClimber = null;
     DcMotor MotorRightClimber = null;
-    DcMotor MotorRightTriangle = null;
+
 
     // Our sensors, motors, and other devices go here, along with other long term state
     IBNO055IMU imu;
@@ -42,22 +46,23 @@ public class Synch6220Autonomous extends SynchronousOpMode {
 
 
     @Override
-    protected void main() throws InterruptedException {
+    protected void main() throws InterruptedException
+    {
         // Initialize our hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names you assigned during the robot configuration
         // step you did in the FTC Robot Controller app on the phone.
         this.MotorRightBack = this.hardwareMap.dcMotor.get("MotorRightBack");
         this.MotorLeftBack = this.hardwareMap.dcMotor.get("MotorLeftBack");
         this.MotorLeftTriangle = this.hardwareMap.dcMotor.get("MotorLeftTriangle");
+        this.MotorRightTriangle = this.hardwareMap.dcMotor.get("MotorRightTriangle");
         this.MotorLeftClimber = this.hardwareMap.dcMotor.get("MotorLeftClimber");
         this.MotorRightClimber = this.hardwareMap.dcMotor.get("MotorRightClimber");
-        this.MotorRightTriangle = this.hardwareMap.dcMotor.get("MotorRightTriangle");
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact.
-        this.MotorRightBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        this.MotorLeftBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        this.MotorRightBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.MotorLeftBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorLeftTriangle.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorLeftClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorRightClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -95,12 +100,18 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         drive(1);
         Thread.sleep(2000);
         halt();
-        turnLeft(135, .5);
+        turnLeft(45, .5);
+
         halt();
         drive(1);
         Thread.sleep(2000);
         halt();
 
+        /*
+        driveWithIMU(90,2000,0.02);
+        turnBotTo(135, false);
+        driveWithIMU(135,2000,0.02);
+        */
     }
 
     void halt() {
@@ -128,13 +139,15 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         //this.MotorLeftTriangle.setPower(power2);
     }
 
+    // unused function - consider removing?
     double normalizeAngle180(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle <= -180) angle += 360;
+        while (angle > 180) angle -= 360;  // unnecessary - use modulus
+        while (angle <= -180) angle += 360; // use modulus
         return angle;
     }
 
-
+    // @todo change to use modulus. The percent symbol is modulus (ie: 365%360 = 5) Could do "return abs(angle%360)"
+    // @todo needs description of how to use
     double normalizeAngle360(double angle) {
         while (angle >= 360) angle -= 360;
         while (angle < 0) angle += 360;
@@ -148,6 +161,66 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         this.telemetry.update();
 
         return angles.heading;
+    }
+
+    //NOT NECESSARY, deprecated  @todo replace usage with java sign function
+    int sign(double value){
+        if(value == 0){
+            return 0;
+        }
+        else{
+            return (int) (Math.abs(value)/value);
+        }
+    }
+// @todo we can't understand what inputs are allowed for faceAngle
+    void driveWithIMU(double faceAngle, int time, double reactFactor) throws InterruptedException {
+        int sinceStart = 0;
+        double delta;
+        while (sinceStart < time){
+            delta = faceAngle - getCurrentHeading(); // angle is in degrees
+            if (delta < 0){
+                drive(1+delta*reactFactor, 1); // drive power is -1.0 to 1.0. But delta here is in degrees so this is going to be odd
+            }
+            else if (delta > 0){
+                drive(1, 1-delta*reactFactor);
+            }
+            sinceStart++;
+            Thread.sleep(1);
+        }
+        halt();
+    }
+    //turn the robot to an angle relative to it's starting position before this is called
+    void turnBotTo(double faceAngle, boolean pid){
+        //array of last 10 diffs
+        double[] delta = {0,0,0,0,0,0,0,0,0,0};
+        //continuous summation
+        double sum = 0;
+        //which way? 1=left, 2=right
+        int direction = 1;
+
+        //for check to cross 360-0
+        double lastHeading = getCurrentHeading();
+        int spinOffset = 0;
+
+        delta[0] = faceAngle - getCurrentHeading();
+        while (Math.abs(delta[0]) > 5){
+            //set to avoid 360-0 boundary issues
+            if (Math.abs(getCurrentHeading() - 360) < 1 && Math.abs(lastHeading) < 1){
+                spinOffset += 360;
+            }
+            else if (Math.abs(getCurrentHeading()) < 1 && Math.abs(lastHeading-360) < 1){
+                spinOffset -= 360;
+            }
+            //move the age stack down
+            for (int i = 0; i < 9; i++){
+                delta[i+1] = delta[i];
+            }
+            delta[0] = faceAngle - getCurrentHeading() - spinOffset;
+            sum += delta[0];
+            direction = sign(delta[0]);
+            drive(-1*direction,direction);
+        }
+        halt();
     }
 
     void turnLeft(double delta, double power)
@@ -260,7 +333,7 @@ public class Synch6220Autonomous extends SynchronousOpMode {
                         this.telemetry.item("left:", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return format(MotorRightBack.getPower());
+                                return format(MotorLeftBack.getPower());
                             }
                         }),
                         this.telemetry.item("right: ", new IFunc<Object>() {
@@ -268,13 +341,13 @@ public class Synch6220Autonomous extends SynchronousOpMode {
                             public Object value() {
                                 return format(MotorRightBack.getPower());
                             }
-                        }),
-                        this.telemetry.item("mode: ", new IFunc<Object>() {
+                        })
+                        /*this.telemetry.item("mode: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
                                 return MotorRightBack.getChannelMode();
                             }
-                        })
+                        })*/
                 );
     }
 
