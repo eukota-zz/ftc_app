@@ -11,11 +11,15 @@ import org.swerverobotics.library.interfaces.IBNO055IMU;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.Position;
 import org.swerverobotics.library.interfaces.TeleOp;
+import org.swerverobotics.library.interfaces.Disabled;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * An example of a synchronous opmode that implements a simple drive-a-bot.
  */
 @TeleOp(name = "Synch6220Autonomous", group = "Swerve Examples")
+@Disabled
 public class Synch6220Autonomous extends SynchronousOpMode {
     // All hardware variables can only be initialized inside the main() function,
     // not here at their member variable declarations.
@@ -92,14 +96,19 @@ public class Synch6220Autonomous extends SynchronousOpMode {
 
         //autonomous code starts here
 
-        drive(1);
+        /*drive(1);
         Thread.sleep(2000);
         halt();
         turnLeft(135, .5);
+
         halt();
         drive(1);
         Thread.sleep(2000);
         halt();
+        */
+        driveWithIMU(90,2000);
+        turnBotTo(135, false);
+        driveWithIMU(135,2000);
 
     }
 
@@ -148,6 +157,65 @@ public class Synch6220Autonomous extends SynchronousOpMode {
         this.telemetry.update();
 
         return angles.heading;
+    }
+
+    int sign(double value){
+        if(value == 0){
+            return 0;
+        }
+        else{
+            return (int) (Math.abs(value)/value);
+        }
+    }
+
+    void driveWithIMU(double faceAngle, int time) throws InterruptedException {
+        int sinceStart = 0;
+        double delta;
+        while (sinceStart < time){
+            delta = faceAngle - getCurrentHeading();
+            if (delta < 0){
+                drive(1+delta, 1);
+            }
+            else if (delta > 0){
+                drive(1, 1-delta);
+            }
+            sinceStart++;
+            Thread.sleep(1);
+        }
+        halt();
+    }
+    //turn the robot to an angle relative to it's starting position before this is called
+    void turnBotTo(double faceAngle, boolean pid){
+        //array of last 10 diffs
+        double[] delta = {0,0,0,0,0,0,0,0,0,0};
+        //continuous summation
+        double sum = 0;
+        //which way? 1=left, 2=right
+        int direction = 1;
+
+        //for check to cross 360-0
+        double lastHeading = getCurrentHeading();
+        int spinOffset = 0;
+
+        delta[0] = faceAngle - getCurrentHeading();
+        while (Math.abs(delta[0]) > 5){
+            //set to avoid 360-0 boundary issues
+            if (Math.abs(getCurrentHeading() - 360) < 1 && Math.abs(lastHeading) < 1){
+                spinOffset += 360;
+            }
+            else if (Math.abs(getCurrentHeading()) < 1 && Math.abs(lastHeading-360) < 1){
+                spinOffset -= 360;
+            }
+            //move the age stack down
+            for (int i = 0; i < 9; i++){
+                delta[i+1] = delta[i];
+            }
+            delta[0] = faceAngle - getCurrentHeading() - spinOffset;
+            sum += delta[0];
+            direction = sign(delta[0]);
+            drive(-1*direction,direction);
+        }
+        halt();
     }
 
     void turnLeft(double delta, double power)

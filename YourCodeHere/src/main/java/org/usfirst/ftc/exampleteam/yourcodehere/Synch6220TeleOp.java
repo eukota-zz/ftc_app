@@ -49,30 +49,11 @@ public class Synch6220TeleOp extends SynchronousOpMode
     //constants to control motor power to support normal speed and slow speed driving.
     static final double FULL_POWER = 1.0;
     static final double LOW_POWER = 0.3;
-    static final double STOP = 0.0;
 
     static double currentDrivePowerFactor = FULL_POWER;
 
     //the drive wheels are larger than the triangle wheels so we drive them at less power
     double WHEEL_DRIVE_MULTIPLIER = 0.5;
-
-    //servo constants
-    static final double LEFT_ZIPLINEHITTER_NOTDEPLOYED = -1.0;
-    static final double LEFT_ZIPLINEHITTER_DEPLOYED = 0.6;
-    static final double RIGHT_ZIPLINEHITTER_NOTDEPLOYED = -1.0;
-    static final double RIGHT_ZIPLINEHITTER_DEPLOYED = 0.6;
-    static final double HIKER_DROPPER_NOTDEPLOYED = -1.0;
-    static final double HIKER_DROPPER_DEPLOYED = 1.0;
-    static final double HANGER_SERVO_NOTDEPLOYED = 0.0;
-    static final double HANGER_SERVO_STOP = 0.5;
-    static final double HANGER_SERVO_DEPLOYED = 1.0;
-    static final double HOLDER_SERVO_LEFT_NOTDEPLOYED = -1.0;
-    static final double HOLDER_SERVO_LEFT_DEPLOYED = 1.0;
-    static final double HOLDER_SERVO_RIGHT_NOTDEPLOYED = 1.0;
-    static final double HOLDER_SERVO_RIGHT_DEPLOYED = -1.0;
-
-    //deadzone constant
-    static final float JOYSTICK_DEADZONE = 0.05f;
 
     @Override
     protected void main() throws InterruptedException
@@ -81,7 +62,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.initializeHardware();
 
         // Configure the dashboard however we want it
-        //this.configureDashboard();
+        this.configureDashboard();
 
         // Wait until we've been given the ok to go
         this.waitForStart();
@@ -98,7 +79,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
             }
 
             // Emit telemetry with the newest possible values
-            //this.telemetry.update();
+            this.telemetry.update();
 
             // Let the rest of the system run until there's a stimulus from the robot controller runtime.
             this.idle();
@@ -116,13 +97,14 @@ public class Synch6220TeleOp extends SynchronousOpMode
         this.MotorLeftClimber = this.hardwareMap.dcMotor.get("MotorLeftClimber");
         this.MotorRightClimber = this.hardwareMap.dcMotor.get("MotorRightClimber");
         this.MotorRightTriangle = this.hardwareMap.dcMotor.get("MotorRightTriangle");
-        this.MotorHanger = this.hardwareMap.dcMotor.get("MotorHanger");
+        this.MotorHanger = this.hardwareMap.dcMotor.get("MotorRightTriangle");
+
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact (we might use encoders later.)
-        this.MotorRightBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.MotorLeftBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.MotorRightBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        this.MotorLeftBack.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         this.MotorLeftTriangle.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorLeftClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.MotorRightClimber.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
@@ -147,16 +129,13 @@ public class Synch6220TeleOp extends SynchronousOpMode
 
         RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
-        LeftZiplineHitter.setPosition(LEFT_ZIPLINEHITTER_NOTDEPLOYED);
-        RightZiplineHitter.setPosition(RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
-        HikerDropper.setPosition(HIKER_DROPPER_NOTDEPLOYED);
-        HangerServo.setPosition(HANGER_SERVO_STOP);
-        HolderServoLeft.setPosition(HOLDER_SERVO_LEFT_NOTDEPLOYED);
-        HolderServoRight.setPosition(HOLDER_SERVO_RIGHT_NOTDEPLOYED);
+        LeftZiplineHitter.setPosition(-10.0);
+        RightZiplineHitter.setPosition(-0.75);
+        HikerDropper.setPosition(0.95);
+        HangerServo.setPosition(0);
+        HolderServoLeft.setPosition(0);
+        HolderServoRight.setPosition(0);
 
-
-        this.gamepad1.setJoystickDeadzone(JOYSTICK_DEADZONE);
-        this.gamepad2.setJoystickDeadzone(JOYSTICK_DEADZONE);
     }
 
     private void stopAllMotors()
@@ -185,11 +164,11 @@ public class Synch6220TeleOp extends SynchronousOpMode
         double trianglePowerLeft = 0.0;
         double trianglePowerRight = 0.0;
 
-        wheelPowerLeft = leftSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor;
-        wheelPowerRight = rightSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor;
+        wheelPowerLeft = rightSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor;
+        wheelPowerRight = leftSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor;
 
-        trianglePowerLeft = leftSidePower * currentDrivePowerFactor;
-        trianglePowerRight = rightSidePower * currentDrivePowerFactor;
+        trianglePowerLeft = rightSidePower * currentDrivePowerFactor;
+        trianglePowerRight = leftSidePower * currentDrivePowerFactor;
 
         wheelClimberLeft = leftTrianglePower * currentDrivePowerFactor;
         wheelClimberRight = rightTrianglePower * currentDrivePowerFactor;
@@ -199,8 +178,10 @@ public class Synch6220TeleOp extends SynchronousOpMode
         MotorLeftBack.setPower( wheelPowerLeft );
         MotorRightTriangle.setPower( trianglePowerRight );
         MotorLeftTriangle.setPower( trianglePowerLeft );
-        MotorLeftClimber.setPower(  wheelClimberLeft);
+        MotorLeftClimber.setPower(  wheelClimberLeft );
         MotorRightClimber.setPower( wheelClimberRight );
+
+        this.gamepad1.setJoystickDeadzone(0.05f);
     }
 
     /**
@@ -226,7 +207,7 @@ public class Synch6220TeleOp extends SynchronousOpMode
         //read input from the controller
         double  leftSidePower = pad.left_stick_y;
         double rightSidePower = pad.right_stick_y;
-        double climberPower = pad.right_trigger * -1;
+        double climberPower = pad.right_trigger;
 
         /**
          * Calculate motor power based on drive mode and controller input
@@ -235,21 +216,17 @@ public class Synch6220TeleOp extends SynchronousOpMode
         //field driving mode
         if (currentDriveMode == DriveModeEnum.DriveModeField)
         {
-            leftSidePower = pad.right_stick_y;
-            rightSidePower = pad.left_stick_y;
-            climberPower = pad.right_trigger;
             driveForwards(leftSidePower, rightSidePower, climberPower, climberPower);
         }
         //"ready" mode for getting ready to climb the ramp
         //we need to drive backwards when aligning with the ramp
         else if (currentDriveMode == DriveModeEnum.DriveModeBackwards)
         {
-           driveBackwards(leftSidePower, rightSidePower, climberPower, climberPower);
+           driveBackwards(rightSidePower, leftSidePower, climberPower, climberPower);
         }
         //drive climb mode
         else if (currentDriveMode == DriveModeEnum.DriveModeRamp)
         {
-            //since we want both our climbers and wheels to have the same power, we set the climbers equal to the left and right sides
             driveBackwards(leftSidePower, rightSidePower, leftSidePower, rightSidePower);
         }
 
@@ -259,95 +236,97 @@ public class Synch6220TeleOp extends SynchronousOpMode
     {
         if (pad2.y)
         {
-            HikerDropper.setPosition(HIKER_DROPPER_DEPLOYED);
+            HikerDropper.setPosition(-1.0);
+            this.telemetry.update();
         }
         else
         {
-            HikerDropper.setPosition(HIKER_DROPPER_NOTDEPLOYED);
+            HikerDropper.setPosition(0.95);
+            this.telemetry.update();
         }
 
         if (pad2.dpad_left)
         {
-            HangerServo.setPosition(HANGER_SERVO_DEPLOYED);
+            HangerServo.setPosition(1.0);
+            this.telemetry.update();
         }
         else if (pad2.dpad_right)
         {
-            HangerServo.setPosition(HANGER_SERVO_NOTDEPLOYED);
-        }
-        else
-        {
-            HangerServo.setPosition(HANGER_SERVO_STOP);
+            HangerServo.setPosition(-1.0);
+            this.telemetry.update();
         }
 
-        if (pad2.dpad_down)
-        {
-            MotorHanger.setPower(-1*FULL_POWER);
+        if (pad2.dpad_down) {
+            MotorHanger.setPower(-100.0);
+            this.telemetry.update();
         }
-        else if (pad2.dpad_up)
-        {
-            MotorHanger.setPower(FULL_POWER);
-        }
-        else
-        {
-            MotorHanger.setPower(STOP);
+        else if (pad2.dpad_up) {
+            MotorHanger.setPower(100.0);
+            this.telemetry.update();
         }
 
         //deploy the holder
         if (pad2.b & !HolderServoRightDeployed)
         {
-            HolderServoRight.setPosition(HOLDER_SERVO_RIGHT_DEPLOYED);
+            HolderServoRight.setPosition(90);
             HolderServoRightDeployed = true;
+            this.telemetry.update();
         }
         else if (pad2.b & HolderServoRightDeployed)
         {
-            HolderServoRight.setPosition(HOLDER_SERVO_RIGHT_NOTDEPLOYED);
+            HolderServoRight.setPosition(-45);
             HolderServoRightDeployed = false;
+            this.telemetry.update();
         }
 
         if (pad2.x & !HolderServoLeftDeployed)
         {
-            HolderServoLeft.setPosition(HOLDER_SERVO_LEFT_DEPLOYED);
+            HolderServoLeft.setPosition(-90);
             HolderServoLeftDeployed = true;
+            this.telemetry.update();
         }
         else if (pad2.x & HolderServoLeftDeployed)
         {
-            HolderServoLeft.setPosition(HOLDER_SERVO_LEFT_NOTDEPLOYED);
+            HolderServoLeft.setPosition(45);
             HolderServoLeftDeployed = false;
+            this.telemetry.update();
         }
 
         /*if (pad2.a)
         {
             CollectorServo.setPosition(0.0);
+            this.telemetry.update();
         }
         else
         {
             CollectorServo.setPosition(0.5);
+            this.telemetry.update();
         }*/
 
         if (pad2.left_bumper & !LeftZiplineHitterDeployed)
         {
-            LeftZiplineHitter.setPosition(LEFT_ZIPLINEHITTER_DEPLOYED);
+            LeftZiplineHitter.setPosition(90);
             LeftZiplineHitterDeployed = true;
-            telemetry.log.add("left bumper:deployed");
+            this.telemetry.update();
         }
         else if (pad2.left_bumper & LeftZiplineHitterDeployed)
         {
-            LeftZiplineHitter.setPosition(LEFT_ZIPLINEHITTER_NOTDEPLOYED);
+            LeftZiplineHitter.setPosition(-90);
             LeftZiplineHitterDeployed = false;
-            telemetry.log.add("left bumper:notdeployed");
+            this.telemetry.update();
         }
-        else telemetry.log.add("no bumper");
-
         //The RightZiplineHitter reads from (0-1), which is different than the LeftZiplineHitter(0-360)
         if (pad2.right_bumper & !RightZiplineHitterDeployed)
         {
-            RightZiplineHitter.setPosition(RIGHT_ZIPLINEHITTER_DEPLOYED);
+            RightZiplineHitter.setPosition(0.75);
             RightZiplineHitterDeployed = true;
+            this.telemetry.update();
         }
         else if (pad2.right_bumper & RightZiplineHitterDeployed)
         {
-            RightZiplineHitter.setPosition(RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
+            RightZiplineHitter.setPosition(-0.75);
             RightZiplineHitterDeployed = false;
+            this.telemetry.update();
         }
         //toggle field driving mode
         if (pad1.a )
@@ -356,7 +335,8 @@ public class Synch6220TeleOp extends SynchronousOpMode
         }
         //toggle "ready" mode for getting ready to climb the ramp
         //need to drive backwards so we can line up against the ramp
-        else if (pad1.b) {
+        else if (pad1.b)
+        {
             setBackwardsDriveMode();
         }
         //toggle drive climb mode
