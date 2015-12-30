@@ -1,14 +1,5 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.LightSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.UltrasonicSensor;
-
-import org.json.JSONException;
-import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.IFunc;
 
 /*
@@ -18,7 +9,7 @@ import org.swerverobotics.library.interfaces.IFunc;
  * Dumps climbers into basket
  * Drives into floor goal and triggers low zipliner
  */
-public class BeaconClimberZiplinerSkeleton extends GlobalRobotAttributes
+public class BeaconClimberZiplinerSkeleton extends Master8923Autonomous
 {
     // TODO Change this
     int FOO = 1;
