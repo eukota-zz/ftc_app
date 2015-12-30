@@ -9,18 +9,19 @@ import org.swerverobotics.library.interfaces.Disabled;
  * parks in floor goal
  */
 @Autonomous(name="AutoBlueInsideBeaconClimberZipliner")
-public class AutoBlueInsideBeaconClimberZipliner extends BeaconClimberZiplinerSkeleton
+public class AutoBlueInsideBeaconClimberZipliner extends Master8923Autonomous
 {
     @Override public void main() throws InterruptedException
     {
-        initHardware();
+        robotInit();
+        configureTelemtry();
 
         waitForStart();
 
         // This is a hack to keep us inside the 18" limit
         // None of the servos move if none are set to a position
         // If any servo is set to a position, they all go
-        servoClimberDump.setPosition(CLIMBER_RETURN_POSITION);
+        servoClimberDumper.setPosition(CLIMBER_RETURN_POSITION);
         servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
         servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
         servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);

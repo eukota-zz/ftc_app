@@ -9,11 +9,12 @@ import org.swerverobotics.library.interfaces.Disabled;
  * parks in floor goal
  */
 @Autonomous(name="AutoRedInsideBeaconClimberZipliner")
-public class AutoRedInsideBeaconClimberZipliner extends BeaconClimberZiplinerSkeleton
+public class AutoRedInsideBeaconClimberZipliner extends Master8923Autonomous
 {
     @Override public void main() throws InterruptedException
     {
-        initHardware();
+        robotInit();
+        configureTelemtry();
 
         waitForStart();
 
