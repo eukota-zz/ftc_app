@@ -13,9 +13,9 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * to suit your needs, or create sibling OpModes adjacent to this one in the same
  * Java package.
  */
-@TeleOp(name="multiplexerTest")
+@TeleOp(name="MultiplexerExample")
 @Disabled
-public class multiplexerTest extends SynchronousOpMode
+public class MultiplexerExample extends SynchronousOpMode
     {
         I2cDevice multiplexer = null;
         ColorSensor colorSensor1 = null;
