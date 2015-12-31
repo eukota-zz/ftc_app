@@ -18,26 +18,21 @@ public class AutoRedInsideBeaconClimberZipliner extends Master8923Autonomous
 
         waitForStart();
 
-        driveBackwardDistance(DRIVE_POWER, 12000);
-        driveForward(-DRIVE_POWER / 4);
-        lightSensorBack.enableLed(true);
-        lightSensorFront.enableLed(true);
-        while(lightSensorFront.getLightDetected() > 0.6)
-        {
-            // Wait until front light sensor detects line
-            telemetry.update();
-            idle();
-        }
-        turnLeftDistance(DRIVE_POWER, 750);
-        stopDriving();/*
-        followLine();
+        // This is a hack to keep us inside the 18" limit
+        // None of the servos move if none are set to a position
+        // If any servo is set to a position, they all go
+        servoStartingPositions();
+
         driveBackwardDistance(DRIVE_POWER, FOO);
+        allignWithRedSideWhiteLine();
         stopDriving();
         pressBeaconButton();
         dumpClimbers();
-        driveForwardDistance(-DRIVE_POWER, FOO);
-        turnLeftDistance(DRIVE_POWER, FOO);
         driveForwardDistance(DRIVE_POWER, FOO);
-        stopDriving();*/
+        turnLeftDistance(DRIVE_POWER, FOO);
+        setLeftZiplineOut();
+        driveForwardDistance(DRIVE_POWER, FOO);
+        setLeftZiplineUp();
+        stopDriving();
     }
 }

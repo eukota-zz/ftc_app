@@ -34,12 +34,8 @@ public class Master8923 extends SynchronousOpMode
     UltrasonicSensor ultrasonicSensor;
     int calibratedBlue;
 
-    // Declare variables
-    boolean ziplineLeftIsOut = false;
-    boolean ziplineRightIsOut = false;
-    boolean collectorHingeIsUp = false;
-    boolean climberArmOut = false;
-    double slowModeFactor = 1.0;
+    //TODO change this
+    int FOO = 1;
 
     // Declare constants
     double POWER_FULL = 1.0;
@@ -57,6 +53,17 @@ public class Master8923 extends SynchronousOpMode
     double DRIVE_POWER = 1.0;
     double CLIMBER_DUMP_POSITION = 1.0;
     double CLIMBER_RETURN_POSITION = 0.0;
+    boolean ON = true;
+    boolean OFF = false;
+
+    // Declare variables
+    boolean ziplineLeftIsOut = false;
+    boolean ziplineRightIsOut = false;
+    boolean collectorHingeIsUp = false;
+    boolean climberArmOut = false;
+    double slowModeFactor = 1.0;
+    int distance = (int) (ultrasonicSensor.getUltrasonicLevel() - 25) * 50;
+    double tempPower = (distance > 0) ? (DRIVE_POWER / 2) : (-DRIVE_POWER / 2);
 
 
     @Override protected void main() throws InterruptedException {}

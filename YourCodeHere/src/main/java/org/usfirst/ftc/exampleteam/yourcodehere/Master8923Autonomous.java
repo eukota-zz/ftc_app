@@ -12,7 +12,22 @@ import org.swerverobotics.library.interfaces.IFunc;
  */
 public class Master8923Autonomous extends Master8923
 {
-    public void driveForward(double power) {
+    public void servoStartingPositions()
+    {
+        servoClimberDumper.setPosition(CLIMBER_RETURN_POSITION);
+        servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+    }
+
+    public void lightSensorLEDs (boolean state)
+    {
+        lightSensorBack.enableLed(state);
+        lightSensorFront.enableLed(state);
+    }
+
+    public void driveForward(double power)
+    {
         motorLeft.setPower(power);
         motorRight.setPower(power);
     }
@@ -100,6 +115,26 @@ public class Master8923Autonomous extends Master8923
         servoClimberDumper.setPosition(CLIMBER_DUMP_POSITION);
     }
 
+    public void setRightZiplineOut() throws InterruptedException
+    {
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_OUT);
+    }
+
+    public void setRightZiplineUp() throws InterruptedException
+    {
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+    }
+
+    public void setLeftZiplineOut() throws InterruptedException
+    {
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_OUT);
+    }
+
+    public void setLeftZiplineUp() throws InterruptedException
+    {
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+    }
+
 
     public void pressBeaconButton() throws InterruptedException
     {
@@ -133,6 +168,60 @@ public class Master8923Autonomous extends Master8923
             motorRight.setPower(DRIVE_POWER);
         }
         stopDriving();
+    }
+
+    public void allignWithBlueSideWhiteLine() throws InterruptedException
+    {
+        driveForward(-DRIVE_POWER / 2);
+        lightSensorLEDs(ON);
+        while(lightSensorBack.getLightDetected() > 0.6)
+        {
+            // Wait until back light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        turnRight(DRIVE_POWER / 2);
+        while(lightSensorFront.getLightDetected() > 0.6)
+        {
+            // Wait until front light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        /*
+        while(lightSensorFront.getLightDetected() < 0.6)
+        {
+            // Wait until front light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        */
+    }
+
+    public void allignWithRedSideWhiteLine() throws InterruptedException
+    {
+        driveForward(-DRIVE_POWER / 2);
+        lightSensorLEDs(ON);
+        while(lightSensorBack.getLightDetected() > 0.6)
+        {
+            // Wait until back light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        turnLeft(DRIVE_POWER / 2);
+        while(lightSensorFront.getLightDetected() > 0.6)
+        {
+            // Wait until front light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        /*
+        while(lightSensorFront.getLightDetected() < 0.6)
+        {
+            // Wait until front light sensor detects line
+            telemetry.update();
+            idle();
+        }
+        */
     }
 
     public double getDistance()
