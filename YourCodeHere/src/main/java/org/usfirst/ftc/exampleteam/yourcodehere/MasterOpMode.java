@@ -3,6 +3,7 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.swerverobotics.library.interfaces.IBNO055IMU;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.IFunc;
@@ -13,18 +14,52 @@ import java.util.List;
 /**
  * Created by Cole on 12/28/2015.
  */
-public abstract class Master6220OpMode extends SynchronousOpMode
+public abstract class MasterOpMode extends SynchronousOpMode
 {
+    enum Servo6220
+    {
+        LeftZiplineHitter,
+        RightZiplineHitter,
+        HikerDropper,
+        HangerServo,
+        HolderServoLeft,
+        HolderServoRight;
+
+        public static String[] GetNames()
+        {
+            return new String[] {"LeftZiplineHitter", "RightZiplineHitter", "HikerDropper", "HangerServo", "HolderServoLeft", "HolderServoRight"};
+        }
+    }
+
+    enum Motor6220
+    {
+        RightBack,
+        LeftBack,
+        RightTriangle,
+        LeftTriangle,
+        RightClimber,
+        LeftClimber,
+        MotorHanger;
+
+        public static String[] GetNames()
+        {
+            return new String[] {"MotorRightBack", "MotorLeftBack", "MotorRightTriangle", "MotorLeftTriangle", "MotorRightClimber", "MotorLeftClimber", "MotorHanger"};
+        }
+    }
+
     static double currentDrivePowerFactor = Constants.FULL_POWER;
+
+    //sensors
+    IBNO055IMU imu = null;
+
     DcMotor MotorRightBack = null;
     DcMotor MotorLeftBack = null;
-    DcMotor MotorLeftTriangle = null;
-    DcMotor MotorLeftClimber = null;
-    DcMotor MotorRightClimber = null;
     DcMotor MotorRightTriangle = null;
+    DcMotor MotorLeftTriangle = null;
+    DcMotor MotorRightClimber = null;
+    DcMotor MotorLeftClimber = null;
     DcMotor MotorHanger = null;
     // Declare servos
-    //Servo6220 CollectorServo = null;
     Servo LeftZiplineHitter = null;
     Servo RightZiplineHitter = null;
     Servo HikerDropper = null;
@@ -35,22 +70,42 @@ public abstract class Master6220OpMode extends SynchronousOpMode
     List<Servo> servos = new ArrayList<>();
     DriveModeEnum currentDriveMode = DriveModeEnum.DriveModeField;
     //the drive wheels are larger than the triangle wheels so we drive them at less power
-    //TODO change this multiplier to a more accurate number, perhaps closer to 0.8
-    double WHEEL_DRIVE_MULTIPLIER = 0.3;
 
     boolean LeftZiplineHitterDeployed = false;
     boolean RightZiplineHitterDeployed = false;
     boolean HolderServoLeftDeployed = false;
     boolean HolderServoRightDeployed = false;
 
-    public Master6220OpMode()
+    public MasterOpMode()
     {
-        //initialize our hardware
-        this.initializeHardware();
-
         // Initialize our hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names you assigned during the robot configuration
         // step you did in the FTC Robot Controller app on the phone.
+
+        //initialize our hardware
+        //this.initializeHardware();
+    }
+
+    @Override
+    protected abstract void main() throws InterruptedException;
+
+    //drive the small wheels, but not the climbers
+    public void driveSmallWheels(double leftPower, double rightPower)
+    {
+
+        leftPower  *= Constants.FULL_POWER;
+        rightPower *= Constants.FULL_POWER;
+
+        MotorLeftTriangle.setPower(Constants.LEFT_ASSEMBLY_DIFF * leftPower );
+        MotorRightTriangle.setPower(rightPower);
+        MotorLeftBack.setPower(Constants.LEFT_ASSEMBLY_DIFF * Constants.REAR_WHEEL_POWER_FACTOR * leftPower );
+        MotorRightBack.setPower(Constants.REAR_WHEEL_POWER_FACTOR * rightPower);
+    }
+
+    protected void initializeHardware()
+    {
+
+        telemetry.log.add("starting hardware init");
 
         //dynamically load all servos
         for (String curServoName : Servo6220.GetNames())
@@ -64,27 +119,27 @@ public abstract class Master6220OpMode extends SynchronousOpMode
         {
             motors.add(this.hardwareMap.dcMotor.get(curMotorName));
         }
+
+        telemetry.log.add("motors and servos added");
+
         //initialize old motor references for backwards compatibility
         this.HolderServoLeft = servos.get(Servo6220.HolderServoLeft.ordinal());
         this.MotorHanger = motors.get(Motor6220.MotorHanger.ordinal());
         this.LeftZiplineHitter = servos.get(Servo6220.LeftZiplineHitter.ordinal());
         this.HikerDropper = servos.get(Servo6220.HikerDropper.ordinal());
-        this.MotorRightTriangle = motors.get(Motor6220.LeftClimber.ordinal());
+        this.MotorRightTriangle = motors.get(Motor6220.RightTriangle.ordinal());
         this.RightZiplineHitter = servos.get(Servo6220.RightZiplineHitter.ordinal());
-        this.MotorLeftClimber = motors.get(Motor6220.LeftTriangle.ordinal());
-        this.MotorLeftTriangle = motors.get(Motor6220.RightTriangle.ordinal());
+        this.MotorLeftClimber = motors.get(Motor6220.LeftClimber.ordinal());
+        this.MotorLeftTriangle = motors.get(Motor6220.LeftTriangle.ordinal());
         this.MotorLeftBack = motors.get(Motor6220.LeftBack.ordinal());
         this.MotorRightClimber = motors.get(Motor6220.RightClimber.ordinal());
         this.HangerServo = servos.get(Servo6220.HangerServo.ordinal());
         this.MotorRightBack = motors.get(Motor6220.RightBack.ordinal());
         this.HolderServoRight = servos.get(Servo6220.HolderServoRight.ordinal());
-    }
 
-    @Override
-    protected abstract void main() throws InterruptedException;
 
-    private void initializeHardware()
-    {
+        telemetry.log.add("motors and servos variables set");
+
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact (we might use encoders later.)
@@ -93,12 +148,18 @@ public abstract class Master6220OpMode extends SynchronousOpMode
             curMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         }
 
+        telemetry.log.add("motor runmodes set");
+
         //the correct motors should be reversed, since they are on the opposite side of the robot.
         this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
+        telemetry.log.add("motor directions set");
+
         stopAllMotors();
+
+        telemetry.log.add("motors stopped");
 
         this.RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
@@ -109,8 +170,18 @@ public abstract class Master6220OpMode extends SynchronousOpMode
         this.HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_NOTDEPLOYED);
         this.HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_NOTDEPLOYED);
 
-        this.gamepad1.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);
-        this.gamepad2.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);
+        telemetry.log.add("servos positioned");
+    }
+
+    protected void stopDriveMotors()
+    {
+        MotorLeftBack.setPower(0);
+        MotorRightBack.setPower(0);
+        MotorLeftTriangle.setPower(0);
+        MotorRightTriangle.setPower(0);
+        MotorLeftClimber.setPower(0);
+        MotorRightClimber.setPower(0);
+
     }
 
     protected void stopAllMotors()
@@ -127,9 +198,9 @@ public abstract class Master6220OpMode extends SynchronousOpMode
      */
     protected void driveForwards(double leftSidePower, double rightSidePower, double leftTrianglePower, double rightTrianglePower)
     {
-        this.MotorRightBack.setPower(rightSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor);
+        this.MotorRightBack.setPower(rightSidePower * Constants.REAR_WHEEL_POWER_FACTOR * currentDrivePowerFactor);
 
-        this.MotorLeftBack.setPower(leftSidePower * WHEEL_DRIVE_MULTIPLIER * currentDrivePowerFactor);
+        this.MotorLeftBack.setPower(leftSidePower * Constants.REAR_WHEEL_POWER_FACTOR * currentDrivePowerFactor);
 
         //TODO triangle vs climber naming is confusing
         this.MotorRightTriangle.setPower(rightSidePower * currentDrivePowerFactor);
@@ -149,6 +220,8 @@ public abstract class Master6220OpMode extends SynchronousOpMode
     {
         driveForwards(-1 * leftSidePower, -1 * rightSidePower, -1 * leftTrianglePower, -1 * rightTrianglePower);
     }
+
+
 
     //This is the driving mode for going up the ramp
     protected void setRampClimbingMode() {

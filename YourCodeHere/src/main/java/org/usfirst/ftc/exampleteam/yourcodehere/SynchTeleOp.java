@@ -1,24 +1,15 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 6220's TeleOp for driving our triangle wheels robot.
  */
-@TeleOp(name = "Synch6220TeleOp", group = "Swerve Examples")
-public class Synch6220TeleOp extends Master6220OpMode
+@TeleOp(name = "SynchTeleOp", group = "Swerve Examples")
+public class SynchTeleOp extends MasterTeleOp
 {
-    public Synch6220TeleOp()
+    public SynchTeleOp()
     {
         super();
     }
@@ -26,6 +17,7 @@ public class Synch6220TeleOp extends Master6220OpMode
     @Override
     protected void main() throws InterruptedException
     {
+        initialize();
         // Configure the dashboard however we want it
         //this.configureDashboard();
 
@@ -49,48 +41,6 @@ public class Synch6220TeleOp extends Master6220OpMode
             // Let the rest of the system run until there's a stimulus from the robot controller runtime.
             this.idle();
         }
-    }
-
-    /**
-     * This is the body of the TeleOp that allows the driver to control the robot.
-     */
-    //TO DO:  we need to finish refactoring this.
-    void driveRobot(Gamepad pad) throws InterruptedException
-    {
-        // Remember that the gamepad sticks range from -1 to +1, and that the motor
-        // power levels range over the same amount
-
-
-        //read input from the controller
-        double leftSidePower = pad.left_stick_y;
-        double rightSidePower = pad.right_stick_y;
-        double climberPower = pad.right_trigger * -1;
-
-        /**
-         * Calculate motor power based on drive mode and controller input
-         */
-
-        //field driving mode
-        if (currentDriveMode == DriveModeEnum.DriveModeField)
-        {
-            leftSidePower = pad.right_stick_y;
-            rightSidePower = pad.left_stick_y;
-            climberPower = pad.right_trigger;
-            driveForwards(leftSidePower, rightSidePower, climberPower, climberPower);
-        }
-        //"ready" mode for getting ready to climb the ramp
-        //we need to drive backwards when aligning with the ramp
-        else if (currentDriveMode == DriveModeEnum.DriveModeBackwards)
-        {
-            driveBackwards(leftSidePower, rightSidePower, climberPower, climberPower);
-        }
-        //drive climb mode
-        else if (currentDriveMode == DriveModeEnum.DriveModeRamp)
-        {
-            //since we want both our climbers and wheels to have the same power, we set the climbers equal to the left and right sides
-            driveBackwards(leftSidePower, rightSidePower, leftSidePower, rightSidePower);
-        }
-
     }
 
     private void handleDriverInput(Gamepad pad1, Gamepad pad2)

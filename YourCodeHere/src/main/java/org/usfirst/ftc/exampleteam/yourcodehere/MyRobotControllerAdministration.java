@@ -1,12 +1,9 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 
 import org.swerverobotics.library.SwerveUtil;
 import org.swerverobotics.library.interfaces.*;
-import org.swerverobotics.library.examples.*;
-import com.qualcomm.ftcrobotcontroller.opmodes.*;
 
 /**
  * MyRobotControllerAdministration is a container for 'administrative' methods that interact
@@ -30,7 +27,7 @@ import com.qualcomm.ftcrobotcontroller.opmodes.*;
  * to the 'settings.gradle' file so they show up in Android Studio.
  *
  * @see TeleOp
- * @see Autonomous
+ * @see Autonomous1
  * @see OpModeRegistrar
  * @see OnRobotRunning
  * @see SynchTeleOp
@@ -42,7 +39,7 @@ public class MyRobotControllerAdministration
      * your needs: the specific OpModes that are registered as this code comes from
      * the factory are probably not what you want. For your own OpModes, though you could register them
      * here, it is preferable to annotate them in their own source with {@link TeleOp}
-     * or {@link Autonomous} annotations, as appropriate.
+     * or {@link Autonomous1} annotations, as appropriate.
      *
      * @param context   the application context of the robot controller application. Not often
      *                  actually used in OpMode registrar functions.
