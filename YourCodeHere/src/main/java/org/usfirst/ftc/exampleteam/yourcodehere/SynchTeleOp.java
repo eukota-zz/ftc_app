@@ -9,10 +9,6 @@ import org.swerverobotics.library.interfaces.TeleOp;
 @TeleOp(name = "SynchTeleOp", group = "Swerve Examples")
 public class SynchTeleOp extends MasterTeleOp
 {
-    public SynchTeleOp()
-    {
-        super();
-    }
 
     @Override
     protected void main() throws InterruptedException

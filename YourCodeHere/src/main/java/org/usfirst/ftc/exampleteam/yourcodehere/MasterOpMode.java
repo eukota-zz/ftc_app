@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Cole on 12/28/2015.
  */
-public abstract class MasterOpMode extends SynchronousOpMode
+public class MasterOpMode extends SynchronousOpMode
 {
     enum Servo6220
     {
@@ -76,18 +76,11 @@ public abstract class MasterOpMode extends SynchronousOpMode
     boolean HolderServoLeftDeployed = false;
     boolean HolderServoRightDeployed = false;
 
-    public MasterOpMode()
-    {
-        // Initialize our hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names you assigned during the robot configuration
-        // step you did in the FTC Robot Controller app on the phone.
-
-        //initialize our hardware
-        //this.initializeHardware();
-    }
 
     @Override
-    protected abstract void main() throws InterruptedException;
+    protected void main() throws InterruptedException {
+
+    }
 
     //drive the small wheels, but not the climbers
     public void driveSmallWheels(double leftPower, double rightPower)

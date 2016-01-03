@@ -11,9 +11,9 @@ public class Constants
     public static final double LOW_POWER = 0.3;
     public static final double STOP = 0.0;
     //servo constants
-    public static final double LEFT_ZIPLINEHITTER_NOTDEPLOYED = -1.0;
+    public static final double LEFT_ZIPLINEHITTER_NOTDEPLOYED = -9.0;
     public static final double LEFT_ZIPLINEHITTER_DEPLOYED = 0.6;
-    public static final double RIGHT_ZIPLINEHITTER_NOTDEPLOYED = -1.0;
+    public static final double RIGHT_ZIPLINEHITTER_NOTDEPLOYED = -9.0;
     public static final double RIGHT_ZIPLINEHITTER_DEPLOYED = 0.6;
     public static final double HIKER_DROPPER_NOTDEPLOYED = -1.0;
     public static final double HIKER_DROPPER_DEPLOYED = 1.0;

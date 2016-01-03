@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 /**
  * Created by Cole on 12/30/2015.
  */
-public abstract class MasterTeleOp extends MasterOpMode
+public class MasterTeleOp extends MasterOpMode
 {
     protected void initialize()
     {
