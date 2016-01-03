@@ -26,12 +26,14 @@ public class Autonomous1 extends MasterAutonomous
         waitForStart();
 
 
-        while(true) {
+        while(true)
+        {
             diff = angle - getCurrentOrientation();
             dV = diff - lastDiffs[0];
 
             //check 360-0 case
-            if (Math.abs(dV) > 180) {
+            if (Math.abs(dV) > 180)
+            {
                 offset -= Math.signum(dV) * 360;
             }
             diff += offset;
@@ -40,11 +42,16 @@ public class Autonomous1 extends MasterAutonomous
             //turn the correct direction
             int direction = (int) Math.signum(diff);
             //
-            if (diff < -anglePowerSwitch) {
+            if (diff < -anglePowerSwitch)
+            {
                 power = direction;
-            } else if (diff > anglePowerSwitch) {
+            }
+            else if (diff > anglePowerSwitch)
+            {
                 power = -direction;
-            } else {
+            }
+            else
+            {
                 power = -1 * diff / anglePowerSwitch;
             }
 
