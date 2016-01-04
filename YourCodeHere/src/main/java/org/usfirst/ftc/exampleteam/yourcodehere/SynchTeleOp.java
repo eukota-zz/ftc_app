@@ -72,24 +72,13 @@ public class SynchTeleOp extends MasterTeleOp
         }
 
         //deploy the holder
-        if (pad2.b & !HolderServoRightDeployed)
+        if (pad2.b)
         {
-            HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_DEPLOYED);
-            HolderServoRightDeployed = true;
-        } else if (pad2.b & HolderServoRightDeployed)
-        {
-            HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_NOTDEPLOYED);
-            HolderServoRightDeployed = false;
+            RightHolder.toggle();
         }
-
-        if (pad2.x & !HolderServoLeftDeployed)
+        if (pad2.x)
         {
-            HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_DEPLOYED);
-            HolderServoLeftDeployed = true;
-        } else if (pad2.x & HolderServoLeftDeployed)
-        {
-            HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_NOTDEPLOYED);
-            HolderServoLeftDeployed = false;
+            LeftHolder.toggle();
         }
 
         /*if (pad2.a)

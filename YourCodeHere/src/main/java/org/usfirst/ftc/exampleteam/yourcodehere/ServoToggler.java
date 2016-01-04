@@ -5,14 +5,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**
  * Created by Mridula on 1/3/2016.
  */
-public class ZiplineHitter
+public class ServoToggler
 {
     Servo servo;
     boolean isDeployed;
+    double servoRetractedPosition;
+    double servoDeployedPosition;
 
-    public ZiplineHitter (Servo s)
+    public ServoToggler(Servo s, double retractedPosition, double deployedPostition)
     {
         servo = s;
+        servoRetractedPosition = retractedPosition;
+        servoDeployedPosition = deployedPostition;
     }
 
     public void setStartingPosition ()
@@ -22,13 +26,13 @@ public class ZiplineHitter
 
     public void deploy ()
     {
-        servo.setPosition(Constants.ZIPLINEHITTER_DEPLOYED);
+        servo.setPosition(servoDeployedPosition);
         isDeployed = true;
     }
 
     public void retract ()
     {
-        servo.setPosition(Constants.ZIPLINEHITTER_NOTDEPLOYED);
+        servo.setPosition(servoRetractedPosition);
         isDeployed = false;
     }
 

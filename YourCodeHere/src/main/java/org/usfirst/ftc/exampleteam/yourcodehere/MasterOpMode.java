@@ -71,11 +71,10 @@ public abstract class MasterOpMode extends SynchronousOpMode
     DriveModeEnum currentDriveMode = DriveModeEnum.DriveModeField;
     //the drive wheels are larger than the triangle wheels so we drive them at less power
 
-    boolean HolderServoLeftDeployed = false;
-    boolean HolderServoRightDeployed = false;
-
-    ZiplineHitter LeftZiplineHitter;
-    ZiplineHitter RightZiplineHitter;
+    ServoToggler LeftZiplineHitter;
+    ServoToggler RightZiplineHitter;
+    ServoToggler LeftHolder;
+    ServoToggler RightHolder;
 
 
     @Override
@@ -126,13 +125,6 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.MotorRightBack = motors.get(Motor6220.RightBack.ordinal());
         this.HolderServoRight = servos.get(Servo6220.HolderServoRight.ordinal());
 
-        this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
-
-        this.LeftZiplineHitter = new ZiplineHitter (ServoLeftZiplineHitter);
-        this.LeftZiplineHitter.setStartingPosition();
-        this.RightZiplineHitter = new ZiplineHitter (ServoRightZiplineHitter);
-        this.RightZiplineHitter.setStartingPosition();
-
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact (we might use encoders later.)
@@ -146,13 +138,24 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
-        stopAllMotors();
+        this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
+        this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
+        this.LeftZiplineHitter.setStartingPosition();
+        this.RightZiplineHitter = new ServoToggler(ServoRightZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
+        this.RightZiplineHitter.setStartingPosition();
+
+        this.HolderServoLeft.setDirection(Servo.Direction.REVERSE);
+
+        this.LeftHolder = new ServoToggler(HolderServoLeft, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
+        this.LeftHolder.setStartingPosition();
+        this.RightHolder = new ServoToggler(HolderServoRight, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
+        this.RightHolder.setStartingPosition();
 
         this.HikerDropper.setPosition(Constants.HIKER_DROPPER_NOTDEPLOYED);
         this.HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
-        this.HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_NOTDEPLOYED);
-        this.HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_NOTDEPLOYED);
+
+        stopAllMotors();
     }
 
     protected void stopDriveMotors()
