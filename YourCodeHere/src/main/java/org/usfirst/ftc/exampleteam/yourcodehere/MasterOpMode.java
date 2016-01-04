@@ -134,9 +134,9 @@ public abstract class MasterOpMode extends SynchronousOpMode
         }
 
         //the correct motors should be reversed, since they are on the opposite side of the robot.
-        this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
-        this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
-        this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorLeftBack.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorRightTriangle.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorRightClimber.setDirection(DcMotor.Direction.REVERSE);
 
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
