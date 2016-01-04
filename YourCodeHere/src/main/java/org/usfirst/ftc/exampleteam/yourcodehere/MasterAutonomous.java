@@ -55,7 +55,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     {
         double startDist = getDistanceTraveled();
         double netDist = startDist + direction*distance;
-        driveSmallWheels(direction, direction);
+        driveWheels(direction, direction);
         //until passed target
         if (direction < 0)
         {
@@ -96,7 +96,7 @@ public abstract class MasterAutonomous extends MasterOpMode
         double startAngle = getCurrentOrientation();
         //turn the correct direction
         int direction = (int) Math.signum(angle - startAngle);
-        driveSmallWheels(-0.88*direction,1.0*direction);
+        driveWheels(-0.88 * direction, 1.0 * direction);
         //wait for achieved turn
         while (Math.abs(angle - getCurrentOrientation()) > finishThreshold)
         {
@@ -204,7 +204,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             cur = normalizeAngle360(cur + offset);
             dest = normalizeAngle360(dest + offset);
 
-            driveSmallWheels(power, -power);
+            driveWheels(power, -power);
 
             while ((cur > dest))
             {
@@ -227,7 +227,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             cur = normalizeAngle360(cur + offset);
             dest = normalizeAngle360(dest + offset);
 
-            driveSmallWheels(-power, power);
+            driveWheels(-power, power);
 
             //now compass 0 doesn't fall between the current heading and the destination,
             //so we can use a < comparison to wait for our target

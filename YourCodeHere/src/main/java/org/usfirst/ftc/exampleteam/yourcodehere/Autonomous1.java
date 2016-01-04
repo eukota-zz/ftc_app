@@ -55,7 +55,7 @@ public class Autonomous1 extends MasterAutonomous
                 power = -1 * diff / anglePowerSwitch;
             }
 
-            driveSmallWheels(-power, power);
+            driveWheels(-power, power);
 
             //roll records
             lastDiffs[1] = lastDiffs[0];

@@ -11,10 +11,10 @@ import org.swerverobotics.library.interfaces.IFunc;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Cole on 12/28/2015.
+/*
+    Contains initialization related code as well as some other hardware methods
  */
-public class MasterOpMode extends SynchronousOpMode
+public abstract class MasterOpMode extends SynchronousOpMode
 {
     enum Servo6220
     {
@@ -68,7 +68,6 @@ public class MasterOpMode extends SynchronousOpMode
     Servo HolderServoRight = null;
     List<DcMotor> motors = new ArrayList<>();
     List<Servo> servos = new ArrayList<>();
-    DriveModeEnum currentDriveMode = DriveModeEnum.DriveModeField;
     //the drive wheels are larger than the triangle wheels so we drive them at less power
 
     boolean LeftZiplineHitterDeployed = false;
@@ -77,13 +76,8 @@ public class MasterOpMode extends SynchronousOpMode
     boolean HolderServoRightDeployed = false;
 
 
-    @Override
-    protected void main() throws InterruptedException {
-
-    }
-
-    //drive the small wheels, but not the climbers
-    public void driveSmallWheels(double leftPower, double rightPower)
+    //drive the wheels
+    public void driveWheels(double leftPower, double rightPower)
     {
 
         leftPower  *= Constants.FULL_POWER;
@@ -93,6 +87,12 @@ public class MasterOpMode extends SynchronousOpMode
         MotorRightTriangle.setPower(rightPower);
         MotorLeftBack.setPower(Constants.LEFT_ASSEMBLY_DIFF * Constants.REAR_WHEEL_POWER_FACTOR * leftPower );
         MotorRightBack.setPower(Constants.REAR_WHEEL_POWER_FACTOR * rightPower);
+    }
+
+    //drive the climbers
+    public void driveClimbers(double leftPower, double rightPower){
+        MotorLeftClimber.setPower(  leftPower  );
+        MotorRightClimber.setPower( rightPower );
     }
 
     protected void initializeHardware()
@@ -185,56 +185,6 @@ public class MasterOpMode extends SynchronousOpMode
         }
     }
 
-    /**
-     * This function is used to make field driving easier
-     * and available as a method able to be called.
-     */
-    protected void driveForwards(double leftSidePower, double rightSidePower, double leftTrianglePower, double rightTrianglePower)
-    {
-        this.MotorRightBack.setPower(rightSidePower * Constants.REAR_WHEEL_POWER_FACTOR * currentDrivePowerFactor);
-
-        this.MotorLeftBack.setPower(leftSidePower * Constants.REAR_WHEEL_POWER_FACTOR * currentDrivePowerFactor);
-
-        //TODO triangle vs climber naming is confusing
-        this.MotorRightTriangle.setPower(rightSidePower * currentDrivePowerFactor);
-
-        this.MotorLeftTriangle.setPower(leftSidePower * currentDrivePowerFactor);
-
-        this.MotorRightClimber.setPower(rightTrianglePower * currentDrivePowerFactor);
-
-        this.MotorLeftClimber.setPower(leftTrianglePower * currentDrivePowerFactor);
-    }
-
-    /**
-     * This does the same thing as the driveForwards function,
-     * but it prepares to drive onto the ramp
-     */
-    protected void driveBackwards(double leftSidePower, double rightSidePower, double leftTrianglePower, double rightTrianglePower)
-    {
-        driveForwards(-1 * leftSidePower, -1 * rightSidePower, -1 * leftTrianglePower, -1 * rightTrianglePower);
-    }
-
-
-
-    //This is the driving mode for going up the ramp
-    protected void setRampClimbingMode() {
-        setDriveMode(DriveModeEnum.DriveModeRamp);
-    }
-
-    //This is the driving mode we use when we want to drive backwards to align with the ramp
-    protected void setBackwardsDriveMode() {
-        setDriveMode(DriveModeEnum.DriveModeBackwards);
-    }
-
-    //This is the driving mode we use when driving around the field
-    protected void setFieldDrivingMode() {
-        setDriveMode(DriveModeEnum.DriveModeField);
-    }
-
-    private void setDriveMode(DriveModeEnum mode) {
-        currentDriveMode = mode;
-    }
-
     void configureDashboard() {
 
         this.telemetry.log.setDisplayOldToNew(false);   // And we show the log in new to old order, just because we want to
@@ -263,10 +213,4 @@ public class MasterOpMode extends SynchronousOpMode
         return String.format("%.1f", d);
     }
 
-    enum DriveModeEnum
-    {
-        DriveModeField,
-        DriveModeBackwards,
-        DriveModeRamp
-    }
 }

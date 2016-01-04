@@ -2,10 +2,10 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-/**
- * Created by Cole on 12/30/2015.
+/*
+    This contains joystick nput handling methods and initialization
  */
-public class MasterTeleOp extends MasterOpMode
+public abstract class MasterTeleOp extends MasterOpMode
 {
     protected void initialize()
     {
@@ -14,6 +14,33 @@ public class MasterTeleOp extends MasterOpMode
         //this makes sure the joystick does not take minute data
         this.gamepad1.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);
         this.gamepad2.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);
+    }
+
+    private enum DriveMode
+    {
+        Field,
+        PreRamp,
+        Ramp
+    }
+    DriveMode currentDriveMode = DriveMode.Field;
+
+    //This is the driving mode for going up the ramp
+    protected void setRampClimbingMode() {
+        setDriveMode(DriveMode.Ramp);
+    }
+
+    //This is the driving mode we use when we want to drive backwards to align with the ramp
+    protected void setBackwardsDriveMode() {
+        setDriveMode(DriveMode.PreRamp);
+    }
+
+    //This is the driving mode we use when driving around the field
+    protected void setFieldDrivingMode() {
+        setDriveMode(DriveMode.Field);
+    }
+
+    private void setDriveMode(DriveMode mode) {
+        currentDriveMode = mode;
     }
 
     //convert a linear stick behaviour to a super-egg/circular curve
@@ -38,56 +65,46 @@ public class MasterTeleOp extends MasterOpMode
         return Math.abs(output) * Math.signum(value);
     }
 
-    /**
-     * This is the body of the TeleOp that allows the driver to control the robot.
-     */
-    //TO DO:  we need to finish refactoring this.
+
+    //This is the methods that passes stick values to the drive
     void driveRobot(Gamepad pad) throws InterruptedException
     {
         // Remember that the gamepad sticks range from -1 to +1, and that the motor
         // power levels range over the same amount
 
         //using the stickCurve function allows the driver to control the robot more precisely, so we use it for power input
-        double leftStickPower = stickCurve(pad.left_stick_y, -0.1) * currentDrivePowerFactor;
+        double leftStickPower  = stickCurve(pad.left_stick_y,  -0.1) * currentDrivePowerFactor;
         double rightStickPower = stickCurve(pad.right_stick_y, -0.1) * currentDrivePowerFactor;
 
         double leftSidePower;
         double rightSidePower;
-        double climberPower;
+        double climberPower = pad.right_trigger;
 
-        /**
-         * Calculate motor power based on drive mode and controller input
-         */
 
         //field driving mode
-        if (currentDriveMode == DriveModeEnum.DriveModeField)
+        if (currentDriveMode == DriveMode.Field)
         {
-            leftSidePower = rightStickPower;
-            rightSidePower = leftStickPower;
-            climberPower = pad.right_trigger;
-            driveForwards(leftSidePower, rightSidePower, climberPower, climberPower);
+            //the sticks and power are flipped
+            leftSidePower  = -rightStickPower;
+            rightSidePower = -leftStickPower;
+            driveWheels(leftSidePower, rightSidePower);
         }
         //"ready" mode for getting ready to climb the ramp
         //we need to drive backwards when aligning with the ramp
-        else if (currentDriveMode == DriveModeEnum.DriveModeBackwards)
+        else if (currentDriveMode == DriveMode.PreRamp)
         {
             //read input from the controller
-            leftSidePower = leftStickPower;
+            leftSidePower  = leftStickPower;
             rightSidePower = rightStickPower;
-            climberPower = pad.right_trigger * -1;
-
-            driveBackwards(leftSidePower, rightSidePower, climberPower, climberPower);
+            driveWheels(leftSidePower, rightSidePower);
         }
         //drive climb mode
-        else if (currentDriveMode == DriveModeEnum.DriveModeRamp)
+        else if (currentDriveMode == DriveMode.Ramp)
         {
             //read input from the controller
-            leftSidePower = leftStickPower;
+            leftSidePower  = leftStickPower;
             rightSidePower = rightStickPower;
-            climberPower = pad.right_trigger * -1;
-
-            //since we want both our climbers and wheels to have the same power, we set the climbers equal to the left and right sides
-            driveBackwards(leftSidePower, rightSidePower, leftSidePower, rightSidePower);
+            driveWheels(leftSidePower, rightSidePower);
         }
     }
 }
