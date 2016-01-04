@@ -106,5 +106,6 @@ public abstract class MasterTeleOp extends MasterOpMode
             rightSidePower = rightStickPower;
             driveWheels(leftSidePower, rightSidePower);
         }
+        driveClimbers(climberPower, climberPower);
     }
 }
