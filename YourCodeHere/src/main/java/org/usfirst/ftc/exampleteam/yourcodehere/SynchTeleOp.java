@@ -72,24 +72,13 @@ public class SynchTeleOp extends MasterTeleOp
         }
 
         //deploy the holder
-        if (pad2.b & !HolderServoRightDeployed)
+        if (pad2.b)
         {
-            HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_DEPLOYED);
-            HolderServoRightDeployed = true;
-        } else if (pad2.b & HolderServoRightDeployed)
-        {
-            HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_NOTDEPLOYED);
-            HolderServoRightDeployed = false;
+            RightHolder.toggle();
         }
-
-        if (pad2.x & !HolderServoLeftDeployed)
+        if (pad2.x)
         {
-            HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_DEPLOYED);
-            HolderServoLeftDeployed = true;
-        } else if (pad2.x & HolderServoLeftDeployed)
-        {
-            HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_NOTDEPLOYED);
-            HolderServoLeftDeployed = false;
+            LeftHolder.toggle();
         }
 
         /*if (pad2.a)
@@ -101,28 +90,17 @@ public class SynchTeleOp extends MasterTeleOp
             CollectorServo.setPosition(0.5);
         }*/
 
-        if (pad2.left_bumper & !LeftZiplineHitterDeployed)
+        if (pad2.left_bumper)
         {
-            LeftZiplineHitter.setPosition(Constants.LEFT_ZIPLINEHITTER_DEPLOYED);
-            LeftZiplineHitterDeployed = true;
-            telemetry.log.add("left bumper:deployed");
-        } else if (pad2.left_bumper & LeftZiplineHitterDeployed)
-        {
-            LeftZiplineHitter.setPosition(Constants.LEFT_ZIPLINEHITTER_NOTDEPLOYED);
-            LeftZiplineHitterDeployed = false;
-            telemetry.log.add("left bumper:notdeployed");
-        } else telemetry.log.add("no bumper");
-
-        //The RightZiplineHitter reads from (0-1), which is different than the LeftZiplineHitter(0-360)
-        if (pad2.right_bumper & !RightZiplineHitterDeployed)
-        {
-            RightZiplineHitter.setPosition(Constants.RIGHT_ZIPLINEHITTER_DEPLOYED);
-            RightZiplineHitterDeployed = true;
-        } else if (pad2.right_bumper & RightZiplineHitterDeployed)
-        {
-            RightZiplineHitter.setPosition(Constants.RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
-            RightZiplineHitterDeployed = false;
+           LeftZiplineHitter.toggle();
         }
+
+        //The ServoRightZiplineHitter reads from (0-1), which is different than the ServoLeftZiplineHitter(0-360)
+        if (pad2.right_bumper)
+        {
+            RightZiplineHitter.toggle();
+        }
+
         //toggle field driving mode
         if (pad1.a)
         {

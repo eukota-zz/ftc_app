@@ -27,7 +27,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
         public static String[] GetNames()
         {
-            return new String[] {"LeftZiplineHitter", "RightZiplineHitter", "HikerDropper", "HangerServo", "HolderServoLeft", "HolderServoRight"};
+            return new String[] {"ServoLeftZiplineHitter", "ServoRightZiplineHitter", "HikerDropper", "HangerServo", "HolderServoLeft", "HolderServoRight"};
         }
     }
 
@@ -60,8 +60,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
     DcMotor MotorLeftClimber = null;
     DcMotor MotorHanger = null;
     // Declare servos
-    Servo LeftZiplineHitter = null;
-    Servo RightZiplineHitter = null;
+    Servo ServoLeftZiplineHitter = null;
+    Servo ServoRightZiplineHitter = null;
     Servo HikerDropper = null;
     Servo HangerServo = null;
     Servo HolderServoLeft = null;
@@ -70,10 +70,10 @@ public abstract class MasterOpMode extends SynchronousOpMode
     List<Servo> servos = new ArrayList<>();
     //the drive wheels are larger than the triangle wheels so we drive them at less power
 
-    boolean LeftZiplineHitterDeployed = false;
-    boolean RightZiplineHitterDeployed = false;
-    boolean HolderServoLeftDeployed = false;
-    boolean HolderServoRightDeployed = false;
+    ServoToggler LeftZiplineHitter;
+    ServoToggler RightZiplineHitter;
+    ServoToggler LeftHolder;
+    ServoToggler RightHolder;
 
 
     //drive the wheels
@@ -97,9 +97,6 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
     protected void initializeHardware()
     {
-
-        telemetry.log.add("starting hardware init");
-
         //dynamically load all servos
         for (String curServoName : Servo6220.GetNames())
         {
@@ -113,15 +110,13 @@ public abstract class MasterOpMode extends SynchronousOpMode
             motors.add(this.hardwareMap.dcMotor.get(curMotorName));
         }
 
-        telemetry.log.add("motors and servos added");
-
         //initialize old motor references for backwards compatibility
         this.HolderServoLeft = servos.get(Servo6220.HolderServoLeft.ordinal());
         this.MotorHanger = motors.get(Motor6220.MotorHanger.ordinal());
-        this.LeftZiplineHitter = servos.get(Servo6220.LeftZiplineHitter.ordinal());
+        this.ServoLeftZiplineHitter = servos.get(Servo6220.LeftZiplineHitter.ordinal());
         this.HikerDropper = servos.get(Servo6220.HikerDropper.ordinal());
         this.MotorRightTriangle = motors.get(Motor6220.RightTriangle.ordinal());
-        this.RightZiplineHitter = servos.get(Servo6220.RightZiplineHitter.ordinal());
+        this.ServoRightZiplineHitter = servos.get(Servo6220.RightZiplineHitter.ordinal());
         this.MotorLeftClimber = motors.get(Motor6220.LeftClimber.ordinal());
         this.MotorLeftTriangle = motors.get(Motor6220.LeftTriangle.ordinal());
         this.MotorLeftBack = motors.get(Motor6220.LeftBack.ordinal());
@@ -129,9 +124,6 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.HangerServo = servos.get(Servo6220.HangerServo.ordinal());
         this.MotorRightBack = motors.get(Motor6220.RightBack.ordinal());
         this.HolderServoRight = servos.get(Servo6220.HolderServoRight.ordinal());
-
-
-        telemetry.log.add("motors and servos variables set");
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
@@ -141,29 +133,29 @@ public abstract class MasterOpMode extends SynchronousOpMode
             curMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         }
 
-        telemetry.log.add("motor runmodes set");
-
         //the correct motors should be reversed, since they are on the opposite side of the robot.
         this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
-        telemetry.log.add("motor directions set");
+        this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
-        stopAllMotors();
+        this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
+        this.LeftZiplineHitter.setStartingPosition();
+        this.RightZiplineHitter = new ServoToggler(ServoRightZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
+        this.RightZiplineHitter.setStartingPosition();
 
-        telemetry.log.add("motors stopped");
+        this.HolderServoLeft.setDirection(Servo.Direction.REVERSE);
 
-        this.RightZiplineHitter.setDirection(Servo.Direction.REVERSE);
+        this.LeftHolder = new ServoToggler(HolderServoLeft, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
+        this.LeftHolder.setStartingPosition();
+        this.RightHolder = new ServoToggler(HolderServoRight, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
+        this.RightHolder.setStartingPosition();
 
-        this.LeftZiplineHitter.setPosition(Constants.LEFT_ZIPLINEHITTER_NOTDEPLOYED);
-        this.RightZiplineHitter.setPosition(Constants.RIGHT_ZIPLINEHITTER_NOTDEPLOYED);
         this.HikerDropper.setPosition(Constants.HIKER_DROPPER_NOTDEPLOYED);
         this.HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
-        this.HolderServoLeft.setPosition(Constants.HOLDER_SERVO_LEFT_NOTDEPLOYED);
-        this.HolderServoRight.setPosition(Constants.HOLDER_SERVO_RIGHT_NOTDEPLOYED);
 
-        telemetry.log.add("servos positioned");
+        stopAllMotors();
     }
 
     protected void stopDriveMotors()
