@@ -79,10 +79,6 @@ public abstract class MasterOpMode extends SynchronousOpMode
     //drive the wheels
     public void driveWheels(double leftPower, double rightPower)
     {
-
-        leftPower  *= Constants.FULL_POWER;
-        rightPower *= Constants.FULL_POWER;
-
         MotorLeftTriangle.setPower(Constants.LEFT_ASSEMBLY_DIFF * leftPower );
         MotorRightTriangle.setPower(rightPower);
         MotorLeftBack.setPower(Constants.LEFT_ASSEMBLY_DIFF * Constants.REAR_WHEEL_POWER_FACTOR * leftPower );
@@ -90,9 +86,10 @@ public abstract class MasterOpMode extends SynchronousOpMode
     }
 
     //drive the climbers
-    public void driveClimbers(double leftPower, double rightPower){
-        MotorLeftClimber.setPower(  leftPower  );
-        MotorRightClimber.setPower( rightPower );
+    public void driveClimbers(double leftPower, double rightPower)
+    {
+        MotorLeftClimber.setPower(leftPower);
+        MotorRightClimber.setPower(rightPower);
     }
 
     protected void initializeHardware()
@@ -134,9 +131,9 @@ public abstract class MasterOpMode extends SynchronousOpMode
         }
 
         //the correct motors should be reversed, since they are on the opposite side of the robot.
-        this.MotorLeftBack.setDirection(DcMotor.Direction.REVERSE);
-        this.MotorRightTriangle.setDirection(DcMotor.Direction.REVERSE);
-        this.MotorRightClimber.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
@@ -177,7 +174,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
         }
     }
 
-    void configureDashboard() {
+    void configureDashboard()
+    {
 
         this.telemetry.log.setDisplayOldToNew(false);   // And we show the log in new to old order, just because we want to
         this.telemetry.log.setCapacity(10);             // We can control the number of lines used by the log
@@ -185,13 +183,15 @@ public abstract class MasterOpMode extends SynchronousOpMode
         // Configure the dashboard. Here, it will have one line, which will contain three items
         this.telemetry.addLine
                 (
-                        this.telemetry.item("left back:", new IFunc<Object>() {
+                        this.telemetry.item("left back:", new IFunc<Object>()
+                        {
                             @Override
                             public Object value() {
                                 return format(MotorLeftBack.getPower());
                             }
                         }),
-                        this.telemetry.item("right back: ", new IFunc<Object>() {
+                        this.telemetry.item("right back: ", new IFunc<Object>()
+                        {
                             @Override
                             public Object value() {
                                 return format(MotorRightBack.getPower());

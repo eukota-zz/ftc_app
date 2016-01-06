@@ -78,34 +78,37 @@ public abstract class MasterTeleOp extends MasterOpMode
 
         double leftSidePower;
         double rightSidePower;
-        double climberPower = pad.right_trigger;
+        double climberPower = pad.right_trigger * -1;
 
 
         //field driving mode
         if (currentDriveMode == DriveMode.Field)
         {
             //the sticks and power are flipped
-            leftSidePower  = -rightStickPower;
-            rightSidePower = -leftStickPower;
+            leftSidePower  = rightStickPower;
+            rightSidePower = leftStickPower;
             driveWheels(leftSidePower, rightSidePower);
+            driveClimbers(climberPower, climberPower);
         }
         //"ready" mode for getting ready to climb the ramp
         //we need to drive backwards when aligning with the ramp
         else if (currentDriveMode == DriveMode.PreRamp)
         {
             //read input from the controller
-            leftSidePower  = leftStickPower;
-            rightSidePower = rightStickPower;
+            leftSidePower  = -leftStickPower;
+            rightSidePower = -rightStickPower;
             driveWheels(leftSidePower, rightSidePower);
+            driveClimbers(climberPower, climberPower);
         }
         //drive climb mode
         else if (currentDriveMode == DriveMode.Ramp)
         {
-            //read input from the controller
-            leftSidePower  = leftStickPower;
-            rightSidePower = rightStickPower;
+            //read input from the controller. The climbers should turn with the wheels
+            leftSidePower  = -leftStickPower;
+            rightSidePower = -rightStickPower;
             driveWheels(leftSidePower, rightSidePower);
+            driveClimbers(leftSidePower, rightSidePower);
         }
-        driveClimbers(climberPower, climberPower);
+
     }
 }
