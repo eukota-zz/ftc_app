@@ -12,7 +12,8 @@ public class Autonomous1 extends MasterAutonomous
     double offset = 0;
     double diff = 0;
     double lastDiffs[] = {0.0,0.0};
-    double dV = 0;
+    //WHOA! A ϴ!!!!!!! 
+    double dϴ = 0;
     double power = 0;
     double anglePowerSwitch = 10;
 
@@ -25,16 +26,17 @@ public class Autonomous1 extends MasterAutonomous
         // Wait until we've been given the ok to go
         waitForStart();
 
-
+        ///TODO Encapsulate and add a termination condition
         while(true)
         {
-            diff = angle - getCurrentOrientation();
-            dV = diff - lastDiffs[0];
+            //TODO Handle derivation here in a filter subclass instance
+            diff = angle - getCurrentGlobalOrientation();
+            dϴ = diff - lastDiffs[0];
 
             //check 360-0 case
-            if (Math.abs(dV) > 180)
+            if (Math.abs(dϴ) > 180)
             {
-                offset -= Math.signum(dV) * 360;
+                offset -= Math.signum(dϴ) * 360;
             }
             diff += offset;
 
