@@ -90,9 +90,10 @@ public abstract class MasterOpMode extends SynchronousOpMode
     }
 
     //drive the climbers
-    public void driveClimbers(double leftPower, double rightPower){
-        MotorLeftClimber.setPower(  leftPower  );
-        MotorRightClimber.setPower( rightPower );
+    public void driveClimbers(double leftPower, double rightPower)
+    {
+        MotorLeftClimber.setPower( leftPower );
+        MotorRightClimber.setPower(rightPower);
     }
 
     protected void initializeHardware()
@@ -177,7 +178,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
         }
     }
 
-    void configureDashboard() {
+    void configureDashboard()
+    {
 
         this.telemetry.log.setDisplayOldToNew(false);   // And we show the log in new to old order, just because we want to
         this.telemetry.log.setCapacity(10);             // We can control the number of lines used by the log
@@ -185,13 +187,15 @@ public abstract class MasterOpMode extends SynchronousOpMode
         // Configure the dashboard. Here, it will have one line, which will contain three items
         this.telemetry.addLine
                 (
-                        this.telemetry.item("left back:", new IFunc<Object>() {
+                        this.telemetry.item("left back:", new IFunc<Object>()
+                        {
                             @Override
                             public Object value() {
                                 return format(MotorLeftBack.getPower());
                             }
                         }),
-                        this.telemetry.item("right back: ", new IFunc<Object>() {
+                        this.telemetry.item("right back: ", new IFunc<Object>()
+                        {
                             @Override
                             public Object value() {
                                 return format(MotorRightBack.getPower());

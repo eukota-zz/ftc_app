@@ -132,10 +132,12 @@ public abstract class MasterAutonomous extends MasterOpMode
         //richTextBoxResult.Text = "";
 
         int full270s = (int) Math.abs(delta / 270);
-        if (delta >= 0) {
+        if (delta >= 0)
+        {
             for (int i = 0; i < full270s; i++)
                 TurnUpTo270Degrees(270, power);
-        } else {
+        } else
+        {
             for (int i = 0; i < full270s; i++) TurnUpTo270Degrees(-270, power);
         }
 
