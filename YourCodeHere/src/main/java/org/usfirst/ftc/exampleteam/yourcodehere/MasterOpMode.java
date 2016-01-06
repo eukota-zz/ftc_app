@@ -79,10 +79,6 @@ public abstract class MasterOpMode extends SynchronousOpMode
     //drive the wheels
     public void driveWheels(double leftPower, double rightPower)
     {
-
-        leftPower  *= Constants.FULL_POWER;
-        rightPower *= Constants.FULL_POWER;
-
         MotorLeftTriangle.setPower(Constants.LEFT_ASSEMBLY_DIFF * leftPower );
         MotorRightTriangle.setPower(rightPower);
         MotorLeftBack.setPower(Constants.LEFT_ASSEMBLY_DIFF * Constants.REAR_WHEEL_POWER_FACTOR * leftPower );
@@ -92,7 +88,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
     //drive the climbers
     public void driveClimbers(double leftPower, double rightPower)
     {
-        MotorLeftClimber.setPower( leftPower );
+        MotorLeftClimber.setPower(leftPower);
         MotorRightClimber.setPower(rightPower);
     }
 
@@ -135,9 +131,9 @@ public abstract class MasterOpMode extends SynchronousOpMode
         }
 
         //the correct motors should be reversed, since they are on the opposite side of the robot.
-        this.MotorLeftBack.setDirection(DcMotor.Direction.REVERSE);
-        this.MotorRightTriangle.setDirection(DcMotor.Direction.REVERSE);
-        this.MotorRightClimber.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorRightBack.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
+        this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 

@@ -116,7 +116,8 @@ public abstract class MasterAutonomous extends MasterOpMode
     public void wait(int t)
     {
         double e = 0;
-        while(e < t){
+        while(e < t)
+        {
             e += 0.00001;
         }
     }
