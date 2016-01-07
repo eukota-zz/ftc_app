@@ -2,9 +2,9 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**
- * Created by Mridula on 1/3/2016.
- */
+/*
+    Handles the toggling behavior that is present for many of our manipulators.
+*/
 public class ServoToggler
 {
     Servo servo;
@@ -17,6 +17,7 @@ public class ServoToggler
         servo = s;
         servoRetractedPosition = retractedPosition;
         servoDeployedPosition = deployedPostition;
+        setStartingPosition();
     }
 
     public void setStartingPosition ()

@@ -13,7 +13,7 @@ import java.util.List;
 
 /*
     Contains initialization related code as well as some other hardware methods
- */
+*/
 public abstract class MasterOpMode extends SynchronousOpMode
 {
     enum Servo6220
@@ -62,18 +62,18 @@ public abstract class MasterOpMode extends SynchronousOpMode
     // Declare servos
     Servo ServoLeftZiplineHitter = null;
     Servo ServoRightZiplineHitter = null;
-    Servo HikerDropper = null;
+    Servo ServoHikerDropper = null;
     Servo HangerServo = null;
     Servo HolderServoLeft = null;
     Servo HolderServoRight = null;
     List<DcMotor> motors = new ArrayList<>();
     List<Servo> servos = new ArrayList<>();
-    //the drive wheels are larger than the triangle wheels so we drive them at less power
 
     ServoToggler LeftZiplineHitter;
     ServoToggler RightZiplineHitter;
     ServoToggler LeftHolder;
     ServoToggler RightHolder;
+    ServoToggler HikerDropper;
 
 
     //drive the wheels
@@ -111,7 +111,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.HolderServoLeft = servos.get(Servo6220.HolderServoLeft.ordinal());
         this.MotorHanger = motors.get(Motor6220.MotorHanger.ordinal());
         this.ServoLeftZiplineHitter = servos.get(Servo6220.LeftZiplineHitter.ordinal());
-        this.HikerDropper = servos.get(Servo6220.HikerDropper.ordinal());
+        this.ServoHikerDropper = servos.get(Servo6220.HikerDropper.ordinal());
         this.MotorRightTriangle = motors.get(Motor6220.RightTriangle.ordinal());
         this.ServoRightZiplineHitter = servos.get(Servo6220.RightZiplineHitter.ordinal());
         this.MotorLeftClimber = motors.get(Motor6220.LeftClimber.ordinal());
@@ -138,18 +138,15 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
         this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
-        this.LeftZiplineHitter.setStartingPosition();
         this.RightZiplineHitter = new ServoToggler(ServoRightZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
-        this.RightZiplineHitter.setStartingPosition();
 
         this.HolderServoLeft.setDirection(Servo.Direction.REVERSE);
 
         this.LeftHolder = new ServoToggler(HolderServoLeft, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
-        this.LeftHolder.setStartingPosition();
         this.RightHolder = new ServoToggler(HolderServoRight, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
-        this.RightHolder.setStartingPosition();
 
-        this.HikerDropper.setPosition(Constants.HIKER_DROPPER_NOTDEPLOYED);
+        HikerDropper = new ServoToggler(ServoHikerDropper, Constants.HIKER_DROPPER_DEPLOYED, Constants.HIKER_DROPPER_DEPLOYED);
+
         this.HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
 
         stopAllMotors();

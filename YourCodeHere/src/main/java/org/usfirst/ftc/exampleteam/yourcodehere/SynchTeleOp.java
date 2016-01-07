@@ -43,11 +43,9 @@ public class SynchTeleOp extends MasterTeleOp
     {
         if (pad2.y)
         {
-            HikerDropper.setPosition(Constants.HIKER_DROPPER_DEPLOYED);
-        } else
-        {
-            HikerDropper.setPosition(Constants.HIKER_DROPPER_NOTDEPLOYED);
+            HikerDropper.toggle();
         }
+
 
         if (pad2.dpad_left)
         {
@@ -81,14 +79,6 @@ public class SynchTeleOp extends MasterTeleOp
             LeftHolder.toggle();
         }
 
-        /*if (pad2.a)
-        {
-            CollectorServo.setPosition(0.0);
-        }
-        else
-        {
-            CollectorServo.setPosition(0.5);
-        }*/
 
         if (pad2.left_bumper)
         {
@@ -101,18 +91,18 @@ public class SynchTeleOp extends MasterTeleOp
             RightZiplineHitter.toggle();
         }
 
-        //toggle field driving mode
+        //set field driving mode
         if (pad1.a)
         {
             setFieldDrivingMode();
         }
-        //toggle "ready" mode for getting ready to climb the ramp
+        //set "ready" mode for getting ready to climb the ramp
         //need to drive backwards so we can line up against the ramp
         else if (pad1.b)
         {
             setBackwardsDriveMode();
         }
-        //toggle drive climb mode
+        //set drive climb mode
         else if (pad1.y)
         {
             setRampClimbingMode();
