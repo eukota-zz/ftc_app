@@ -60,13 +60,16 @@ public class SynchTeleOp extends MasterTeleOp
 
         if (pad2.dpad_down)
         {
-            MotorHanger.setPower(-1 * Constants.FULL_POWER);
+            LeftMotorHanger.setPower(-1 * Constants.FULL_POWER);
+            RightMotorHanger.setPower(-1 * Constants.FULL_POWER);
         } else if (pad2.dpad_up)
         {
-            MotorHanger.setPower(Constants.FULL_POWER);
+            LeftMotorHanger.setPower(Constants.FULL_POWER);
+            RightMotorHanger.setPower(Constants.FULL_POWER);
         } else
         {
-            MotorHanger.setPower(Constants.STOP);
+            LeftMotorHanger.setPower(Constants.STOP);
+            RightMotorHanger.setPower(Constants.STOP);
         }
 
         //deploy the holder

@@ -39,11 +39,12 @@ public abstract class MasterOpMode extends SynchronousOpMode
         LeftTriangle,
         RightClimber,
         LeftClimber,
-        MotorHanger;
+        LeftMotorHanger,
+        RightMotorHanger;
 
         public static String[] GetNames()
         {
-            return new String[] {"MotorRightBack", "MotorLeftBack", "MotorRightTriangle", "MotorLeftTriangle", "MotorRightClimber", "MotorLeftClimber", "MotorHanger"};
+            return new String[] {"MotorRightBack", "MotorLeftBack", "MotorRightTriangle", "MotorLeftTriangle", "MotorRightClimber", "MotorLeftClimber", "LeftMotorHanger", "RightMotorHanger"};
         }
     }
 
@@ -52,13 +53,16 @@ public abstract class MasterOpMode extends SynchronousOpMode
     //sensors
     IBNO055IMU imu = null;
 
+    //Declare motors
     DcMotor MotorRightBack = null;
     DcMotor MotorLeftBack = null;
     DcMotor MotorRightTriangle = null;
     DcMotor MotorLeftTriangle = null;
     DcMotor MotorRightClimber = null;
     DcMotor MotorLeftClimber = null;
-    DcMotor MotorHanger = null;
+    DcMotor LeftMotorHanger = null;
+    DcMotor RightMotorHanger = null;
+
     // Declare servos
     Servo ServoLeftZiplineHitter = null;
     Servo ServoRightZiplineHitter = null;
@@ -109,7 +113,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
         //initialize old motor references for backwards compatibility
         this.HolderServoLeft = servos.get(Servo6220.HolderServoLeft.ordinal());
-        this.MotorHanger = motors.get(Motor6220.MotorHanger.ordinal());
+        this.LeftMotorHanger = motors.get(Motor6220.LeftMotorHanger.ordinal());
+        this.RightMotorHanger = motors.get(Motor6220.RightMotorHanger.ordinal());
         this.ServoLeftZiplineHitter = servos.get(Servo6220.LeftZiplineHitter.ordinal());
         this.ServoHikerDropper = servos.get(Servo6220.HikerDropper.ordinal());
         this.MotorRightTriangle = motors.get(Motor6220.RightTriangle.ordinal());
@@ -135,6 +140,9 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.MotorLeftTriangle.setDirection(DcMotor.Direction.REVERSE);
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
+        //the left side hanger motor moves the opposite direction of the right side hanger.
+        this.LeftMotorHanger.setDirection(DcMotor.Direction.REVERSE);
+
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
         this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
@@ -145,7 +153,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.LeftHolder = new ServoToggler(HolderServoLeft, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
         this.RightHolder = new ServoToggler(HolderServoRight, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
 
-        HikerDropper = new ServoToggler(ServoHikerDropper, Constants.HIKER_DROPPER_DEPLOYED, Constants.HIKER_DROPPER_DEPLOYED);
+        HikerDropper = new ServoToggler(ServoHikerDropper, Constants.HIKER_DROPPER_NOTDEPLOYED, Constants.HIKER_DROPPER_DEPLOYED);
 
         this.HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
 
@@ -183,14 +191,16 @@ public abstract class MasterOpMode extends SynchronousOpMode
                         this.telemetry.item("left back:", new IFunc<Object>()
                         {
                             @Override
-                            public Object value() {
+                            public Object value()
+                            {
                                 return format(MotorLeftBack.getPower());
                             }
                         }),
                         this.telemetry.item("right back: ", new IFunc<Object>()
                         {
                             @Override
-                            public Object value() {
+                            public Object value()
+                            {
                                 return format(MotorRightBack.getPower());
                             }
                         })

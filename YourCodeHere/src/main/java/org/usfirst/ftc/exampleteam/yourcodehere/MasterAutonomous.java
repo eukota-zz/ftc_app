@@ -16,7 +16,6 @@ import org.swerverobotics.library.interfaces.Position;
  */
 public abstract class MasterAutonomous extends MasterOpMode
 {
-
     //auto start position info
     public Transform autoStartPosition = new Transform(0.0,0.0,0.0);
     //IMU variable declaration
@@ -24,6 +23,14 @@ public abstract class MasterAutonomous extends MasterOpMode
     IBNO055IMU.Parameters parameters = new IBNO055IMU.Parameters();
 
     EulerAngles angles;
+
+    double targetAngle = 90;
+    double offset = 0;
+    double Δϴ = 0;
+    //WHOA! A ϴ!!!!!!!
+    double power = 0;
+
+    PIDFilter filter = new PIDFilter( 0.8, 0.1, 0.0 );
 
 
     protected void initialize()
@@ -45,6 +52,34 @@ public abstract class MasterAutonomous extends MasterOpMode
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
     }
+    //TODO FIX
+    public void turn(double angle) throws InterruptedException
+    {
+        //TODO Encapsulate and add a termination condition
+        while(true)
+        {
+
+            filter.update();
+            Δϴ = targetAngle - getCurrentGlobalOrientation();
+
+            //check 360-0 case
+            if (Math.abs(filter.dV) > 180)
+            {
+                offset -= Math.signum(filter.dV) * 360;
+            }
+            Δϴ += offset;
+
+            //set filtered motor powers
+            power = filter.getFilteredValue();
+            driveWheels(-power, power);
+
+            //roll records
+            filter.roll(Δϴ);
+
+            idle();
+        }
+    }
+
 
     //drive to a distance in CM
     public void driveDistance(double distance, double direction) throws InterruptedException
