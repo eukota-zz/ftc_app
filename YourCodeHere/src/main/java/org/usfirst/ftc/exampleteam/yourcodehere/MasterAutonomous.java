@@ -2,6 +2,7 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 
 
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
@@ -51,14 +52,25 @@ public abstract class MasterAutonomous extends MasterOpMode
         parameters.loggingTag = "BNO055";
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
+        //TODO FINISH
+        //imu.write8(IBNO055IMU.REGISTER.OPR_MODE, );
+
     }
-    //TODO FIX
+    //TODO FINISH
     public void turn(double angle) throws InterruptedException
     {
-        //TODO Encapsulate and add a termination condition
-        while(true)
-        {
+        boolean isTurnCompleted;
 
+        if (Math.abs(Δϴ) < 1)
+        {
+            isTurnCompleted = true;
+        } else
+        {
+            isTurnCompleted = false;
+        }
+        //TODO Encapsulate and add a termination condition
+        while (isTurnCompleted = true)
+        {
             filter.update();
             Δϴ = targetAngle - getCurrentGlobalOrientation();
 
@@ -77,6 +89,10 @@ public abstract class MasterAutonomous extends MasterOpMode
             filter.roll(Δϴ);
 
             idle();
+        }
+        while (isTurnCompleted = false)
+        {
+
         }
     }
 
