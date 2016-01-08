@@ -3,7 +3,6 @@ import org.swerverobotics.library.interfaces.Autonomous;
 /*
 	Autonomous program turns 90 degrees.
 */
-//This is a static turning loop testing program
 @Autonomous(name = "AUTO Testing", group = "Swerve Examples")
 public class AutoTest extends MasterAutonomous
 {
@@ -15,5 +14,7 @@ public class AutoTest extends MasterAutonomous
 
         // Wait until we've been given the ok to go
         waitForStart();
+
+        turnTo(90);
     }
 }

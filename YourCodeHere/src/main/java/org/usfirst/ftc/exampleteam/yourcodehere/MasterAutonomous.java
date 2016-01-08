@@ -25,11 +25,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
     EulerAngles angles;
 
-    double targetAngle = 90;
-    double offset = 0;
-    double Δϴ = 0;
-    //WHOA! A ϴ!!!!!!!
-    double power = 0;
+
 
     PIDFilter filter = new PIDFilter( 0.8, 0.1, 0.0 );
 
@@ -56,20 +52,16 @@ public abstract class MasterAutonomous extends MasterOpMode
         //imu.write8(IBNO055IMU.REGISTER.OPR_MODE, );
 
     }
-    //TODO FINISH
-    public void turn(double angle) throws InterruptedException
-    {
-        boolean isTurnCompleted;
 
-        if (Math.abs(Δϴ) < 1)
-        {
-            isTurnCompleted = true;
-        } else
-        {
-            isTurnCompleted = false;
-        }
-        //TODO Encapsulate and add a termination condition
-        while (isTurnCompleted = true)
+    //turn the robot to face a global direction
+    public void turnTo(double targetAngle) throws InterruptedException
+    {
+        double offset = 0;
+        double Δϴ = 0;
+        double power = 0;
+        boolean isTurnCompleted = false;
+        
+        while (!isTurnCompleted)
         {
             filter.update();
             Δϴ = targetAngle - getCurrentGlobalOrientation();
@@ -88,12 +80,16 @@ public abstract class MasterAutonomous extends MasterOpMode
             //roll records
             filter.roll(Δϴ);
 
+            //check if the turn is finished and the robot is settled
+            if (Math.abs(Δϴ) < 1 && Math.abs(filter.dV) < 0.1)
+            {
+                isTurnCompleted = true;
+                stopDriveMotors();
+            }
+
             idle();
         }
-        while (isTurnCompleted = false)
-        {
 
-        }
     }
 
 
