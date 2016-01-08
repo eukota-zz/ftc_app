@@ -27,7 +27,7 @@ import org.swerverobotics.library.interfaces.*;
  * to the 'settings.gradle' file so they show up in Android Studio.
  *
  * @see TeleOp
- * @see Autonomous1
+ * @see Autonomous
  * @see OpModeRegistrar
  * @see OnRobotRunning
  * @see SynchTeleOp
@@ -39,7 +39,7 @@ public class MyRobotControllerAdministration
      * your needs: the specific OpModes that are registered as this code comes from
      * the factory are probably not what you want. For your own OpModes, though you could register them
      * here, it is preferable to annotate them in their own source with {@link TeleOp}
-     * or {@link Autonomous1} annotations, as appropriate.
+     * or {@link Autonomous} annotations, as appropriate.
      *
      * @param context   the application context of the robot controller application. Not often
      *                  actually used in OpMode registrar functions.
