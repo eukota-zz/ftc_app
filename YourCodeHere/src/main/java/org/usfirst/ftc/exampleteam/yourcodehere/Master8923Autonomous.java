@@ -3,8 +3,11 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 
+import org.swerverobotics.library.examples.SynchTelemetryOp;
+import org.swerverobotics.library.interfaces.EulerAngles;
 import org.swerverobotics.library.interfaces.IFunc;
 
 /*
@@ -110,6 +113,29 @@ public class Master8923Autonomous extends Master8923
         turnLeftDistance(-power, distance);
     }
 
+    public void TurnRightDegrees(double power, int angle) throws InterruptedException
+    {
+        double calibratedHeading = imu.getAngularOrientation().heading;
+        double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+
+        turnRight(power);
+
+        while(currentHeading > angle)
+        {
+            currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+            // Wait until we've reached our target angle
+            telemetry.update();
+            idle();
+        }
+
+        stopDriving();
+    }
+
+    public void TurnLeftDegrees(double power, int angle) throws InterruptedException
+    {
+       TurnRightDegrees(-power, -angle);
+    }
+
     public void dumpClimbers() throws InterruptedException
     {
         servoClimberDumper.setPosition(CLIMBER_DUMP_POSITION);
@@ -197,7 +223,7 @@ public class Master8923Autonomous extends Master8923
         */
     }
 
-    public void allignWithRedSideWhiteLine() throws InterruptedException
+    public void alignWithRedSideWhiteLine() throws InterruptedException
     {
         driveForward(-DRIVE_POWER / 2);
         lightSensorLEDs(ON);

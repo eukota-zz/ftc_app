@@ -1,7 +1,6 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
-import org.swerverobotics.library.interfaces.Disabled;
 
 /**
  * Robot starts on red side, goes to beacon,
@@ -24,7 +23,7 @@ public class AutoRedInsideBeaconClimberZipliner extends Master8923Autonomous
         servoStartingPositions();
 
         driveBackwardDistance(DRIVE_POWER, FOO);
-        allignWithRedSideWhiteLine();
+        alignWithRedSideWhiteLine();
         stopDriving();
         pressBeaconButton();
         dumpClimbers();

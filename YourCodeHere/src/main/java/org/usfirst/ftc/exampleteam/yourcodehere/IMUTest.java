@@ -11,7 +11,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Testing IMU's and having fun doing it
  */
 @TeleOp(name="IMUTest")
-public class IMUTest extends SynchronousOpMode
+public class IMUTest extends Master8923TeleOp
 {
     IBNO055IMU imu;
     IBNO055IMU.Parameters   parameters = new IBNO055IMU.Parameters();

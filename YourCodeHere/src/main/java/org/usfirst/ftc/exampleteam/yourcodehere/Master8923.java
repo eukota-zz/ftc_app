@@ -8,7 +8,9 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 
+import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.IBNO055IMU;
 /*
  * Global robot attributes used in all programs
  */
@@ -32,6 +34,7 @@ public class Master8923 extends SynchronousOpMode
     LightSensor lightSensorFront;
     LightSensor lightSensorBack;
     UltrasonicSensor ultrasonicSensor;
+    IBNO055IMU imu;
     int calibratedBlue;
 
     //TODO change this
@@ -62,9 +65,7 @@ public class Master8923 extends SynchronousOpMode
     boolean collectorHingeIsUp = false;
     boolean climberArmOut = false;
     double slowModeFactor = 1.0;
-    int distance = (int) (ultrasonicSensor.getUltrasonicLevel() - 25) * 50;
-    double tempPower = (distance > 0) ? (DRIVE_POWER / 2) : (-DRIVE_POWER / 2);
-
+    IBNO055IMU.Parameters   parameters = new IBNO055IMU.Parameters();
 
     @Override protected void main() throws InterruptedException {}
 
@@ -106,5 +107,7 @@ public class Master8923 extends SynchronousOpMode
         lightSensorFront = hardwareMap.lightSensor.get("lightSensorFront");
         lightSensorBack = hardwareMap.lightSensor.get("lightSensorBack");
         ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonicSensor");
+        parameters.angleunit = IBNO055IMU.ANGLEUNIT.DEGREES;
+        imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
     }
 }
