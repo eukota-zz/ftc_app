@@ -125,7 +125,7 @@ public class MasterAutonomous extends Master
 
     public void turnLeftDegrees(double power, int angle) throws InterruptedException
     {
-       TurnRightDegrees(-power, -angle);
+       turnRightDegrees(-power, -angle);
     }
 
     public void dumpClimbers() throws InterruptedException
