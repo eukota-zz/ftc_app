@@ -58,6 +58,40 @@ public class MasterAutonomous extends Master
         driveForwardDistance(-power, -distance);
     }
 
+    public void driveForwardDistanceIMU(double power, int distance) throws InterruptedException
+    {
+        motorLeft.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorRight.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+
+        motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+
+        driveForward(power);
+
+        double calibratedHeading = imu.getAngularOrientation().heading;
+        double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+        double offsetMultiplier = 1 / 80;
+
+        while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) && Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
+        {
+            // Use IMU to keep us driving straight
+            currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+            motorLeft.setPower(power + currentHeading * offsetMultiplier);
+            motorRight.setPower(power - currentHeading * offsetMultiplier);
+
+            // Wait until distance is reached
+            telemetry.update();
+            idle();
+        }
+
+        stopDriving();
+    }
+    
+    public void driveBackwardDistanceIMU(double power, int distance) throws InterruptedException
+    {
+        driveForwardDistanceIMU(-power, -distance);
+    }
+
     public void turnLeft(double power)
     {
         motorLeft.setPower(-power);
