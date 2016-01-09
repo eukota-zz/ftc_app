@@ -27,7 +27,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
 
 
-    PIDFilter filter = new PIDFilter( 0.8, 0.1, 0.0 );
+    PIDFilter filter = new PIDFilter( 0.1, 0.0, 0.01 );
 
 
     protected void initialize()
@@ -81,6 +81,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             filter.roll(Δϴ);
 
             //check if the turn is finished and the robot is settled
+
             if (Math.abs(Δϴ) < 1 && Math.abs(filter.dV) < 0.1)
             {
                 isTurnCompleted = true;

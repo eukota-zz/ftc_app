@@ -48,22 +48,9 @@ public abstract class MasterTeleOp extends MasterOpMode
     //  rho = 2 :: squarish
     //  rho = 1 :: circle
     //  rho = 0 :: linear
-    protected double stickCurve(double value, double rho)
+    protected double stickCurve(double value)
     {
-        double output;
-        if (value > 0)
-        {
-            output =  Math.pow(1- Math.pow((1-value),(rho+1)),1/(rho+1));
-        }
-        else if (value < 0)
-        {
-            output = Math.pow(1- Math.pow((1-value),rho),1/rho);
-        }
-        else
-        {
-            output = 0.0;
-        }
-        return Math.abs(output) * Math.signum(value);
+        return (Math.pow(value, 3) + value) / 2;
     }
 
 
@@ -74,8 +61,8 @@ public abstract class MasterTeleOp extends MasterOpMode
         // power levels range over the same amount
 
         //using the stickCurve function allows the driver to control the robot more precisely, so we use it for power input
-        double leftStickPower  = stickCurve(pad.left_stick_y,  -0.1) * currentDrivePowerFactor;
-        double rightStickPower = stickCurve(pad.right_stick_y, -0.1) * currentDrivePowerFactor;
+        double p1LeftStickPower  = stickCurve(pad.left_stick_y) * currentDrivePowerFactor;
+        double p1RightStickPower = stickCurve(pad.right_stick_y) * currentDrivePowerFactor;
 
         double leftSidePower;
         double rightSidePower;
@@ -86,8 +73,8 @@ public abstract class MasterTeleOp extends MasterOpMode
         if (currentDriveMode == DriveMode.Field)
         {
             //the sticks and power are flipped
-            leftSidePower  = rightStickPower;
-            rightSidePower = leftStickPower;
+            leftSidePower  = p1RightStickPower;
+            rightSidePower = p1LeftStickPower;
             driveWheels(leftSidePower, rightSidePower);
             driveClimbers(climberPower, climberPower);
         }
@@ -96,8 +83,8 @@ public abstract class MasterTeleOp extends MasterOpMode
         else if (currentDriveMode == DriveMode.PreRamp)
         {
             //read input from the controller
-            leftSidePower  = -leftStickPower;
-            rightSidePower = -rightStickPower;
+            leftSidePower  = -p1LeftStickPower;
+            rightSidePower = -p1RightStickPower;
             driveWheels(leftSidePower, rightSidePower);
             driveClimbers(climberPower, climberPower);
         }
@@ -105,11 +92,10 @@ public abstract class MasterTeleOp extends MasterOpMode
         else if (currentDriveMode == DriveMode.Ramp)
         {
             //read input from the controller. The climbers should turn with the wheels
-            leftSidePower  = -leftStickPower;
-            rightSidePower = -rightStickPower;
+            leftSidePower  = -p1LeftStickPower;
+            rightSidePower = -p1RightStickPower;
             driveWheels(leftSidePower, rightSidePower);
             driveClimbers(leftSidePower, rightSidePower);
         }
-
     }
 }

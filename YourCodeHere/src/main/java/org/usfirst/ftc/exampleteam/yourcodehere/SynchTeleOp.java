@@ -13,12 +13,10 @@ public class SynchTeleOp extends MasterTeleOp
     @Override
     protected void main() throws InterruptedException
     {
-        initialize();
-        // Configure the dashboard however we want it
-        //this.configureDashboard();
-
         // Wait until we've been given the ok to go
         this.waitForStart();
+
+        initialize();
 
         // Enter a loop processing all the input we receive
         while (this.opModeIsActive())
@@ -46,8 +44,15 @@ public class SynchTeleOp extends MasterTeleOp
             HikerDropper.toggle();
         }
 
+        double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
+        double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
 
-        if (pad2.dpad_left)
+        LeftMotorHanger.setPower(p2RightStickPower * -1);
+        RightMotorHanger.setPower(p2RightStickPower * -1);
+
+        HangerServo.setPosition((p2LeftStickPower + 1) / 2);
+
+        /*if (pad2.dpad_left)
         {
             HangerServo.setPosition(Constants.HANGER_SERVO_DEPLOYED);
         } else if (pad2.dpad_right)
@@ -70,7 +75,7 @@ public class SynchTeleOp extends MasterTeleOp
         {
             LeftMotorHanger.setPower(Constants.STOP);
             RightMotorHanger.setPower(Constants.STOP);
-        }
+        } */
 
         //deploy the holder
         if (pad2.b)
