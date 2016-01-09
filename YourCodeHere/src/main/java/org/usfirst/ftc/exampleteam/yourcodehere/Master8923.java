@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.IBNO055IMU;
+import org.swerverobotics.library.interfaces.IFunc;
 /*
  * Global robot attributes used in all programs
  */
@@ -109,5 +110,74 @@ public class Master8923 extends SynchronousOpMode
         ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonicSensor");
         parameters.angleunit = IBNO055IMU.ANGLEUNIT.DEGREES;
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
+    }
+
+    public void configureTelemtry()
+    {
+        // Left drive motor info
+        telemetry.addLine
+                (
+                        this.telemetry.item("Left Power: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatNumber(motorLeft.getPower());
+                            }
+                        }),
+                        this.telemetry.item("Encoder: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatNumber(motorLeft.getCurrentPosition());
+                            }
+                        })
+                );
+
+        // Right drive motor info
+        telemetry.addLine
+                (
+                        this.telemetry.item("Right Power: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatNumber(motorRight.getPower());
+                            }
+                        }),
+                        this.telemetry.item("Encoder: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatNumber(motorRight.getCurrentPosition());
+                            }
+                        })
+                );
+
+        // Light sensor info
+        telemetry.addLine
+                (
+                        this.telemetry.item("Front light sensor: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return lightSensorFront.getLightDetected();
+                            }
+                        }),
+                        this.telemetry.item("Back light sensor: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return lightSensorBack.getLightDetected();
+                            }
+                        })
+                );
+
+        telemetry.addLine
+                (
+                        this.telemetry.item("Ultrasonic: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return ultrasonicSensor.getUltrasonicLevel();
+                            }
+                        })
+                );
+    }
+
+    public String formatNumber(double number)
+    {
+        return String.format("%.1f", number);
     }
 }
