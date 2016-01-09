@@ -1,7 +1,6 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
-import org.swerverobotics.library.interfaces.Disabled;
 
 /**
  * Robot starts on blue side, goes to beacon,
@@ -9,7 +8,7 @@ import org.swerverobotics.library.interfaces.Disabled;
  * parks in floor goal
  */
 @Autonomous(name="AutoBlueInsideBeaconClimberZipliner")
-public class AutoBlueInsideBeaconClimberZipliner extends Master8923Autonomous
+public class AutoBlueInsideBeaconClimberZipliner extends MasterAutonomous
 {
     @Override public void main() throws InterruptedException
     {

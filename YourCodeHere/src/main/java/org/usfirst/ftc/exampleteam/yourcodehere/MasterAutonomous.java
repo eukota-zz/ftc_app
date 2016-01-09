@@ -1,19 +1,11 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.LightSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.UltrasonicSensor;
-
-import org.swerverobotics.library.examples.SynchTelemetryOp;
-import org.swerverobotics.library.interfaces.EulerAngles;
-import org.swerverobotics.library.interfaces.IFunc;
 
 /*
- *
+ * Robot attributes used in autonomous programs
  */
-public class Master8923Autonomous extends Master8923
+public class MasterAutonomous extends Master
 {
     public void servoStartingPositions()
     {

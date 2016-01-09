@@ -3,7 +3,7 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class JSONTest extends Master8923
+public class JSONTest extends Master
 {
     JSONObject colorSensorValueStorage = new JSONObject();
 

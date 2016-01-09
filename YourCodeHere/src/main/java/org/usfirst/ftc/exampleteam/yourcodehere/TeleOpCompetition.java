@@ -1,13 +1,12 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
  * Main TeleOp file for 8923 bot
  */
-@TeleOp(name="8923 Main TeleOp")
-public class MainTeleOp8923 extends Master8923TeleOp
+@TeleOp(name="TeleOp Competition")
+public class TeleOpCompetition extends MasterTeleOp
 {
     @Override protected void main() throws InterruptedException
     {

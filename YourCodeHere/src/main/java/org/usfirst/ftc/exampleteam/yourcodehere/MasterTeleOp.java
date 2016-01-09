@@ -1,13 +1,11 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 
 /*
- *
+ * Robot attributes used in TeleOp programs
  */
-public class Master8923TeleOp extends Master8923
+public class MasterTeleOp extends Master
 {
     public void tankDrive(Gamepad gamepad)
     {

@@ -8,7 +8,7 @@ import org.swerverobotics.library.interfaces.Autonomous;
  * parks in floor goal
  */
 @Autonomous(name="AutoRedInsideBeaconClimberZipliner")
-public class AutoRedInsideBeaconClimberZipliner extends Master8923Autonomous
+public class AutoRedInsideBeaconClimberZipliner extends MasterAutonomous
 {
     @Override public void main() throws InterruptedException
     {
