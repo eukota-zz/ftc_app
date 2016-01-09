@@ -96,7 +96,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
         MotorRightClimber.setPower(rightPower);
     }
 
-    protected void initializeHardware()
+    protected void initialize()
     {
         //dynamically load all servos
         for (String curServoName : Servo6220.GetNames())

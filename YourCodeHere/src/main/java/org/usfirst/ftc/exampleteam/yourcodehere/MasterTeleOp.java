@@ -10,7 +10,7 @@ public abstract class MasterTeleOp extends MasterOpMode
 {
     protected void initialize()
     {
-        initializeHardware();
+        super.initialize();
 
         //this makes sure the joystick does not take minute data
         this.gamepad1.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);

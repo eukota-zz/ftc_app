@@ -33,7 +33,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     protected void initialize()
     {
 
-        initializeHardware();
+        super.initialize();
 
         //zero encoders
         MotorLeftBack.setMode(DcMotorController.RunMode.RESET_ENCODERS);
