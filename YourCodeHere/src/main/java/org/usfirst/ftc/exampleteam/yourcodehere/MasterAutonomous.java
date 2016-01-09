@@ -105,14 +105,14 @@ public class MasterAutonomous extends Master
         turnLeftDistance(-power, distance);
     }
 
-    public void TurnRightDegrees(double power, int angle) throws InterruptedException
+    public void turnRightDegrees(double power, int angle) throws InterruptedException
     {
         double calibratedHeading = imu.getAngularOrientation().heading;
         double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
 
         turnRight(power);
 
-        while(currentHeading > angle)
+        while(Math.abs(currentHeading) < Math.abs(angle))
         {
             currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
             // Wait until we've reached our target angle
@@ -123,7 +123,7 @@ public class MasterAutonomous extends Master
         stopDriving();
     }
 
-    public void TurnLeftDegrees(double power, int angle) throws InterruptedException
+    public void turnLeftDegrees(double power, int angle) throws InterruptedException
     {
        TurnRightDegrees(-power, -angle);
     }
