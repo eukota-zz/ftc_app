@@ -23,15 +23,15 @@ public class AutoRedInsideBeaconClimberZipliner extends MasterAutonomous
         servoStartingPositions();
 
         driveBackwardDistance(DRIVE_POWER, FOO);
-        alignWithRedSideWhiteLine();
+        //alignWithRedSideWhiteLine();
         stopDriving();
-        pressBeaconButton();
-        dumpClimbers();
+        //pressBeaconButton();
+        //dumpClimbers();
         driveForwardDistance(DRIVE_POWER, FOO);
         turnLeftDistance(DRIVE_POWER, FOO);
-        setLeftZiplineOut();
+        //setLeftZiplineOut();
         driveForwardDistance(DRIVE_POWER, FOO);
-        setLeftZiplineUp();
+        //setLeftZiplineUp();
         stopDriving();
     }
 }
