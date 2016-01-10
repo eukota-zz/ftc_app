@@ -60,20 +60,26 @@ public abstract class MasterAutonomous extends MasterOpMode
         double Δϴ = 0;
         double power = 0;
         boolean isTurnCompleted = false;
+        double currentOrientation = 0;
         
         while (!isTurnCompleted)
         {
-            //filter.update();
-            Δϴ = targetAngle - getCurrentGlobalOrientation();
+            filter.update();
+            currentOrientation = getCurrentGlobalOrientation();
+            Δϴ = targetAngle - currentOrientation;
+
+            telemetry.addData("theta", Δϴ);
+            telemetry.addData("orientation", currentOrientation);
+            telemetry.update();
 
             //check 360-0 case
-            /*
+
             if (Math.abs(filter.dV) > 180)
             {
                 offset -= Math.signum(filter.dV) * 360;
             }
             Δϴ += offset;
-            */
+
             //set filtered motor powers
             //power = filter.getFilteredValue();
             power = 0.1 * Δϴ;
@@ -84,7 +90,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             driveWheels(-power, power);
 
             //roll records
-            //filter.roll(Δϴ);
+            filter.roll(Δϴ);
 
             //check if the turn is finished and the robot is settled
 

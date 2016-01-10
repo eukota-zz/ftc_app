@@ -11,7 +11,7 @@ public class PIDFilter implements Filter
 {
     //must be >=2
     //makes reading from discreet sensors smoother
-    private final int RECORD_DEPTH = 200;
+    private final int RECORD_DEPTH = 2;
 
     //Proportional coefficient
     private double εP;
