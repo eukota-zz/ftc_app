@@ -63,30 +63,37 @@ public abstract class MasterAutonomous extends MasterOpMode
         
         while (!isTurnCompleted)
         {
-            filter.update();
+            //filter.update();
             Δϴ = targetAngle - getCurrentGlobalOrientation();
 
             //check 360-0 case
+            /*
             if (Math.abs(filter.dV) > 180)
             {
                 offset -= Math.signum(filter.dV) * 360;
             }
             Δϴ += offset;
-
+            */
             //set filtered motor powers
-            power = filter.getFilteredValue();
+            //power = filter.getFilteredValue();
+            power = 0.1 * Δϴ;
+            if (Math.abs(power) > 1)
+            {
+                power = Math.signum(power);
+            }
             driveWheels(-power, power);
 
             //roll records
-            filter.roll(Δϴ);
+            //filter.roll(Δϴ);
 
             //check if the turn is finished and the robot is settled
 
+            /*
             if (Math.abs(Δϴ) < 1 && Math.abs(filter.dV) < 0.1)
             {
                 isTurnCompleted = true;
                 stopDriveMotors();
-            }
+            }*/
 
             idle();
         }
@@ -130,7 +137,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     //return the global orientation of the robot, accounting for autonomous start
     public double getCurrentGlobalOrientation()
     {
-        return getCurrentLocalOrientation() + autoStartPosition.orientation;
+        return (-1 * (getCurrentLocalOrientation() + autoStartPosition.orientation) + 360);
     }
     //return the local orientation of the robot, relative to it's start
     public double getCurrentLocalOrientation()
