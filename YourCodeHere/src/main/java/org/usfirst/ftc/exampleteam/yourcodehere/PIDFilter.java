@@ -1,5 +1,7 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 /*
     Proportional-Integral-Derivative
     Calculates a weighted sum of a input, it's first integral, and first derivative.
@@ -9,6 +11,10 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 //TODO move avaerage elsewere
 public class PIDFilter implements Filter
 {
+    double lastTime = 0;
+    double nextTime = 0;
+
+
     //must be >=2
     //makes reading from discreet sensors smoother
     private final int RECORD_DEPTH = 2;
@@ -49,6 +55,10 @@ public class PIDFilter implements Filter
         values[0] = newValue;
     }
 
+    public double getLastDiff()
+    {
+        return values[0] - values[1];
+    }
     //update dVArray
     private void rolldV()
     {

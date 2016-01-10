@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 /*
     This contains joystick nput handling methods and initialization
  */
-//TODO variable speed for the hanger servo and motors
 public abstract class MasterTeleOp extends MasterOpMode
 {
     protected void initialize()

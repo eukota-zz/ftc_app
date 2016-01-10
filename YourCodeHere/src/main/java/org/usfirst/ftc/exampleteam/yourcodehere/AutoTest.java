@@ -14,7 +14,7 @@ public class AutoTest extends MasterAutonomous
 
         //Initialize our hardware
         initialize();
-
-        turnTo(90);
+        wait(1000);
+        turnTo(180);
     }
 }

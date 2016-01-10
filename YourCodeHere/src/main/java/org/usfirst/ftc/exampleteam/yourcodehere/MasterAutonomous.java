@@ -18,7 +18,7 @@ import org.swerverobotics.library.interfaces.Position;
 public abstract class MasterAutonomous extends MasterOpMode
 {
     //auto start position info
-    public Transform autoStartPosition = new Transform(0.0,0.0,0.0);
+    public Transform autoStartPosition = new Transform(0.0,0.0,90.0);
     //IMU variable declaration
     ElapsedTime elapsed = new ElapsedTime();
     IBNO055IMU.Parameters parameters = new IBNO055IMU.Parameters();
@@ -27,7 +27,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
 
 
-    PIDFilter filter = new PIDFilter( 0.1, 0.0, 0.01 );
+    PIDFilter turnFilter = new PIDFilter( 0.04, 0.00001, 0.01 );
 
 
     protected void initialize()
@@ -48,7 +48,7 @@ public abstract class MasterAutonomous extends MasterOpMode
         parameters.loggingTag = "BNO055";
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
-        //TODO FINISH
+        //TODO adjust imu frequency dampening
         //imu.write8(IBNO055IMU.REGISTER.OPR_MODE, );
 
     }
@@ -57,43 +57,53 @@ public abstract class MasterAutonomous extends MasterOpMode
     public void turnTo(double targetAngle) throws InterruptedException
     {
         double offset = 0;
-        double Δϴ = 0;
-        double power = 0;
+        double Δϴ;
+        double power;
         boolean isTurnCompleted = false;
-        double currentOrientation = 0;
-        
+        double currentOrientation;
+        double[] lasts = {0,0};
+        double sensorDiff;
+
         while (!isTurnCompleted)
         {
-            filter.update();
+            turnFilter.update();
+
             currentOrientation = getCurrentGlobalOrientation();
             Δϴ = targetAngle - currentOrientation;
-
-            telemetry.addData("theta", Δϴ);
-            telemetry.addData("orientation", currentOrientation);
-            telemetry.update();
-
+            //roll sensor difference. we do this to maintain the PID filter's unawareness of the transition
+            lasts[1] = lasts[0];
+            lasts[0] = Δϴ;
+            sensorDiff = lasts[0]-lasts[1];
             //check 360-0 case
-
-            if (Math.abs(filter.dV) > 180)
+            if (Math.abs(sensorDiff) > 350)
             {
-                offset -= Math.signum(filter.dV) * 360;
+                offset -= Math.signum(sensorDiff) * 360;
             }
             Δϴ += offset;
+            //check suboptimal direction case
+            //should only resolve once
+            if (Math.abs(Δϴ) > 180)
+            {
+                offset -= Math.signum(Δϴ) * 360;
+            }
+            turnFilter.roll(Δϴ);
 
             //set filtered motor powers
-            //power = filter.getFilteredValue();
-            power = 0.1 * Δϴ;
+            power = turnFilter.getFilteredValue();
+            //cap power at 1 magnitude
             if (Math.abs(power) > 1)
             {
                 power = Math.signum(power);
             }
             driveWheels(-power, power);
 
-            //roll records
-            filter.roll(Δϴ);
+            telemetry.addData("power:", power);
+            telemetry.addData("dA:", Δϴ);
+            telemetry.update();
+
+
 
             //check if the turn is finished and the robot is settled
-
             /*
             if (Math.abs(Δϴ) < 1 && Math.abs(filter.dV) < 0.1)
             {
