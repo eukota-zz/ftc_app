@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 public class MasterTeleOp extends Master
 {
+    boolean lightsAreOn = true;
     public void tankDrive(Gamepad gamepad)
     {
         // Tank drive based on joysticks of controller 1
@@ -125,6 +126,18 @@ public class MasterTeleOp extends Master
                 servoClimberDumper.setPosition(CLIMBER_ARM_OUT);
             else
                 servoClimberDumper.setPosition(CLIMBER_ARM_IN);
+        }
+    }
+
+    public void toggleLights(Gamepad gamepad)
+    {
+        if(gamepad.a)
+        {
+            lightsAreOn = !lightsAreOn;
+
+            if(lightsAreOn)
+                lights.setPower(POWER_FULL);
+            else lights.setPower(POWER_STOP);
         }
     }
 }

@@ -45,5 +45,6 @@ public class TeleOpCompetition extends MasterTeleOp
         controlZiplineServos(gamepad2);
         controlCollectorRamp(gamepad2);
         controlClimberDumper(gamepad2);
+        toggleLights(gamepad2);
     }
 }

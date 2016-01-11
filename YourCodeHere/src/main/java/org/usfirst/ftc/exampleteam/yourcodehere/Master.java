@@ -22,6 +22,7 @@ public class Master extends SynchronousOpMode
     DcMotor motorCollector = null;
     DcMotor motorScorer = null;
     DcMotor motorTapeMeasure = null;
+    DcMotor lights = null;
 
     Servo servoLeftZipline = null;
     Servo servoRightZipline = null;
@@ -77,6 +78,7 @@ public class Master extends SynchronousOpMode
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
         motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
+        lights = hardwareMap.dcMotor.get("lights");
 
         servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
