@@ -24,7 +24,7 @@ public class AutoBlueInsideBeaconClimberZipliner extends MasterAutonomous
 
         driveBackwardDistance(DRIVE_POWER, FOO);
         allignWithBlueSideWhiteLine();
-        stopDriving();
+        correctDistanceToWall();
         pressBeaconButton();
         dumpClimbers();
         driveForwardDistance(DRIVE_POWER, FOO);

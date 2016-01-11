@@ -245,4 +245,9 @@ public class MasterAutonomous extends Master
     {
         return ultrasonicSensor.getUltrasonicLevel();
     }
+
+    public void correctDistanceToWall() throws InterruptedException
+    {
+        driveForwardDistance(DRIVE_POWER / 2, (int) ((30.0 - getDistance()) * 100.0));
+    }
 }
