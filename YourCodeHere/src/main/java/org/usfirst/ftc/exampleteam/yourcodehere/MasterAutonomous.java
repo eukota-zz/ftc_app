@@ -63,6 +63,7 @@ public abstract class MasterAutonomous extends MasterOpMode
         double currentOrientation;
         double[] lasts = {0,0};
         double sensorDiff;
+        double satisfactionCounter = 0;
 
         while (!isTurnCompleted)
         {
@@ -95,24 +96,135 @@ public abstract class MasterAutonomous extends MasterOpMode
             {
                 power = Math.signum(power);
             }
-            driveWheels(-power, power);
+            driveWheels(power, -power);
 
             telemetry.addData("power:", power);
             telemetry.addData("dA:", Δϴ);
-            telemetry.update();
+
 
 
 
             //check if the turn is finished and the robot is settled
-            /*
-            if (Math.abs(Δϴ) < 1 && Math.abs(filter.dV) < 0.1)
+
+            if (Math.abs(Δϴ) < 3)
+            {
+                satisfactionCounter++;
+            }
+            else
+            {
+                satisfactionCounter = 0;
+            }
+
+            if (satisfactionCounter > 100)
             {
                 isTurnCompleted = true;
-                stopDriveMotors();
-            }*/
+            }
 
+            telemetry.addData("satisfaction:", satisfactionCounter);
+            telemetry.update();
+
+            wait(1);
             idle();
         }
+        stopDriveMotors();
+
+    }
+
+    public void driveStraight(double targetPower) throws InterruptedException
+    {
+        double offset = 0;
+        double Δϴ;
+        double power;
+        double leftpower;
+        double rightpower;
+        boolean isTurnCompleted = false;
+        double currentOrientation;
+        double[] lasts = {0,0};
+        double sensorDiff;
+        double satisfactionCounter = 0;
+
+        double targetAngle = getCurrentGlobalOrientation();
+
+
+        while (!isTurnCompleted)
+        {
+            turnFilter.update();
+
+            currentOrientation = getCurrentGlobalOrientation();
+            Δϴ = targetAngle - currentOrientation;
+            //roll sensor difference. we do this to maintain the PID filter's unawareness of the transition
+            lasts[1] = lasts[0];
+            lasts[0] = Δϴ;
+            sensorDiff = lasts[0]-lasts[1];
+            //check 360-0 case
+            if (Math.abs(sensorDiff) > 350)
+            {
+                offset -= Math.signum(sensorDiff) * 360;
+            }
+            Δϴ += offset;
+            //check suboptimal direction case
+            //should only resolve once
+            if (Math.abs(Δϴ) > 180)
+            {
+                offset -= Math.signum(Δϴ) * 360;
+            }
+            turnFilter.roll(Δϴ);
+
+            //set filtered motor powers
+            power = turnFilter.getFilteredValue();
+            //cap power at 1 magnitude
+            if (Math.abs(power) > 1)
+            {
+                power = Math.signum(power);
+            }
+
+            leftpower = targetPower + power;
+            rightpower = (-1 *targetPower) - power;
+
+            //cap power at 1 magnitude
+            if (Math.abs(leftpower) > 1)
+            {
+                leftpower = Math.signum(leftpower);
+            }
+
+            //cap power at 1 magnitude
+            if (Math.abs(rightpower) > 1)
+            {
+                rightpower = Math.signum(rightpower);
+            }
+
+            driveWheels(leftpower, rightpower );
+
+            telemetry.addData("leftpower:", targetPower + power);
+            telemetry.addData("rightpower:", (-1 *targetPower) - power );
+            telemetry.addData("dA:", Δϴ);
+
+
+
+
+            //check if the turn is finished and the robot is settled
+
+            if (Math.abs(Δϴ) < 3)
+            {
+                satisfactionCounter++;
+            }
+            else
+            {
+                satisfactionCounter = 0;
+            }
+
+            if (satisfactionCounter > 100)
+            {
+                isTurnCompleted = true;
+            }
+
+            telemetry.addData("satisfaction:", satisfactionCounter);
+            telemetry.update();
+
+            wait(1);
+            idle();
+        }
+        stopDriveMotors();
 
     }
 
@@ -153,7 +265,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     //return the global orientation of the robot, accounting for autonomous start
     public double getCurrentGlobalOrientation()
     {
-        return (-1 * (getCurrentLocalOrientation() + autoStartPosition.orientation) + 360);
+        return ((getCurrentLocalOrientation() + autoStartPosition.orientation));
     }
     //return the local orientation of the robot, relative to it's start
     public double getCurrentLocalOrientation()
