@@ -25,7 +25,15 @@ public class AutoRedInsideBeaconClimberZipliner extends MasterAutonomous
         driveBackwardDistance(DRIVE_POWER, FOO);
         alignWithRedSideWhiteLine();
         correctDistanceToWall();
+
+        readBeaconColors();
+        // Decide which side is red, and set servo
+        if(leftRed > rightRed + colorDifferenceThreshold && rightBlue > leftBlue + colorDifferenceThreshold)
+            servoLeftZipline.setPosition(LEFT_BEACON_BUTTON_POSITION);
+        else if(rightRed > leftRed + colorDifferenceThreshold && leftBlue > rightBlue + colorDifferenceThreshold)
+            servoLeftZipline.setPosition(RIGHT_BEACON_BUTTON_POSITION);
         pressBeaconButton();
+
         dumpClimbers();
         driveForwardDistance(DRIVE_POWER, FOO);
         turnLeftDistance(DRIVE_POWER, FOO);

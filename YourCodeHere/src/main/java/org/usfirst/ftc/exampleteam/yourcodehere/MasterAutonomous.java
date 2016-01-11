@@ -7,6 +7,13 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
  */
 public class MasterAutonomous extends Master
 {
+    // Variables for beacon colors
+    int leftBlue = 0;
+    int leftRed = 0;
+    int rightBlue = 0;
+    int rightRed = 0;
+    int colorDifferenceThreshold = 300;
+
     public void servoStartingPositions()
     {
         servoClimberDumper.setPosition(CLIMBER_RETURN_POSITION);
@@ -86,7 +93,7 @@ public class MasterAutonomous extends Master
 
         stopDriving();
     }
-    
+
     public void driveBackwardDistanceIMU(double power, int distance) throws InterruptedException
     {
         driveForwardDistanceIMU(-power, -distance);
@@ -159,7 +166,7 @@ public class MasterAutonomous extends Master
 
     public void turnLeftDegrees(double power, int angle) throws InterruptedException
     {
-       turnRightDegrees(-power, -angle);
+        turnRightDegrees(-power, -angle);
     }
 
     public void dumpClimbers() throws InterruptedException
@@ -167,24 +174,27 @@ public class MasterAutonomous extends Master
         servoClimberDumper.setPosition(CLIMBER_DUMP_POSITION);
     }
 
+    public void readBeaconColors() throws InterruptedException
+    {
+        // Check left side
+        servoLeftZipline.setPosition(LEFT_BEACON_BUTTON_POSITION);
+        Thread.sleep(500);
+        leftBlue = colorSensorBeacon.blue();
+        leftRed = colorSensorBeacon.red();
+        telemetry.log.add("Left blue:" + leftBlue + " red:" + leftRed);
+
+        // Check right side
+        servoLeftZipline.setPosition(RIGHT_BEACON_BUTTON_POSITION);
+        Thread.sleep(500);
+        rightBlue = colorSensorBeacon.blue();
+        rightRed = colorSensorBeacon.red();
+        telemetry.log.add("Right blue:" + rightBlue + " red:" + rightRed);
+    }
+
     public void pressBeaconButton() throws InterruptedException
     {
-        // Check for a range of blue
-        if(colorSensorBeacon.blue() <= calibratedBlue + 50 && colorSensorBeacon.blue() < calibratedBlue - 50)
-        {
-            // Press Blue
-            servoLeftZipline.setPosition(0.8);
-            Thread.sleep(500);
-            servoLeftZipline.setPosition(0.5);
-        }
-        else
-        {
-            // Otherwise press Red
-            servoLeftZipline.setPosition(0.2);
-            Thread.sleep(500);
-            servoLeftZipline.setPosition(0.5);
-        }
-
+        driveBackwardDistance(DRIVE_POWER / 2, 200);
+        driveForwardDistance(DRIVE_POWER / 2, 200);
     }
 
     public void allignWithBlueSideWhiteLine() throws InterruptedException

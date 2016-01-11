@@ -48,6 +48,8 @@ public class Master extends SynchronousOpMode
     double ZIPLINE_LEFT_OUT = 0.4;
     double ZIPLINE_RIGHT_UP = 0.1;
     double ZIPLINE_RIGHT_OUT = 0.7;
+    double LEFT_BEACON_BUTTON_POSITION = 0.8;
+    double RIGHT_BEACON_BUTTON_POSITION = 0.9;
     double COLLECTOR_HINGE_DOWN = 0.6;
     double COLLECTOR_HINGE_UP = 0.8;
     double TAPE_MEASURE_ELEVATION_RATE = 0.05;
