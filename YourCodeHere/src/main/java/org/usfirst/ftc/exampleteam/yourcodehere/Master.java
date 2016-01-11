@@ -181,4 +181,15 @@ public class Master extends SynchronousOpMode
     {
         return String.format("%.1f", number);
     }
+
+    // Use this instead of Thread.sleep()
+    public void delay(long millis) throws InterruptedException
+    {
+        long startTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - startTime < millis)
+        {
+            telemetry.update();
+            idle();
+        }
+    }
 }

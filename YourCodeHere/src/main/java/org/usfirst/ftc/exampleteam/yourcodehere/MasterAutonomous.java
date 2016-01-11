@@ -178,14 +178,14 @@ public class MasterAutonomous extends Master
     {
         // Check left side
         servoLeftZipline.setPosition(LEFT_BEACON_BUTTON_POSITION);
-        Thread.sleep(500);
+        delay(500);
         leftBlue = colorSensorBeacon.blue();
         leftRed = colorSensorBeacon.red();
         telemetry.log.add("Left blue:" + leftBlue + " red:" + leftRed);
 
         // Check right side
         servoLeftZipline.setPosition(RIGHT_BEACON_BUTTON_POSITION);
-        Thread.sleep(500);
+        delay(500);
         rightBlue = colorSensorBeacon.blue();
         rightRed = colorSensorBeacon.red();
         telemetry.log.add("Right blue:" + rightBlue + " red:" + rightRed);
