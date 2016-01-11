@@ -23,6 +23,6 @@ public class AutoTest extends MasterAutonomous
         wait(1000);
         driveDistance(65, Constants.FORWARDS);
         HikerDropper.retract();
-        driveDistance(65,Constants.BACKWARDS)
+        driveDistance(65,Constants.BACKWARDS);
     }
 }
