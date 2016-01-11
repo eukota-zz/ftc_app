@@ -167,27 +167,6 @@ public class MasterAutonomous extends Master
         servoClimberDumper.setPosition(CLIMBER_DUMP_POSITION);
     }
 
-    public void setRightZiplineOut() throws InterruptedException
-    {
-        servoRightZipline.setPosition(ZIPLINE_RIGHT_OUT);
-    }
-
-    public void setRightZiplineUp() throws InterruptedException
-    {
-        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
-    }
-
-    public void setLeftZiplineOut() throws InterruptedException
-    {
-        servoLeftZipline.setPosition(ZIPLINE_LEFT_OUT);
-    }
-
-    public void setLeftZiplineUp() throws InterruptedException
-    {
-        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-    }
-
-
     public void pressBeaconButton() throws InterruptedException
     {
         // Check for a range of blue
@@ -206,20 +185,6 @@ public class MasterAutonomous extends Master
             servoPressBeaconButton.setPosition(0.5);
         }
 
-    }
-
-    public void followLine() throws InterruptedException
-    {
-        while(lightSensorBack.getLightDetected() > 0.5)
-        {
-            driveForward(DRIVE_POWER);
-        }
-        stopDriving();
-        while (lightSensorFront.getLightDetected() > 0.5)
-        {
-            motorRight.setPower(DRIVE_POWER);
-        }
-        stopDriving();
     }
 
     public void allignWithBlueSideWhiteLine() throws InterruptedException
