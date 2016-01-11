@@ -3,7 +3,6 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
@@ -22,23 +21,21 @@ public class Master extends SynchronousOpMode
     DcMotor motorRight = null;
     DcMotor motorCollector = null;
     DcMotor motorScorer = null;
-    //DcMotor motorTapeMeasure = null;
+    DcMotor motorTapeMeasure = null;
 
-    DcMotor lights = null;
-
-    //Servo servoLeftZipline = null;
-    //Servo servoRightZipline = null;
-    //Servo servoTapeMeasureElevation = null;
+    Servo servoLeftZipline = null;
+    Servo servoRightZipline = null;
+    Servo servoTapeMeasureElevation = null;
     Servo servoCollectorHinge = null;
-    //Servo servoClimberDumper = null;
-    //Servo servoPressBeaconButton;
+    Servo servoClimberDumper = null;
+    Servo servoPressBeaconButton;
 
-    //ColorSensor colorSensorBeacon;
-    //LightSensor lightSensorFront;
-    //LightSensor lightSensorBack;
-    //UltrasonicSensor ultrasonicSensor;
-    //IBNO055IMU imu;
-    //int calibratedBlue;
+    ColorSensor colorSensorBeacon;
+    LightSensor lightSensorFront;
+    LightSensor lightSensorBack;
+    UltrasonicSensor ultrasonicSensor;
+    IBNO055IMU imu;
+    int calibratedBlue;
 
     //TODO change this
     int FOO = 1;
@@ -79,16 +76,14 @@ public class Master extends SynchronousOpMode
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
-        //motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
+        motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
 
-        lights = hardwareMap.dcMotor.get("lights");
-
-        //servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
-        //servoRightZipline = hardwareMap.servo.get("servoRightZipline");
-        //servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
+        servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
+        servoRightZipline = hardwareMap.servo.get("servoRightZipline");
+        servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
         servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
-        //servoClimberDumper = hardwareMap.servo.get("servoClimberDumper");
-        //servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
+        servoClimberDumper = hardwareMap.servo.get("servoClimberDumper");
+        servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
 
 
         // Set motor channel modes
@@ -101,19 +96,19 @@ public class Master extends SynchronousOpMode
         motorRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize zipline servos to be up
-        //servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-        //servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
         servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
-        //servoClimberDumper.setPosition(CLIMBER_ARM_IN);
+        servoClimberDumper.setPosition(CLIMBER_ARM_IN);
 
         // Initialize sensors
-        //colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
-        //colorSensorBeacon.enableLed(false);
-        //lightSensorFront = hardwareMap.lightSensor.get("lightSensorFront");
-        //lightSensorBack = hardwareMap.lightSensor.get("lightSensorBack");
-        //ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonicSensor");
-        //parameters.angleunit = IBNO055IMU.ANGLEUNIT.DEGREES;
-        //imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
+        colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
+        colorSensorBeacon.enableLed(false);
+        lightSensorFront = hardwareMap.lightSensor.get("lightSensorFront");
+        lightSensorBack = hardwareMap.lightSensor.get("lightSensorBack");
+        ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonicSensor");
+        parameters.angleunit = IBNO055IMU.ANGLEUNIT.DEGREES;
+        imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
     }
 
     public void configureTelemtry()
@@ -153,7 +148,6 @@ public class Master extends SynchronousOpMode
                 );
 
         // Light sensor info
-        /*
         telemetry.addLine
                 (
                         this.telemetry.item("Front light sensor: ", new IFunc<Object>() {
@@ -179,7 +173,6 @@ public class Master extends SynchronousOpMode
                             }
                         })
                 );
-    */
     }
 
     public String formatNumber(double number)

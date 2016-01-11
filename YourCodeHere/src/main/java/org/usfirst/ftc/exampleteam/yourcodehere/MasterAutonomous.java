@@ -9,18 +9,18 @@ public class MasterAutonomous extends Master
 {
     public void servoStartingPositions()
     {
-        //servoClimberDumper.setPosition(CLIMBER_RETURN_POSITION);
+        servoClimberDumper.setPosition(CLIMBER_RETURN_POSITION);
         servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
-        //servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-        //servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
     }
-/*
+
     public void lightSensorLEDs (boolean state)
     {
         lightSensorBack.enableLed(state);
         lightSensorFront.enableLed(state);
     }
-*/
+
     public void driveForward(double power)
     {
         motorLeft.setPower(power);
@@ -57,7 +57,7 @@ public class MasterAutonomous extends Master
     {
         driveForwardDistance(-power, -distance);
     }
-/*
+
     public void driveForwardDistanceIMU(double power, int distance) throws InterruptedException
     {
         motorLeft.setMode(DcMotorController.RunMode.RESET_ENCODERS);
@@ -86,12 +86,12 @@ public class MasterAutonomous extends Master
 
         stopDriving();
     }
-
+    
     public void driveBackwardDistanceIMU(double power, int distance) throws InterruptedException
     {
         driveForwardDistanceIMU(-power, -distance);
     }
-*/
+
     public void turnLeft(double power)
     {
         motorLeft.setPower(-power);
@@ -138,7 +138,7 @@ public class MasterAutonomous extends Master
     {
         turnLeftDistance(-power, distance);
     }
-/*
+
     public void turnRightDegrees(double power, int angle) throws InterruptedException
     {
         double calibratedHeading = imu.getAngularOrientation().heading;
@@ -239,14 +239,14 @@ public class MasterAutonomous extends Master
             telemetry.update();
             idle();
         }
-
+        /*
         while(lightSensorFront.getLightDetected() < 0.6)
         {
             // Wait until front light sensor detects line
             telemetry.update();
             idle();
         }
-
+        */
     }
 
     public void alignWithRedSideWhiteLine() throws InterruptedException
@@ -266,19 +266,18 @@ public class MasterAutonomous extends Master
             telemetry.update();
             idle();
         }
-
+        /*
         while(lightSensorFront.getLightDetected() < 0.6)
         {
             // Wait until front light sensor detects line
             telemetry.update();
             idle();
         }
-
+        */
     }
 
     public double getDistance()
     {
         return ultrasonicSensor.getUltrasonicLevel();
     }
-*/
 }

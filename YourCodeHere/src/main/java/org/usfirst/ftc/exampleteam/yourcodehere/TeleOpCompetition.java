@@ -34,17 +34,16 @@ public class TeleOpCompetition extends MasterTeleOp
     public void driver1Controls()
     {
         tankDrive(gamepad1);
-        //controlTapeMeasureMotors(gamepad1);
-        //controlTapeMeasureServo(gamepad1);
+        controlTapeMeasureMotors(gamepad1);
+        controlTapeMeasureServo(gamepad1);
     }
 
     public void driver2Controls() throws InterruptedException
     {
         controlCollector(gamepad2);
         controlScorer(gamepad2);
-        //controlZiplineServos(gamepad2);
+        controlZiplineServos(gamepad2);
         controlCollectorRamp(gamepad2);
-        //controlClimberDumper(gamepad2);
-        testLights(gamepad2);
+        controlClimberDumper(gamepad2);
     }
 }

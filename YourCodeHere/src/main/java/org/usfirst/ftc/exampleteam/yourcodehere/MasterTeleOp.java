@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 public class MasterTeleOp extends Master
 {
-    boolean Toggle = true;
     public void tankDrive(Gamepad gamepad)
     {
         // Tank drive based on joysticks of controller 1
@@ -26,7 +25,7 @@ public class MasterTeleOp extends Master
         motorLeft.setPower(gamepad.left_stick_y);
         motorRight.setPower(gamepad.right_stick_y / slowModeFactor);
     }
-    /*
+
     public void controlTapeMeasureMotors(Gamepad gamepad)
     {
         // Tape Measure of Doom extension based on controller 1
@@ -56,7 +55,7 @@ public class MasterTeleOp extends Master
             servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - TAPE_MEASURE_ELEVATION_RATE);
         }
     }
-    */
+
     public void controlCollector(Gamepad gamepad)
     {
         // Move collector based on triggers on controller 2 if the bottom isn't up
@@ -78,7 +77,7 @@ public class MasterTeleOp extends Master
         else
             motorScorer.setPower(POWER_STOP);
     }
-/*
+
     public void controlZiplineServos(Gamepad gamepad)
     {
         // Toggle zipline servos based on left and right bumpers
@@ -99,7 +98,7 @@ public class MasterTeleOp extends Master
                 servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
         }
     }
-*/
+
     public void controlCollectorRamp(Gamepad gamepad)
     {
         // Move collector ramp up and down based on x and y
@@ -115,7 +114,7 @@ public class MasterTeleOp extends Master
             servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
         }
     }
-/*
+
     public void controlClimberDumper(Gamepad gamepad)
     {
         // Toggle climber dumper servo position
@@ -128,18 +127,4 @@ public class MasterTeleOp extends Master
                 servoClimberDumper.setPosition(CLIMBER_ARM_IN);
         }
     }
-*/
-    public void testLights(Gamepad gamepad)
-    {
-        if(gamepad.a)
-        {
-            Toggle = !Toggle;
-            if (Toggle) {
-                lights.setPower(POWER_FULL);
-            } else {
-                lights.setPower(POWER_STOP);
-            }
-        }
-    }
-
 }
