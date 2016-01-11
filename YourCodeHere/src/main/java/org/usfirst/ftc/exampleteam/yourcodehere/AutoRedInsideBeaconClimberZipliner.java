@@ -36,9 +36,9 @@ public class AutoRedInsideBeaconClimberZipliner extends MasterAutonomous
 
         dumpClimbers();
         driveForwardDistance(DRIVE_POWER, FOO);
-        turnLeftDistance(DRIVE_POWER, FOO);
+        turnRightDistance(DRIVE_POWER, FOO);
         servoLeftZipline.setPosition(ZIPLINE_RIGHT_OUT);
-        driveForwardDistance(DRIVE_POWER, FOO);
+        driveBackwardDistance(DRIVE_POWER, FOO);
         servoLeftZipline.setPosition(ZIPLINE_RIGHT_UP);
         stopDriving();
     }

@@ -172,6 +172,7 @@ public class MasterAutonomous extends Master
     public void dumpClimbers() throws InterruptedException
     {
         servoClimberDumper.setPosition(CLIMBER_DUMP_POSITION);
+        delay(1500);
     }
 
     public void readBeaconColors() throws InterruptedException
