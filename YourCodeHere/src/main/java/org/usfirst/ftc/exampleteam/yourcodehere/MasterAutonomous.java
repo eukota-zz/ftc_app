@@ -173,16 +173,16 @@ public class MasterAutonomous extends Master
         if(colorSensorBeacon.blue() <= calibratedBlue + 50 && colorSensorBeacon.blue() < calibratedBlue - 50)
         {
             // Press Blue
-            servoPressBeaconButton.setPosition(0.8);
+            servoLeftZipline.setPosition(0.8);
             Thread.sleep(500);
-            servoPressBeaconButton.setPosition(0.5);
+            servoLeftZipline.setPosition(0.5);
         }
         else
         {
             // Otherwise press Red
-            servoPressBeaconButton.setPosition(0.2);
+            servoLeftZipline.setPosition(0.2);
             Thread.sleep(500);
-            servoPressBeaconButton.setPosition(0.5);
+            servoLeftZipline.setPosition(0.5);
         }
 
     }

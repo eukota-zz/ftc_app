@@ -29,7 +29,6 @@ public class Master extends SynchronousOpMode
     Servo servoTapeMeasureElevation = null;
     Servo servoCollectorHinge = null;
     Servo servoClimberDumper = null;
-    Servo servoPressBeaconButton;
 
     ColorSensor colorSensorBeacon;
     LightSensor lightSensorFront;
@@ -85,7 +84,6 @@ public class Master extends SynchronousOpMode
         servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
         servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
         servoClimberDumper = hardwareMap.servo.get("servoClimberDumper");
-        servoPressBeaconButton = hardwareMap.servo.get("pressBeaconButton");
 
 
         // Set motor channel modes
