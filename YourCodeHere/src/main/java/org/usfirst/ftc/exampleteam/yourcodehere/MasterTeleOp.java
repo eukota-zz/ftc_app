@@ -85,7 +85,7 @@ public abstract class MasterTeleOp extends MasterOpMode
             leftSidePower  = -p1LeftStickPower;
             rightSidePower = -p1RightStickPower;
             driveWheels(leftSidePower, rightSidePower);
-            driveClimbers(climberPower, climberPower);
+            driveClimbers(-climberPower, -climberPower);
         }
         //drive climb mode
         else if (currentDriveMode == DriveMode.Ramp)
