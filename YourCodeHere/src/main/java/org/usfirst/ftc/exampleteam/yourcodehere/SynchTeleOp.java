@@ -10,6 +10,11 @@ import org.swerverobotics.library.interfaces.TeleOp;
 public class SynchTeleOp extends MasterTeleOp
 {
 
+    //temporary array to store button previous states to fix toggles
+    //TODO encapsulate
+    //lefthang,righthang,leftzip,rightzip,hiker
+    boolean[] lastBtn = new boolean[5];
+
     @Override
     protected void main() throws InterruptedException
     {
@@ -39,7 +44,7 @@ public class SynchTeleOp extends MasterTeleOp
 
     private void handleDriverInput(Gamepad pad1, Gamepad pad2)
     {
-        if (pad2.y)
+        if (pad2.y && !lastBtn[4])
         {
             HikerDropper.toggle();
         }
@@ -52,49 +57,24 @@ public class SynchTeleOp extends MasterTeleOp
 
         HangerServo.setPosition((p2LeftStickPower + 1) / 2);
 
-        /*if (pad2.dpad_left)
-        {
-            HangerServo.setPosition(Constants.HANGER_SERVO_DEPLOYED);
-        } else if (pad2.dpad_right)
-        {
-            HangerServo.setPosition(Constants.HANGER_SERVO_NOTDEPLOYED);
-        } else
-        {
-            HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
-        }
-
-        if (pad2.dpad_down)
-        {
-            LeftMotorHanger.setPower(-1 * Constants.FULL_POWER);
-            RightMotorHanger.setPower(-1 * Constants.FULL_POWER);
-        } else if (pad2.dpad_up)
-        {
-            LeftMotorHanger.setPower(Constants.FULL_POWER);
-            RightMotorHanger.setPower(Constants.FULL_POWER);
-        } else
-        {
-            LeftMotorHanger.setPower(Constants.STOP);
-            RightMotorHanger.setPower(Constants.STOP);
-        } */
-
         //deploy the holder
-        if (pad2.b)
+        if (pad2.b && !lastBtn[2])
         {
             RightHolder.toggle();
         }
-        if (pad2.x)
+        if (pad2.x && !lastBtn[3])
         {
             LeftHolder.toggle();
         }
 
 
-        if (pad2.left_bumper)
+        if (pad2.left_bumper && !lastBtn[0])
         {
            LeftZiplineHitter.toggle();
         }
 
         //The ServoRightZiplineHitter reads from (0-1), which is different than the ServoLeftZiplineHitter(0-360)
-        if (pad2.right_bumper)
+        if (pad2.right_bumper && !lastBtn[1])
         {
             RightZiplineHitter.toggle();
         }
@@ -124,6 +104,13 @@ public class SynchTeleOp extends MasterTeleOp
         {
             currentDrivePowerFactor = Constants.FULL_POWER;
         }
+
+        //update button prev states
+        lastBtn[0] = pad2.left_bumper;
+        lastBtn[1] = pad2.right_bumper;
+        lastBtn[2] = pad2.x;
+        lastBtn[3] = pad2.b;
+        lastBtn[4] = pad2.y;
     }
 
 
