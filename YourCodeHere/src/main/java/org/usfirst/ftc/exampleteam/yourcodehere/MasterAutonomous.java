@@ -18,7 +18,7 @@ import org.swerverobotics.library.interfaces.Position;
 public abstract class MasterAutonomous extends MasterOpMode
 {
     //auto start position info
-    public Transform autoStartPosition = new Transform(0.0,0.0,90.0);
+    public Transform autoStartPosition = new Transform(0.0,0.0,-90.0);
     //IMU variable declaration
     ElapsedTime elapsed = new ElapsedTime();
     IBNO055IMU.Parameters parameters = new IBNO055IMU.Parameters();

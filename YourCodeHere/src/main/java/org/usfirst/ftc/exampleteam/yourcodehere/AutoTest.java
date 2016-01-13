@@ -16,7 +16,7 @@ public class AutoTest extends MasterAutonomous
         initialize();
         wait(1000);
         driveDistance(270,Constants.BACKWARDS);
-        turnTo(45);
+        turnTo(135);
         driveDistance(65,Constants.BACKWARDS);
         wait(1000);
         HikerDropper.deploy();
