@@ -111,8 +111,8 @@ public class SynchTeleOp extends MasterTeleOp
         //update button prev states
         lastBtn[0] = pad2.left_bumper;
         lastBtn[1] = pad2.right_bumper;
-        lastBtn[2] = pad2.x;
-        lastBtn[3] = pad2.b;
+        lastBtn[2] = pad2.b;
+        lastBtn[3] = pad2.x;
         lastBtn[4] = pad2.y;
     }
 

@@ -35,6 +35,8 @@ public class Constants
     //motion variable declaration
     public static final double FORWARDS = 1.0;
     public static final double BACKWARDS = -FORWARDS;
+    public static final double SLOW_FORWARDS = 0.3 * FORWARDS;
+    public static final double SLOW_BACKWARDS = 0.3 * BACKWARDS;
 
     //IMU and encoder constants
     public static final int ANDYMARK_ENC_TICKS = 1120;

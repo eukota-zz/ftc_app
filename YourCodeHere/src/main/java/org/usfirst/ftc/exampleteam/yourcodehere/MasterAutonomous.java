@@ -103,7 +103,6 @@ public abstract class MasterAutonomous extends MasterOpMode
 
 
 
-
             //check if the turn is finished and the robot is settled
 
             if (Math.abs(Δϴ) < 3)
@@ -130,25 +129,30 @@ public abstract class MasterAutonomous extends MasterOpMode
 
     }
 
-    public void driveStraight(double targetPower) throws InterruptedException
+    public void driveStraight(double distance, double direction) throws InterruptedException
     {
         double offset = 0;
         double Δϴ;
         double power;
         double leftpower;
         double rightpower;
-        boolean isTurnCompleted = false;
+        boolean isDriveCompleted = false;
         double currentOrientation;
         double[] lasts = {0,0};
         double sensorDiff;
-        double satisfactionCounter = 0;
+        double timeFactor = 0.5;
 
         double targetAngle = getCurrentGlobalOrientation();
+        double startDistance = getDistanceTraveled();
 
-
-        while (!isTurnCompleted)
+        while (!isDriveCompleted)
         {
             turnFilter.update();
+
+            if (timeFactor < 1)
+            {
+                timeFactor += .005;
+            }
 
             currentOrientation = getCurrentGlobalOrientation();
             Δϴ = targetAngle - currentOrientation;
@@ -173,13 +177,13 @@ public abstract class MasterAutonomous extends MasterOpMode
             //set filtered motor powers
             power = turnFilter.getFilteredValue();
             //cap power at 1 magnitude
-            if (Math.abs(power) > 1)
+            if (Math.abs(power) > 0.25)
             {
-                power = Math.signum(power);
+                power = 0.25*Math.signum(power);
             }
 
-            leftpower = targetPower + power;
-            rightpower = (-1 *targetPower) - power;
+            leftpower = 1 + power;
+            rightpower = 1 - power;
 
             //cap power at 1 magnitude
             if (Math.abs(leftpower) > 1)
@@ -193,33 +197,15 @@ public abstract class MasterAutonomous extends MasterOpMode
                 rightpower = Math.signum(rightpower);
             }
 
-            driveWheels(leftpower, rightpower );
-
-            telemetry.addData("leftpower:", targetPower + power);
-            telemetry.addData("rightpower:", (-1 *targetPower) - power );
-            telemetry.addData("dA:", Δϴ);
+            driveWheels(leftpower * direction * timeFactor, rightpower * direction * timeFactor);
 
 
 
-
-            //check if the turn is finished and the robot is settled
-
-            if (Math.abs(Δϴ) < 3)
+            //check if the robot should stop
+            if (Math.abs(getDistanceTraveled() - startDistance) >= Math.abs(distance))
             {
-                satisfactionCounter++;
+                isDriveCompleted = true;
             }
-            else
-            {
-                satisfactionCounter = 0;
-            }
-
-            if (satisfactionCounter > 100)
-            {
-                isTurnCompleted = true;
-            }
-
-            telemetry.addData("satisfaction:", satisfactionCounter);
-            telemetry.update();
 
             wait(1);
             idle();
