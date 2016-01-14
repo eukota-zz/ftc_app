@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     Generally used to produce efficient, non-oscillating motion in a one dimensional system.
     Feed this the difference between the target value and real value
 */
-//TODO move avaerage elsewere
+//TODO move average elsewere
 public class PIDFilter implements Filter
 {
     double lastTime = 0;

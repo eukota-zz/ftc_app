@@ -143,6 +143,12 @@ public abstract class MasterOpMode extends SynchronousOpMode
         //the left side hanger motor moves the opposite direction of the right side hanger.
         this.LeftMotorHanger.setDirection(DcMotor.Direction.REVERSE);
 
+        stopAllMotors();
+    }
+
+    //this is so we can be able to initialize servos after wait for start (robot needs to fit in sizing box)
+    public void initializeServoPositions()
+    {
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
         this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
@@ -156,8 +162,6 @@ public abstract class MasterOpMode extends SynchronousOpMode
         HikerDropper = new ServoToggler(ServoHikerDropper, Constants.HIKER_DROPPER_NOTDEPLOYED, Constants.HIKER_DROPPER_DEPLOYED);
 
         this.HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
-
-        stopAllMotors();
     }
 
     protected void stopDriveMotors()

@@ -36,7 +36,7 @@ public final class AdaFruitBNO055IMU implements IBNO055IMU, II2cDeviceClientUser
     private HandshakeThreadStarter accelerationMananger;
     private static final int       msAccelerationIntegrationStopWait = 20;
     private static final int       msAwaitChipId                     = 2000;
-    private static final int       msAwaitSelfTest                   = 500;
+    private static final int       msAwaitSelfTest                   = 2500;
 
     // We always read as much as we can when we have nothing else to do
     private static final II2cDeviceClient.READ_MODE readMode = II2cDeviceClient.READ_MODE.REPEAT;
