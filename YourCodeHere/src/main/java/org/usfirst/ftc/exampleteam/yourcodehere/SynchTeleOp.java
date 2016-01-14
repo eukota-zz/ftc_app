@@ -13,10 +13,12 @@ public class SynchTeleOp extends MasterTeleOp
     @Override
     protected void main() throws InterruptedException
     {
+        initialize();
+
         // Wait until we've been given the ok to go
         this.waitForStart();
 
-        initialize();
+        initializeServoPositions();
 
         // Enter a loop processing all the input we receive
         while (this.opModeIsActive())
@@ -47,35 +49,11 @@ public class SynchTeleOp extends MasterTeleOp
         double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
         double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
 
+        //set pad 2 servos equal to stick input
         LeftMotorHanger.setPower(p2RightStickPower * -1);
         RightMotorHanger.setPower(p2RightStickPower * -1);
 
         HangerServo.setPosition((p2LeftStickPower + 1) / 2);
-
-        /*if (pad2.dpad_left)
-        {
-            HangerServo.setPosition(Constants.HANGER_SERVO_DEPLOYED);
-        } else if (pad2.dpad_right)
-        {
-            HangerServo.setPosition(Constants.HANGER_SERVO_NOTDEPLOYED);
-        } else
-        {
-            HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
-        }
-
-        if (pad2.dpad_down)
-        {
-            LeftMotorHanger.setPower(-1 * Constants.FULL_POWER);
-            RightMotorHanger.setPower(-1 * Constants.FULL_POWER);
-        } else if (pad2.dpad_up)
-        {
-            LeftMotorHanger.setPower(Constants.FULL_POWER);
-            RightMotorHanger.setPower(Constants.FULL_POWER);
-        } else
-        {
-            LeftMotorHanger.setPower(Constants.STOP);
-            RightMotorHanger.setPower(Constants.STOP);
-        } */
 
         //deploy the holder
         if (pad2.b)
