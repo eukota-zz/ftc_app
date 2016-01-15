@@ -201,7 +201,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
 
             if(climbers) {
-                driveClimbers(-leftpower * direction * timeFactor, -rightpower * direction * timeFactor);
+                driveClimbers(leftpower * direction * timeFactor, rightpower * direction * timeFactor);
             }
             driveWheels(leftpower * direction * timeFactor, rightpower * direction * timeFactor);
 
@@ -218,30 +218,6 @@ public abstract class MasterAutonomous extends MasterOpMode
         }
         stopDriveMotors();
 
-    }
-
-
-    //drive to a distance in CM
-    public void driveDistance(double distance, double direction) throws InterruptedException
-    {
-        double startDist = getDistanceTraveled();
-        double netDist = startDist + direction*distance;
-        driveWheels(direction, direction);
-        //until passed target
-        if (direction < 0)
-        {
-            while (getDistanceTraveled() > netDist)
-            {
-                idle();
-            }
-        }
-        else{
-            while (getDistanceTraveled() < netDist)
-            {
-                idle();
-            }
-        }
-        stopDriveMotors();
     }
 
     //returns the average of the left/right encoders, giving a distance in CM
