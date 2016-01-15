@@ -43,5 +43,5 @@ public class Constants
     public static final int TETRIX_ENC_TICKS = 1440;
 
     //this accounts for the small difference between the wheel assemblies on the left and right side of the robot during driving
-    public static final double LEFT_ASSEMBLY_DIFF = 0.88;
+    public static final double LEFT_ASSEMBLY_DIFF = 0.84;
 }

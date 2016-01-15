@@ -96,7 +96,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             {
                 power = Math.signum(power);
             }
-            driveWheels(power, -power);
+            driveWheels(-power, power);
 
             telemetry.addData("power:", power);
             telemetry.addData("dA:", Δϴ);
@@ -125,11 +125,11 @@ public abstract class MasterAutonomous extends MasterOpMode
             wait(1);
             idle();
         }
-        stopDriveMotors();
+        stopAllMotors();
 
     }
 
-    public void driveStraight(double distance, double direction) throws InterruptedException
+    public void driveStraight(double distance, double direction, boolean climbers) throws InterruptedException
     {
         double offset = 0;
         double Δϴ;
@@ -176,15 +176,17 @@ public abstract class MasterAutonomous extends MasterOpMode
 
             //set filtered motor powers
             power = turnFilter.getFilteredValue();
-            //cap power at 1 magnitude
-            if (Math.abs(power) > 0.25)
+            //cap power at 0.4 magnitude
+            if (Math.abs(power) > 1)
             {
-                power = 0.25*Math.signum(power);
+                power = 1*Math.signum(power);
             }
 
-            leftpower = 1 + power;
-            rightpower = 1 - power;
+            leftpower = 0.9 + power;
+            rightpower = 0.9 - power;
 
+            telemetry.addData("power:", power);
+            telemetry.update();
             //cap power at 1 magnitude
             if (Math.abs(leftpower) > 1)
             {
@@ -197,6 +199,10 @@ public abstract class MasterAutonomous extends MasterOpMode
                 rightpower = Math.signum(rightpower);
             }
 
+
+            if(climbers) {
+                driveClimbers(-leftpower * direction * timeFactor, -rightpower * direction * timeFactor);
+            }
             driveWheels(leftpower * direction * timeFactor, rightpower * direction * timeFactor);
 
 
@@ -257,7 +263,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     public double getCurrentLocalOrientation()
     {
         angles = imu.getAngularOrientation();
-        return angles.heading;
+        return 360-angles.heading;
     }
 
 
