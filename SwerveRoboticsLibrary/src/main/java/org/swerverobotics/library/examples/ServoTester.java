@@ -2,13 +2,13 @@
 
     import com.qualcomm.robotcore.hardware.Servo;
     import org.swerverobotics.library.SynchronousOpMode;
-    import org.swerverobotics.library.interfaces.IFunc;
-    import org.swerverobotics.library.interfaces.TeleOp;
+    import org.swerverobotics.library.interfaces.*;
 
     /*
      * This file will test 1 servo based on joystick input
      */
     @TeleOp(name="DrywServo", group="Swerve Examples")
+    @Disabled
     public class ServoTester extends SynchronousOpMode {
         // Declare servo
         Servo CollectorServo = null;
