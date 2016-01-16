@@ -53,6 +53,12 @@ public abstract class MasterAutonomous extends MasterOpMode
 
     }
 
+    public void setAutoStartPosition (double startingAngle) throws InterruptedException
+    {
+        autoStartPosition.orientation = startingAngle;
+    }
+
+
     //turn the robot to face a global direction
     public void turnTo(double targetAngle) throws InterruptedException
     {

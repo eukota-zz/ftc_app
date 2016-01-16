@@ -3,11 +3,11 @@ package org.usfirst.ftc.exampleteam.yourcodehere;
 import org.swerverobotics.library.interfaces.Autonomous;
 
 /**
- * Created by Cole on 1/14/2016.
+ * Created by Mridula on 1/15/2016.
  */
-@Autonomous(name = "AUTO WAIT_Red1 -> Park", group = "Swerve Examples")
+@Autonomous(name = "AUTO Blue1 -> Park", group = "Swerve Examples")
 
-public class WAIT_Red1ToPark extends MasterAutonomous
+public class Blue1ToPark extends MasterAutonomous
 {
     @Override
     protected void main() throws InterruptedException
@@ -22,9 +22,9 @@ public class WAIT_Red1ToPark extends MasterAutonomous
 
         setAutoStartPosition(90);
 
-        wait(8000);
+        wait(100);
         driveStraight(270, Constants.BACKWARDS, false);
-        turnTo(135);
+        turnTo(45);
         driveStraight(77, Constants.BACKWARDS, false);
         wait(500);
         HikerDropper.deploy();
