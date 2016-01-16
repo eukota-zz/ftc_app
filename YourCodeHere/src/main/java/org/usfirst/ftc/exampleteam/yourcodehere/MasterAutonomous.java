@@ -73,18 +73,18 @@ public class MasterAutonomous extends Master
         motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
 
-        driveForward(power);
-
         double calibratedHeading = imu.getAngularOrientation().heading;
         double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
-        double offsetMultiplier = 0.01;
+        double offsetMultiplier = 0.2;
 
         while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) || Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
         {
             // Use IMU to keep us driving straight
             currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
-            motorLeft.setPower(power - currentHeading * offsetMultiplier);
-            motorRight.setPower(power + currentHeading * offsetMultiplier);
+            if(currentHeading > 180)
+                currentHeading = currentHeading - 360;
+            motorLeft.setPower(power + currentHeading * offsetMultiplier);
+            motorRight.setPower(power - currentHeading * offsetMultiplier);
 
             // Wait until distance is reached
             telemetry.update();
@@ -156,7 +156,11 @@ public class MasterAutonomous extends Master
         while(Math.abs(currentHeading) < Math.abs(angle))
         {
             currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+            telemetry.log.add("current" + currentHeading);
+            if(currentHeading > 180)
+                currentHeading = currentHeading - 360;
             // Wait until we've reached our target angle
+            telemetry.log.add("current" + currentHeading + " actual" + formatNumber(imu.getAngularOrientation().heading));
             telemetry.update();
             idle();
         }
@@ -198,35 +202,36 @@ public class MasterAutonomous extends Master
         driveForwardDistance(DRIVE_POWER / 2, 200);
     }
 
-    public void allignWithBlueSideWhiteLine() throws InterruptedException
+    public void alignWithBlueSideWhiteLine() throws InterruptedException
     {
-        driveForward(-DRIVE_POWER / 2);
-        lightSensorLEDs(ON);
-        while(lightSensorBack.getLightDetected() > 0.6)
+        double whiteLineValue = 0.3;
+        motorLeft.setPower(-DRIVE_POWER / 2);
+        //motorRight.setPower(-DRIVE_POWER / 4.0);
+
+        telemetry.log.add("Start:" + formatNumber(lightSensorBack.getLightDetected()));
+        while(lightSensorBack.getLightDetected() < whiteLineValue)
         {
+
+            telemetry.log.add("Checking back:" + formatNumber(lightSensorBack.getLightDetected()));
             // Wait until back light sensor detects line
             telemetry.update();
             idle();
         }
-        turnRight(DRIVE_POWER / 2);
-        while(lightSensorFront.getLightDetected() > 0.6)
-        {
-            // Wait until front light sensor detects line
-            telemetry.update();
-            idle();
-        }
+        whiteLineValue = 0.6;
+
         /*
-        while(lightSensorFront.getLightDetected() < 0.6)
+        turnRight(DRIVE_POWER / 2);
+        while(lightSensorFront.getLightDetected() > whiteLineValue)
         {
+            telemetry.log.add("Checking front:" + formatNumber(lightSensorFront.getLightDetected()));
             // Wait until front light sensor detects line
             telemetry.update();
             idle();
-        }
-        */
+        }*/
+        stopDriving();
     }
 
-    public void alignWithRedSideWhiteLine() throws InterruptedException
-    {
+    public void alignWithRedSideWhiteLine() throws InterruptedException {
         driveForward(-DRIVE_POWER / 2);
         lightSensorLEDs(ON);
         while(lightSensorBack.getLightDetected() > 0.6)

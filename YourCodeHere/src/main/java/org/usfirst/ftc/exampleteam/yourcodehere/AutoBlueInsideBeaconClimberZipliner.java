@@ -14,16 +14,19 @@ public class AutoBlueInsideBeaconClimberZipliner extends MasterAutonomous
     {
         robotInit();
         configureTelemtry();
+        telemetry.setUpdateIntervalMs(50);
+        lightSensorLEDs(ON);
 
         waitForStart();
 
         // This is a hack to keep us inside the 18" limit
         // None of the servos move if none are set to a position
         // If any servo is set to a position, they all go
-        servoStartingPositions();
+        //servoStartingPositions();
 
-        driveBackwardDistance(DRIVE_POWER, FOO);
-        allignWithBlueSideWhiteLine();
+        //driveBackwardDistanceIMU(DRIVE_POWER, 11500);
+        alignWithBlueSideWhiteLine();
+        /*
         correctDistanceToWall();
 
         readBeaconColors();
@@ -40,6 +43,6 @@ public class AutoBlueInsideBeaconClimberZipliner extends MasterAutonomous
         servoRightZipline.setPosition(ZIPLINE_RIGHT_OUT);
         driveBackwardDistance(DRIVE_POWER, FOO);
         servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
-        stopDriving();
+        stopDriving();*/
     }
 }
