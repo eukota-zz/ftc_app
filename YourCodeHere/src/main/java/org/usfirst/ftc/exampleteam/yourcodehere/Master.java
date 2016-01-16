@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 
@@ -31,8 +32,8 @@ public class Master extends SynchronousOpMode
     Servo servoClimberDumper = null;
 
     ColorSensor colorSensorBeacon;
-    LightSensor lightSensorFront;
-    LightSensor lightSensorBack;
+    OpticalDistanceSensor lightSensorFront;
+    OpticalDistanceSensor lightSensorBack;
     UltrasonicSensor ultrasonicSensor;
     IBNO055IMU imu;
     int calibratedBlue;
@@ -105,10 +106,10 @@ public class Master extends SynchronousOpMode
         // Initialize sensors
         colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
         colorSensorBeacon.enableLed(false);
-        lightSensorFront = hardwareMap.lightSensor.get("lightSensorFront");
-        lightSensorBack = hardwareMap.lightSensor.get("lightSensorBack");
+        lightSensorFront = hardwareMap.opticalDistanceSensor.get("lightSensorFront");
+        lightSensorBack = hardwareMap.opticalDistanceSensor.get("lightSensorBack");
         ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonicSensor");
-        parameters.angleunit = IBNO055IMU.ANGLEUNIT.DEGREES;
+        parameters.angleUnit = IBNO055IMU.ANGLEUNIT.DEGREES;
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
     }
 
@@ -188,7 +189,7 @@ public class Master extends SynchronousOpMode
 
     public String formatNumber(double number)
     {
-        return String.format("%.1f", number);
+        return String.format("%.2f", number);
     }
 
     // Use this instead of Thread.sleep()
