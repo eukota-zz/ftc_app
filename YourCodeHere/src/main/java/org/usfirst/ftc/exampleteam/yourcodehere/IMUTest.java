@@ -18,7 +18,7 @@ public class IMUTest extends MasterTeleOp
 
     @Override protected void main() throws InterruptedException
     {
-        parameters.angleunit      = IBNO055IMU.ANGLEUNIT.DEGREES;
+        parameters.angleUnit      = IBNO055IMU.ANGLEUNIT.DEGREES;
         imu                       = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
         configDash();
@@ -32,8 +32,8 @@ public class IMUTest extends MasterTeleOp
         {
             currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
 
-            if(currentHeading < 0)
-                currentHeading += 360;
+            if(currentHeading > 180)
+                currentHeading = currentHeading - 360;
 
             telemetry.update();
             idle();
