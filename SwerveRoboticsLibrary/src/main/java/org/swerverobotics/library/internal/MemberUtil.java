@@ -206,7 +206,7 @@ public class MemberUtil
         }
     static DeviceInterfaceModule deviceModuleOfModernColorSensor(ColorSensor sensor)
         {
-        return Util.<DeviceInterfaceModule>getPrivateObjectField(sensor, 1);
+        return Util.<DeviceInterfaceModule>getPrivateObjectField(sensor, 1);    // 0 is now i2c address
         }
     static int portOfHiTechnicColorSensor(ColorSensor sensor)
         {
@@ -221,32 +221,32 @@ public class MemberUtil
     // Legacy Module
     //----------------------------------------------------------------------------------------------
 
-        static I2cController.I2cPortReadyCallback[] callbacksOfLegacyModule(LegacyModule imodule)
+    static I2cController.I2cPortReadyCallback[] callbacksOfLegacyModule(LegacyModule imodule)
         {
-            ModernRoboticsUsbLegacyModule module = (ModernRoboticsUsbLegacyModule)imodule;
-            return Util.<I2cController.I2cPortReadyCallback[]>getPrivateObjectField(module, 4);
+        ModernRoboticsUsbLegacyModule module = (ModernRoboticsUsbLegacyModule)imodule;
+        return Util.<I2cController.I2cPortReadyCallback[]>getPrivateObjectField(module, 4);
         }
 
         //----------------------------------------------------------------------------------------------
         // Device Interface Module
         //----------------------------------------------------------------------------------------------
 
-        static I2cController.I2cPortReadyCallback[] callbacksOfDeviceInterfaceModule(DeviceInterfaceModule imodule)
+    static I2cController.I2cPortReadyCallback[] callbacksOfDeviceInterfaceModule(DeviceInterfaceModule imodule)
         {
-            ModernRoboticsUsbDeviceInterfaceModule module = (ModernRoboticsUsbDeviceInterfaceModule)imodule;
-            return Util.<I2cController.I2cPortReadyCallback[]>getPrivateObjectField(module, 3);
+        ModernRoboticsUsbDeviceInterfaceModule module = (ModernRoboticsUsbDeviceInterfaceModule)imodule;
+        return Util.<I2cController.I2cPortReadyCallback[]>getPrivateObjectField(module, 3);
         }
 
-        //----------------------------------------------------------------------------------------------
-        // I2cDevice
-        //----------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
+    // I2cDevice
+    //----------------------------------------------------------------------------------------------
 
-        public static I2cController i2cControllerOfI2cDevice(I2cDevice i2cDevice)
+    public static I2cController i2cControllerOfI2cDevice(I2cDevice i2cDevice)
         {
             return Util.<I2cController>getPrivateObjectField(i2cDevice, 0);
         }
 
-        public static int portOfI2cDevice(I2cDevice i2cDevice)
+    public static int portOfI2cDevice(I2cDevice i2cDevice)
         {
             return Util.getPrivateIntField(i2cDevice, 1);
         }
