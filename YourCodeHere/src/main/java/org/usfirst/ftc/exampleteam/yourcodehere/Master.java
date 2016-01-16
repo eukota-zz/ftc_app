@@ -44,18 +44,18 @@ public class Master extends SynchronousOpMode
     double POWER_FULL = 1.0;
     double POWER_STOP = 0.0;
     double POWER_SCORER = 0.25;
-    double ZIPLINE_LEFT_UP = 1.0;
-    double ZIPLINE_LEFT_OUT = 0.4;
-    double ZIPLINE_RIGHT_UP = 0.1;
-    double ZIPLINE_RIGHT_OUT = 0.7;
-    double LEFT_BEACON_BUTTON_POSITION = 0.8;
-    double RIGHT_BEACON_BUTTON_POSITION = 0.9;
+    double ZIPLINE_LEFT_UP = 0.55;
+    double ZIPLINE_LEFT_OUT = 0.2;
+    double ZIPLINE_RIGHT_UP = 0.0;
+    double ZIPLINE_RIGHT_OUT = 0.5;
+    double LEFT_BEACON_BUTTON_POSITION = 0.6;
+    double RIGHT_BEACON_BUTTON_POSITION = 0.5;
     double COLLECTOR_HINGE_DOWN = 0.6;
     double COLLECTOR_HINGE_UP = 0.8;
     double TAPE_MEASURE_ELEVATION_RATE = 0.05;
-    double CLIMBER_ARM_OUT = 1.0;
-    double CLIMBER_ARM_IN = 0.0;
-    double DRIVE_POWER = 1.0;
+    double CLIMBER_ARM_OUT = 0.0;
+    double CLIMBER_ARM_IN = 1.0;
+    double DRIVE_POWER = -1.0;
     double CLIMBER_DUMP_POSITION = 1.0;
     double CLIMBER_RETURN_POSITION = 0.0;
     boolean ON = true;
@@ -66,7 +66,6 @@ public class Master extends SynchronousOpMode
     boolean ziplineRightIsOut = false;
     boolean collectorHingeIsUp = false;
     boolean climberArmOut = false;
-    double slowModeFactor = 1.0;
     IBNO055IMU.Parameters   parameters = new IBNO055IMU.Parameters();
 
     @Override protected void main() throws InterruptedException {}
@@ -155,13 +154,13 @@ public class Master extends SynchronousOpMode
                         this.telemetry.item("Front light sensor: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return lightSensorFront.getLightDetected();
+                                return formatNumber(lightSensorFront.getLightDetected());
                             }
                         }),
                         this.telemetry.item("Back light sensor: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return lightSensorBack.getLightDetected();
+                                return formatNumber(lightSensorBack.getLightDetected());
                             }
                         })
                 );
@@ -172,6 +171,16 @@ public class Master extends SynchronousOpMode
                             @Override
                             public Object value() {
                                 return ultrasonicSensor.getUltrasonicLevel();
+                            }
+                        })
+                );
+
+        telemetry.addLine
+                (
+                        this.telemetry.item("Heading: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return imu.getAngularOrientation().heading;
                             }
                         })
                 );

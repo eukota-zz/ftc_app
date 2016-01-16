@@ -7,12 +7,19 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 public class MasterTeleOp extends Master
 {
+    double slowModeFactor = 1.0;
     boolean lightsAreOn = true;
+
     public void tankDrive(Gamepad gamepad)
     {
         // Tank drive based on joysticks of controller 1
 
-        // Enables slow mode
+        double leftRequestedPower = gamepad.left_stick_y;
+        double rightRequestedPower = gamepad.right_stick_y;
+
+        double acceleration = 0.1;
+
+        // Slow mode
         if(gamepad.y)
         {
             slowModeFactor = 2.5;
@@ -21,10 +28,30 @@ public class MasterTeleOp extends Master
         {
             slowModeFactor = 1.0;
         }
+        leftRequestedPower /= slowModeFactor;
+        rightRequestedPower /= slowModeFactor;
 
-        // Motors aren't even, so only right motor needs power reduction
-        motorLeft.setPower(gamepad.left_stick_y);
-        motorRight.setPower(gamepad.right_stick_y / slowModeFactor);
+        /*
+        // Smooth acceleration
+        if(leftRequestedPower > motorLeft.getPower())
+        {
+            leftRequestedPower = motorLeft.getPower() + acceleration;
+        }
+        else if(leftRequestedPower < motorLeft.getPower())
+        {
+            leftRequestedPower = motorLeft.getPower() - acceleration;
+        }
+        if(rightRequestedPower > motorRight.getPower())
+        {
+            rightRequestedPower = motorRight.getPower() + acceleration;
+        }
+        else if(rightRequestedPower < motorRight.getPower())
+        {
+            rightRequestedPower = motorRight.getPower() - acceleration;
+        }*/
+
+        motorLeft.setPower(leftRequestedPower);
+        motorRight.setPower(rightRequestedPower);
     }
 
     public void controlTapeMeasureMotors(Gamepad gamepad)

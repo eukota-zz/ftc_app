@@ -47,7 +47,7 @@ public class MasterAutonomous extends Master
 
         driveForward(power);
 
-        while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) && Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
+        while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) || Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
         {
             // Wait until distance is reached
             telemetry.update();
@@ -77,14 +77,14 @@ public class MasterAutonomous extends Master
 
         double calibratedHeading = imu.getAngularOrientation().heading;
         double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
-        double offsetMultiplier = 1 / 80;
+        double offsetMultiplier = 0.01;
 
-        while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) && Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
+        while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) || Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
         {
             // Use IMU to keep us driving straight
             currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
-            motorLeft.setPower(power + currentHeading * offsetMultiplier);
-            motorRight.setPower(power - currentHeading * offsetMultiplier);
+            motorLeft.setPower(power - currentHeading * offsetMultiplier);
+            motorRight.setPower(power + currentHeading * offsetMultiplier);
 
             // Wait until distance is reached
             telemetry.update();
@@ -128,7 +128,7 @@ public class MasterAutonomous extends Master
 
         turnLeft(power);
 
-        while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) && Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
+        while(Math.abs(motorLeft.getCurrentPosition()) < Math.abs(distance) || Math.abs(motorRight.getCurrentPosition()) < Math.abs(distance))
         {
             // Wait until distance is reached
             telemetry.update();
