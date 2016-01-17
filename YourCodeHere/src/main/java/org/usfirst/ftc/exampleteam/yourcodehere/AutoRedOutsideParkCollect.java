@@ -18,8 +18,7 @@ public class AutoRedOutsideParkCollect extends MasterAutonomous
         waitForStart();
         initializeServoPositions();
 
-        motorCollector.setPower(POWER_FULL);
-        motorScorer.setPower(-POWER_SCORER);
+        motorCollector.setPower(-POWER_FULL);
         driveForwardDistanceIMU(DRIVE_POWER, 4000);
         turnLeftDegrees(DRIVE_POWER, 40);
         driveForwardDistanceIMU(DRIVE_POWER, 5000);
