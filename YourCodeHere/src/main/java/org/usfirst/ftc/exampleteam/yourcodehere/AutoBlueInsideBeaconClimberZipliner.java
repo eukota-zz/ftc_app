@@ -18,6 +18,7 @@ public class AutoBlueInsideBeaconClimberZipliner extends MasterAutonomous
         lightSensorLEDs(ON);
 
         waitForStart();
+        initializeServoPositions();
 
         // This is a hack to keep us inside the 18" limit
         // None of the servos move if none are set to a position

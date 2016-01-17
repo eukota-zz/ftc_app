@@ -97,11 +97,19 @@ public class Master extends SynchronousOpMode
         // Reverse left motors so we don't spin in a circle
         motorRight.setDirection(DcMotor.Direction.REVERSE);
 
-        // Initialize zipline servos to be up
-        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
-        servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
-        servoClimberDumper.setPosition(CLIMBER_ARM_IN);
+        /* Servos are not initialized to ensure we fit in the box
+         * This is a hack to keep us inside the 18" limit
+         * None of the servos move if none are set to a position
+         * If any servo is set to a position, they all go
+         * Initialize servo positions after the waitForStart()
+         *
+         * servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+         * servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+         * servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
+         * servoClimberDumper.setPosition(CLIMBER_ARM_IN);
+         * servoTapeMeasureElevation.setPosition(TAPE_MEASURE_START_POS);
+         * servoTapeMeasureLock.setPosition(TAPE_MEASURE_UNLOCK_POSITION);
+         */
 
         // Initialize sensors
         colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
@@ -111,6 +119,17 @@ public class Master extends SynchronousOpMode
         ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonicSensor");
         parameters.angleUnit = IBNO055IMU.ANGLEUNIT.DEGREES;
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
+    }
+
+    public void initializeServoPositions()
+    {
+        // Initialize servos to starting positions
+        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+        servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
+        servoClimberDumper.setPosition(CLIMBER_ARM_IN);
+        servoTapeMeasureElevation.setPosition(TAPE_MEASURE_START_POS);
+        servoTapeMeasureLock.setPosition(TAPE_MEASURE_UNLOCK_POSITION);
     }
 
     public void configureTelemtry()

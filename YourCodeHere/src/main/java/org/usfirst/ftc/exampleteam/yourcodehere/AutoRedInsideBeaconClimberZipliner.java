@@ -16,11 +16,7 @@ public class AutoRedInsideBeaconClimberZipliner extends MasterAutonomous
         configureTelemtry();
 
         waitForStart();
-
-        // This is a hack to keep us inside the 18" limit
-        // None of the servos move if none are set to a position
-        // If any servo is set to a position, they all go
-        servoStartingPositions();
+        initializeServoPositions();
 
         driveBackwardDistance(DRIVE_POWER, FOO);
         alignWithRedSideWhiteLine();

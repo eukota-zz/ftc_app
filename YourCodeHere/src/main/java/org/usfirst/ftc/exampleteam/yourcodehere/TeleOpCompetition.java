@@ -15,6 +15,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
         // Wait for the game to begin
         this.waitForStart();
+        initializeServoPositions();
 
         // Loop until the game is finished
         while(this.opModeIsActive())
