@@ -115,10 +115,15 @@ public abstract class MasterAutonomous extends MasterOpMode
             {
                 satisfactionCounter++;
             }
+            else if (Math.abs(Δϴ) < 4)
+            {
+                satisfactionCounter+= 0.4;
+            }
             else
             {
                 satisfactionCounter = 0;
             }
+
 
             if (satisfactionCounter > 100)
             {
@@ -205,13 +210,11 @@ public abstract class MasterAutonomous extends MasterOpMode
                 rightpower = Math.signum(rightpower);
             }
 
-
-            if(climbers) {
+            if(climbers)
+            {
                 driveClimbers(leftpower * direction * timeFactor, rightpower * direction * timeFactor);
             }
             driveWheels(leftpower * direction * timeFactor, rightpower * direction * timeFactor);
-
-
 
             //check if the robot should stop
             if (Math.abs(getDistanceTraveled() - startDistance) >= Math.abs(distance))
@@ -256,7 +259,8 @@ public abstract class MasterAutonomous extends MasterOpMode
         t*=1000*1000;
         //we don't use System.currentTimeMillis() because it can be inconsistent
         long initialTime = System.nanoTime();
-        while(System.nanoTime() - initialTime < t){
+        while(System.nanoTime() - initialTime < t)
+        {
             idle();
         }
     }

@@ -212,7 +212,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
     }
 
     // Handy functions for formatting data for the dashboard
-    String format(double d) {
+    String format(double d)
+    {
         return String.format("%.1f", d);
     }
 

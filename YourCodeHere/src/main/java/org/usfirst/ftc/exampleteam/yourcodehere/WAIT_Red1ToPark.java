@@ -1,10 +1,12 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 
 /**
  * Created by Cole on 1/14/2016.
  */
+@Disabled
 @Autonomous(name = "AUTO WAIT_Red1 -> Park", group = "Swerve Examples")
 
 public class WAIT_Red1ToPark extends MasterAutonomous

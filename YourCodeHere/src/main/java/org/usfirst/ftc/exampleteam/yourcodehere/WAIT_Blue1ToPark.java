@@ -22,7 +22,7 @@ public class WAIT_Blue1ToPark extends MasterAutonomous
         setAutoStartPosition(90);
 
         wait(8000);
-        driveStraight(270, Constants.BACKWARDS, false);
+        driveStraight(250, Constants.BACKWARDS, false);
         turnTo(45);
         driveStraight(77, Constants.BACKWARDS, false);
         wait(500);

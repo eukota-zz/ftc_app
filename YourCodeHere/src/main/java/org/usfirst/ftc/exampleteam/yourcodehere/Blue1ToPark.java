@@ -22,8 +22,8 @@ public class Blue1ToPark extends MasterAutonomous
 
         setAutoStartPosition(90);
 
-        wait(100);
-        driveStraight(270, Constants.BACKWARDS, false);
+        wait(9000);
+        driveStraight(250, Constants.BACKWARDS, false);
         turnTo(45);
         driveStraight(77, Constants.BACKWARDS, false);
         wait(500);

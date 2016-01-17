@@ -24,7 +24,7 @@ public class Red2ToPark extends MasterAutonomous
         wait(100);
         driveStraight(125, Constants.BACKWARDS, false);
         turnTo(180);
-        driveStraight(85, Constants.BACKWARDS, false);
+        driveStraight(93, Constants.BACKWARDS, false);
         turnTo(225);
         driveStraight(73, Constants.BACKWARDS, false);
         wait(500);
