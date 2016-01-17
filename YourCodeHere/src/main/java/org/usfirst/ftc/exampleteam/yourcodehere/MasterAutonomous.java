@@ -14,14 +14,6 @@ public class MasterAutonomous extends Master
     int rightRed = 0;
     int colorDifferenceThreshold = 300;
 
-    public void servoStartingPositions()
-    {
-        servoClimberDumper.setPosition(CLIMBER_RETURN_POSITION);
-        servoCollectorHinge.setPosition(COLLECTOR_HINGE_UP);
-        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
-    }
-
     public void lightSensorLEDs (boolean state)
     {
         lightSensorBack.enableLed(state);
@@ -204,7 +196,7 @@ public class MasterAutonomous extends Master
 
     public void alignWithBlueSideWhiteLine() throws InterruptedException
     {
-        double whiteLineValue = 0.3;
+        double whiteLineValue = 0.07;
         motorLeft.setPower(-DRIVE_POWER / 2);
         //motorRight.setPower(-DRIVE_POWER / 4.0);
 
@@ -217,7 +209,7 @@ public class MasterAutonomous extends Master
             telemetry.update();
             idle();
         }
-        whiteLineValue = 0.6;
+        whiteLineValue = 0.3;
 
         /*
         turnRight(DRIVE_POWER / 2);

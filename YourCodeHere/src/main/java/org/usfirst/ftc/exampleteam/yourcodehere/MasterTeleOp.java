@@ -168,7 +168,7 @@ public class MasterTeleOp extends Master
 
     public void toggleLights(Gamepad gamepad)
     {
-        if(gamepad.a)
+        if(gamepad.b)
         {
             lightsAreOn = !lightsAreOn;
 

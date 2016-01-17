@@ -45,14 +45,14 @@ public class Master extends SynchronousOpMode
     // Declare constants
     double POWER_FULL = 1.0;
     double POWER_STOP = 0.0;
-    double POWER_SCORER = 0.25;
+    double POWER_SCORER = 0.4;
     double ZIPLINE_LEFT_UP = 0.55;
     double ZIPLINE_LEFT_OUT = 0.2;
     double ZIPLINE_RIGHT_UP = 0.0;
     double ZIPLINE_RIGHT_OUT = 0.5;
     double LEFT_BEACON_BUTTON_POSITION = 0.6;
     double RIGHT_BEACON_BUTTON_POSITION = 0.5;
-    double COLLECTOR_HINGE_DOWN = 0.6;
+    double COLLECTOR_HINGE_DOWN = 0.63;
     double COLLECTOR_HINGE_UP = 0.8;
     double TAPE_MEASURE_START_POS = 0.8;
     double TAPE_MEASURE_ELEVATION_RATE = 0.05;
