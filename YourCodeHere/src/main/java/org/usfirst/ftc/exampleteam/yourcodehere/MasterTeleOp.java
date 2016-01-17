@@ -59,11 +59,11 @@ public class MasterTeleOp extends Master
         // Tape Measure of Doom extension based on controller 1
         if(gamepad.left_trigger > 0)
         {
-            motorTapeMeasure.setPower(-POWER_FULL);
+            motorTapeMeasure.setPower(-gamepad.left_trigger);
         }
         else if(gamepad.right_trigger > 0)
         {
-            motorTapeMeasure.setPower(POWER_FULL);
+            motorTapeMeasure.setPower(gamepad.right_trigger);
         }
         else
         {
@@ -71,7 +71,7 @@ public class MasterTeleOp extends Master
         }
     }
 
-    public void controlTapeMeasureServo(Gamepad gamepad)
+    public void controlTapeMeasureServos(Gamepad gamepad)
     {
         // Tape Measure of Doom elevation based on controller 1
         if(gamepad.left_bumper && servoTapeMeasureElevation.getPosition() <= 1 - TAPE_MEASURE_ELEVATION_RATE)
@@ -81,6 +81,16 @@ public class MasterTeleOp extends Master
         else if(gamepad.right_bumper && servoTapeMeasureElevation.getPosition() >= 0 + TAPE_MEASURE_ELEVATION_RATE)
         {
             servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - TAPE_MEASURE_ELEVATION_RATE);
+        }
+
+        // Tape Measure of Doom locking
+        if(gamepad.x && gamepad.b)
+        {
+            servoTapeMeasureLock.setPosition(TAPE_MEASURE_LOCK_POSITION);
+        }
+        else if(gamepad.dpad_down)
+        {
+            servoTapeMeasureLock.setPosition(TAPE_MEASURE_UNLOCK_POSITION);
         }
     }
 

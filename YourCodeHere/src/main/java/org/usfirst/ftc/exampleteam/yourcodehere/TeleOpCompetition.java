@@ -36,7 +36,7 @@ public class TeleOpCompetition extends MasterTeleOp
     {
         tankDrive(gamepad1);
         controlTapeMeasureMotors(gamepad1);
-        controlTapeMeasureServo(gamepad1);
+        controlTapeMeasureServos(gamepad1);
     }
 
     public void driver2Controls() throws InterruptedException

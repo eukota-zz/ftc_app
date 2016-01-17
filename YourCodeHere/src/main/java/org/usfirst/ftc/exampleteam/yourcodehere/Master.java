@@ -28,6 +28,7 @@ public class Master extends SynchronousOpMode
     Servo servoLeftZipline = null;
     Servo servoRightZipline = null;
     Servo servoTapeMeasureElevation = null;
+    Servo servoTapeMeasureLock = null;
     Servo servoCollectorHinge = null;
     Servo servoClimberDumper = null;
 
@@ -53,7 +54,10 @@ public class Master extends SynchronousOpMode
     double RIGHT_BEACON_BUTTON_POSITION = 0.5;
     double COLLECTOR_HINGE_DOWN = 0.6;
     double COLLECTOR_HINGE_UP = 0.8;
+    double TAPE_MEASURE_START_POS = 0.8;
     double TAPE_MEASURE_ELEVATION_RATE = 0.05;
+    double TAPE_MEASURE_UNLOCK_POSITION = 1.0;
+    double TAPE_MEASURE_LOCK_POSITION = 0.0;
     double CLIMBER_ARM_OUT = 0.0;
     double CLIMBER_ARM_IN = 1.0;
     double DRIVE_POWER = -1.0;
@@ -84,6 +88,7 @@ public class Master extends SynchronousOpMode
         servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
         servoRightZipline = hardwareMap.servo.get("servoRightZipline");
         servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
+        servoTapeMeasureLock = hardwareMap.servo.get("servoTapeMeasureLock");
         servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
         servoClimberDumper = hardwareMap.servo.get("servoClimberDumper");
 
