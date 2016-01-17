@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -12,6 +13,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * presses beacon button, and scores climber
  */
 @TeleOp(name="ODS Test")
+@Disabled
 public class ODSTest extends SynchronousOpMode
 {
     OpticalDistanceSensor lightSensorFront = null;

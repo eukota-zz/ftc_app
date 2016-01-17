@@ -15,6 +15,7 @@ import org.swerverobotics.library.interfaces.Disabled;
  * Java package.
  */
 @Autonomous(name="ColorSensorCalibration")
+@Disabled
 public class ColorSensorCalibration extends SynchronousOpMode {
 
     ColorSensor colorSensorBeacon;

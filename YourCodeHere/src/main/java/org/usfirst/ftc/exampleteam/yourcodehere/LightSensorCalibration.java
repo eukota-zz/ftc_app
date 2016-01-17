@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.LightSensor;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 
 
 /**
@@ -13,6 +14,7 @@ import org.swerverobotics.library.interfaces.Autonomous;
  * Java package.
  */
 @Autonomous(name="LightSensorCalibration")
+@Disabled
 public class LightSensorCalibration extends SynchronousOpMode {
 
     LightSensor LightSensorCalibrator;

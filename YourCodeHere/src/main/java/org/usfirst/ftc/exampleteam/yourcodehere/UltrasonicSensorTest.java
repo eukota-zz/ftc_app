@@ -16,6 +16,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * presses beacon button, and scores climber
  */
 @TeleOp(name="UltrasonicSensorTest")
+@Disabled
 public class UltrasonicSensorTest extends SynchronousOpMode
 {
     UltrasonicSensor ultrasonicSensor = null;

@@ -15,6 +15,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * presses beacon button, and scores climber
  */
 @TeleOp(name="LightSensorTest")
+@Disabled
 public class LightSensorTest extends SynchronousOpMode
 {
     LightSensor lightSensorFront = null;
