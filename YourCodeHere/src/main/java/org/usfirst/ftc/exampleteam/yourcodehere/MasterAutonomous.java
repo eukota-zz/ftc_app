@@ -255,11 +255,9 @@ public abstract class MasterAutonomous extends MasterOpMode
     //wait a number of milliseconds
     public void wait(int t) throws InterruptedException
     {
-        //convert
-        t*=1000*1000;
         //we don't use System.currentTimeMillis() because it can be inconsistent
         long initialTime = System.nanoTime();
-        while(System.nanoTime() - initialTime < t)
+        while((System.nanoTime() - initialTime)/1000/1000 < t)
         {
             idle();
         }
