@@ -813,11 +813,11 @@ public final class I2cDeviceClient implements II2cDeviceClient, IOpModeStateTran
             updateStateMachines(UPDATE_STATE_MACHINE.FROM_CALLBACK);
             }
 
-        @Override public void onStartNotifications(int port)
+        @Override public void onStartNotifications(int port) throws InterruptedException
             {
             }
 
-        @Override public void onStopNotifications(int port)
+        @Override public void onStopNotifications(int port) throws InterruptedException
         // We're being told that we're not going to get any more portIsReady callbacks. For now
         // all we do is display an error and give up. In future, we could deal with this more robustly
         // by essentially disarming ourselves manually and carefully.
