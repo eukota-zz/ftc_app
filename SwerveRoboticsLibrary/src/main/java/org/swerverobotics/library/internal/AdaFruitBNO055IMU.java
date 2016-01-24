@@ -143,7 +143,9 @@ public final class AdaFruitBNO055IMU implements IBNO055IMU, II2cDeviceClientUser
                 throw new UnexpectedI2CDeviceException(chipId);
             }
         
-        // Make sure we are in config mode
+        // Get us into config mode, for sure
+        if (SENSOR_MODE.CONFIG == parameters.mode)
+            throw new IllegalArgumentException("SENSOR_MODE.CONFIG illegal for use in AdaFruitBNO055IMU.initialize()");
         setSensorMode(SENSOR_MODE.CONFIG);
         
         // Reset the system, and wait for the chip id register to switch back from its reset state 
@@ -224,6 +226,13 @@ public final class AdaFruitBNO055IMU implements IBNO055IMU, II2cDeviceClientUser
         // Finally, enter the requested operating mode (see section 3.3)
         setSensorMode(parameters.mode);
         delayLoreExtra(200);
+
+        // At this point, the chip should in fact report correctly that it's in the mode requested.
+        // See 4.3.58 SYS_STATUS
+        int expectedStatus = parameters.mode.isFusionMode() ? 5 : 6;
+        int status = getSystemStatus();
+        if (status != expectedStatus)
+            throw new BNO055InitializationException(this, String.format("unexpectd system status %d; expected %d", status, expectedStatus));
         }
 
     @Override public void close()
@@ -232,22 +241,30 @@ public final class AdaFruitBNO055IMU implements IBNO055IMU, II2cDeviceClientUser
         this.deviceClient.close();
         }
 
-    private void setSensorMode(SENSOR_MODE mode)
+    private void setSensorMode(SENSOR_MODE newMode)
     /* The default operation mode after power-on is CONFIGMODE. When the user changes to another 
     operation mode, the sensors which are required in that particular sensor mode are powered, 
     while the sensors whose signals are not required are set to suspend mode. */
         {
         // Remember the mode, 'cause that's easy
-        this.currentMode = mode;
-        
-        // Actually change the operation/sensor mode
-        this.write8(REGISTER.OPR_MODE, mode.bVal & 0x0F);                           // OPR_MODE=0x3D
-        
-        // Delay per Table 3-6 of BNO055 Data sheet (p21)
-        if (mode == SENSOR_MODE.CONFIG)
-            delayExtra(19);
-        else
-            delayExtra(7);
+        this.currentMode = newMode;
+
+        for (;;)
+            {
+            // If we're in the mode we want, then we're done
+            int currentMode = this.read8(REGISTER.OPR_MODE) & 0x0F;
+            if (currentMode == (newMode.bVal & 0x0F))
+                break;
+
+            // Actually change the operation/sensor mode
+            this.write8(REGISTER.OPR_MODE, newMode.bVal & 0x0F);                           // OPR_MODE=0x3D
+
+            // Delay per Table 3-6 of BNO055 Data sheet (p21)
+            if (newMode == SENSOR_MODE.CONFIG)
+                delayExtra(19);
+            else
+                delayExtra(7);
+            }
         }
 
     public synchronized byte getSystemStatus()
