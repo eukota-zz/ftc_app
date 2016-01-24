@@ -7,9 +7,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  */
 public abstract class MasterTeleOp extends MasterOpMode
 {
+
+    Hanger hanger;
+
     protected void initialize()
     {
         super.initialize();
+
+        hanger = new Hanger(LeftMotorHanger, RightMotorHanger);
 
         //this makes sure the joystick does not take minute data
         this.gamepad1.setJoystickDeadzone(Constants.JOYSTICK_DEADZONE);
