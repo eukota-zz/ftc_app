@@ -63,7 +63,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     public void turnTo(double targetAngle) throws InterruptedException
     {
         double offset = 0;
-        double Δϴ;
+        double deltaTheta;
         double power;
         boolean isTurnCompleted = false;
         double currentOrientation;
@@ -76,24 +76,24 @@ public abstract class MasterAutonomous extends MasterOpMode
             turnFilter.update();
 
             currentOrientation = getCurrentGlobalOrientation();
-            Δϴ = targetAngle - currentOrientation;
+            deltaTheta = targetAngle - currentOrientation;
             //roll sensor difference. we do this to maintain the PID filter's unawareness of the transition
             lasts[1] = lasts[0];
-            lasts[0] = Δϴ;
+            lasts[0] = deltaTheta;
             sensorDiff = lasts[0]-lasts[1];
             //check 360-0 case
             if (Math.abs(sensorDiff) > 350)
             {
                 offset -= Math.signum(sensorDiff) * 360;
             }
-            Δϴ += offset;
+            deltaTheta += offset;
             //check suboptimal direction case
             //should only resolve once
-            if (Math.abs(Δϴ) > 180)
+            if (Math.abs(deltaTheta) > 180)
             {
-                offset -= Math.signum(Δϴ) * 360;
+                offset -= Math.signum(deltaTheta) * 360;
             }
-            turnFilter.roll(Δϴ);
+            turnFilter.roll(deltaTheta);
 
             //set filtered motor powers
             power = turnFilter.getFilteredValue();
@@ -105,17 +105,17 @@ public abstract class MasterAutonomous extends MasterOpMode
             driveWheels(-power, power);
 
             telemetry.addData("power:", power);
-            telemetry.addData("dA:", Δϴ);
+            telemetry.addData("dA:", deltaTheta);
 
 
 
             //check if the turn is finished and the robot is settled
 
-            if (Math.abs(Δϴ) < 3)
+            if (Math.abs(deltaTheta) < 3)
             {
                 satisfactionCounter++;
             }
-            else if (Math.abs(Δϴ) < 4)
+            else if (Math.abs(deltaTheta) < 4)
             {
                 satisfactionCounter+= 0.4;
             }

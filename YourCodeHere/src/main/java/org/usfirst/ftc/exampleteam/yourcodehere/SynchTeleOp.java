@@ -58,7 +58,9 @@ public class SynchTeleOp extends MasterTeleOp
         double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
 
         //set pad 2 servos equal to stick input
-        hanger.drive(p2RightStickPower);
+        //adjusted power is commented out for now
+        double adjustedPower = p2RightStickPower; //hanger.checkStalled(p2RightStickPower);
+        hanger.moveHanger(adjustedPower);
 
         HangerServo.setPosition((p2LeftStickPower + 1) / 2);
 

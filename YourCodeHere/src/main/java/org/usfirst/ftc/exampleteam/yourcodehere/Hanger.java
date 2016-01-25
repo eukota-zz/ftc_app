@@ -12,13 +12,27 @@ public class Hanger
     DcMotor LeftMotor;
     DcMotor RightMotor;
 
+    double hangerPower = LeftMotor.getPower();
+
+    boolean isStalled = false;
+
+    double oldEncoderValue;
+    double newEncoderValue;
+    double oldTime;
+    double newTime;
+    double delta;
+
     public Hanger(DcMotor Left, DcMotor Right)
     {
         LeftMotor = Left;
         RightMotor = Right;
+
+        isStalled = false;
+        oldTime = System.nanoTime()/1000000;
+        newTime = oldTime;
     }
 
-    public void drive(double power)
+    public void moveHanger(double power)
     {
         int currentPosition = getTapePosition();
 
@@ -52,5 +66,34 @@ public class Hanger
     public int getTapePosition()
     {
         return LeftMotor.getCurrentPosition();
+    }
+
+    double checkStalled(double power)
+    {
+        double newPower = power;
+        newTime = System.nanoTime()/1000000;
+
+        if (newTime - oldTime >= 250)
+        {
+            newEncoderValue = getTapePosition();
+
+            if (isStalled == true)
+            {
+                isStalled = false;
+            }
+            else
+            {
+                delta = newEncoderValue - oldEncoderValue;
+
+                if (delta < 100 & hangerPower > 0.4)
+                {
+                    power = Math.signum(power) * 0.4;
+                }
+                isStalled = true;
+            }
+            oldEncoderValue = newEncoderValue;
+            oldTime = newTime;
+        }
+        return newPower;
     }
 }
