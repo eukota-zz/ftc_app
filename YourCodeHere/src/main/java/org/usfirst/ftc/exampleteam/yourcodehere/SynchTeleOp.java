@@ -36,8 +36,8 @@ public class SynchTeleOp extends MasterTeleOp
                 this.driveRobot(this.gamepad1);
             }
 
-            hanger.checkRange();
-            telemetry.addData("tapeposition", hanger.getTapePosition());
+            /*hanger.checkRange();
+            telemetry.addData("tapeposition", hanger.getTapePosition());*/
 
             // Emit telemetry with the newest possible values
             //this.telemetry.update();
@@ -60,7 +60,7 @@ public class SynchTeleOp extends MasterTeleOp
         //set pad 2 servos equal to stick input
         //adjusted power is commented out for now
         double adjustedPower = p2RightStickPower; //hanger.checkStalled(p2RightStickPower);
-        hanger.moveHanger(adjustedPower);
+        //hanger.moveHanger(adjustedPower);
 
         HangerServo.setPosition((p2LeftStickPower + 1) / 2);
 

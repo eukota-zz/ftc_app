@@ -38,7 +38,7 @@ public class Hanger
 
         if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION))
         {
-            stop();
+            stopHangerMotors();
         }
         else
         {
@@ -47,7 +47,7 @@ public class Hanger
         }
     }
 
-    public void stop()
+    public void stopHangerMotors()
     {
         LeftMotor.setPower(0);
         RightMotor.setPower(0);
@@ -59,7 +59,7 @@ public class Hanger
 
         if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION))
         {
-            stop();
+            stopHangerMotors();
         }
     }
 
@@ -68,7 +68,7 @@ public class Hanger
         return LeftMotor.getCurrentPosition();
     }
 
-    double checkStalled(double power)
+    /*double checkStalled(double power)
     {
         double newPower = power;
         newTime = System.nanoTime()/1000000;
@@ -95,5 +95,5 @@ public class Hanger
             oldTime = newTime;
         }
         return newPower;
-    }
+    }*/
 }

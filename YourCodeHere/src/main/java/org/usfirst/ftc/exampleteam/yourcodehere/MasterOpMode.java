@@ -142,8 +142,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
         //the left side hanger motor moves the opposite direction of the right side hanger.
         this.RightMotorHanger.setDirection(DcMotor.Direction.REVERSE);
-        this.LeftMotorHanger.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        this.RightMotorHanger.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        this.LeftMotorHanger.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.RightMotorHanger.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         stopAllMotors();
     }
