@@ -12,7 +12,7 @@ public class Hanger
     DcMotor LeftMotor;
     DcMotor RightMotor;
 
-    double hangerPower = LeftMotor.getPower();
+    double hangerPower;
 
     boolean isStalled = false;
 
@@ -30,14 +30,15 @@ public class Hanger
         isStalled = false;
         oldTime = System.nanoTime()/1000000;
         newTime = oldTime;
+
+        hangerPower = LeftMotor.getPower();
     }
 
     public void moveHanger(double power)
     {
         int currentPosition = getTapePosition();
 
-        if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION))
-        {
+        if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION)) {
             stopHangerMotors();
         }
         else
@@ -57,8 +58,7 @@ public class Hanger
     {
         int currentPosition = getTapePosition();
 
-        if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION))
-        {
+        if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION)) {
             stopHangerMotors();
         }
     }
@@ -68,7 +68,7 @@ public class Hanger
         return LeftMotor.getCurrentPosition();
     }
 
-    /*double checkStalled(double power)
+    double checkStalled(double power)
     {
         double newPower = power;
         newTime = System.nanoTime()/1000000;
@@ -95,5 +95,5 @@ public class Hanger
             oldTime = newTime;
         }
         return newPower;
-    }*/
+    }
 }
