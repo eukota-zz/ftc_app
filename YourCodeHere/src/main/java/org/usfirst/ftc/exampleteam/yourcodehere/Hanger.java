@@ -34,7 +34,7 @@ public class Hanger
         hangerPower = LeftMotor.getPower();
     }
 
-    public void moveHanger(double power)
+    /*public void moveHanger(double power)
     {
         int currentPosition = getTapePosition();
 
@@ -46,6 +46,12 @@ public class Hanger
             LeftMotor.setPower(power);
             RightMotor.setPower(power);
         }
+    }*/
+
+    public void moveHangerWithoutEncoders (double power)
+    {
+        LeftMotor.setPower(power);
+        RightMotor.setPower(power);
     }
 
     public void stopHangerMotors()
@@ -54,7 +60,7 @@ public class Hanger
         RightMotor.setPower(0);
     }
 
-    public void checkRange()
+    /*public void checkRange()
     {
         int currentPosition = getTapePosition();
 
@@ -95,5 +101,5 @@ public class Hanger
             oldTime = newTime;
         }
         return newPower;
-    }
+    }*/
 }
