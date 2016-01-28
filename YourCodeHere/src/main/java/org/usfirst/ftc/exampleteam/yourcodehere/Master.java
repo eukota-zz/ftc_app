@@ -1,5 +1,6 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
+import com.qualcomm.hardware.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -45,7 +46,7 @@ public class Master extends SynchronousOpMode
     // Declare constants
     double POWER_FULL = 1.0;
     double POWER_STOP = 0.0;
-    double POWER_SCORER = 0.4;
+    double POWER_SCORER = 0.25 ;
     double ZIPLINE_LEFT_UP = 0.55;
     double ZIPLINE_LEFT_OUT = 0.2;
     double ZIPLINE_RIGHT_UP = 0.0;
@@ -59,7 +60,7 @@ public class Master extends SynchronousOpMode
     double TAPE_MEASURE_UNLOCK_POSITION = 1.0;
     double TAPE_MEASURE_LOCK_POSITION = 0.0;
     double CLIMBER_ARM_OUT = 0.0;
-    double CLIMBER_ARM_IN = 1.0;
+    double CLIMBER_ARM_IN = 0.7;
     double DRIVE_POWER = -1.0;
     double CLIMBER_DUMP_POSITION = 1.0;
     double CLIMBER_RETURN_POSITION = 0.0;

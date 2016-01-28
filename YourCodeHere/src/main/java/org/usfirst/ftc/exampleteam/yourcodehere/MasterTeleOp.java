@@ -28,8 +28,6 @@ public class MasterTeleOp extends Master
         {
             slowModeFactor = 1.0;
         }
-        leftRequestedPower /= slowModeFactor;
-        rightRequestedPower /= slowModeFactor;
 
         /*
         // Smooth acceleration
@@ -57,13 +55,13 @@ public class MasterTeleOp extends Master
     public void controlTapeMeasureMotors(Gamepad gamepad)
     {
         // Tape Measure of Doom extension based on controller 1
-        if(gamepad.left_trigger > 0)
+        if(gamepad.right_trigger > 0)
         {
-            motorTapeMeasure.setPower(-gamepad.left_trigger);
+            motorTapeMeasure.setPower(-gamepad.right_trigger);
         }
-        else if(gamepad.right_trigger > 0)
+        else if(gamepad.left_trigger > 0)
         {
-            motorTapeMeasure.setPower(gamepad.right_trigger);
+            motorTapeMeasure.setPower(gamepad.left_trigger);
         }
         else
         {
@@ -74,11 +72,13 @@ public class MasterTeleOp extends Master
     public void controlTapeMeasureServos(Gamepad gamepad)
     {
         // Tape Measure of Doom elevation based on controller 1
-        if(gamepad.left_bumper && servoTapeMeasureElevation.getPosition() <= 1 - TAPE_MEASURE_ELEVATION_RATE)
+        if((gamepad1.dpad_up && servoTapeMeasureElevation.getPosition() <= 1 - TAPE_MEASURE_ELEVATION_RATE)
+                || (gamepad2.dpad_up && servoTapeMeasureElevation.getPosition() <= 1 - TAPE_MEASURE_ELEVATION_RATE))
         {
             servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() + TAPE_MEASURE_ELEVATION_RATE);
         }
-        else if(gamepad.right_bumper && servoTapeMeasureElevation.getPosition() >= 0 + TAPE_MEASURE_ELEVATION_RATE)
+        else if((gamepad1.dpad_down && servoTapeMeasureElevation.getPosition() >= 0 + TAPE_MEASURE_ELEVATION_RATE)
+                || (gamepad2.dpad_down && servoTapeMeasureElevation.getPosition() >= 0 + TAPE_MEASURE_ELEVATION_RATE))
         {
             servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - TAPE_MEASURE_ELEVATION_RATE);
         }
@@ -88,7 +88,7 @@ public class MasterTeleOp extends Master
         {
             servoTapeMeasureLock.setPosition(TAPE_MEASURE_LOCK_POSITION);
         }
-        else if(gamepad.dpad_down)
+        else if(gamepad.start && gamepad.back)
         {
             servoTapeMeasureLock.setPosition(TAPE_MEASURE_UNLOCK_POSITION);
         }
