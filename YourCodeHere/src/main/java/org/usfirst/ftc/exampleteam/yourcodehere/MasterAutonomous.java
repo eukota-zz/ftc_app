@@ -63,7 +63,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     public void turnTo(double targetAngle) throws InterruptedException
     {
         double offset = 0;
-        double deltaTheta;
+        double angleDiff;
         double power;
         boolean isTurnCompleted = false;
         double currentOrientation;
@@ -76,24 +76,24 @@ public abstract class MasterAutonomous extends MasterOpMode
             turnFilter.update();
 
             currentOrientation = getCurrentGlobalOrientation();
-            deltaTheta = targetAngle - currentOrientation;
+            angleDiff = targetAngle - currentOrientation;
             //roll sensor difference. we do this to maintain the PID filter's unawareness of the transition
             lasts[1] = lasts[0];
-            lasts[0] = deltaTheta;
+            lasts[0] = angleDiff;
             sensorDiff = lasts[0]-lasts[1];
             //check 360-0 case
             if (Math.abs(sensorDiff) > 350)
             {
                 offset -= Math.signum(sensorDiff) * 360;
             }
-            deltaTheta += offset;
+            angleDiff += offset;
             //check suboptimal direction case
             //should only resolve once
-            if (Math.abs(deltaTheta) > 180)
+            if (Math.abs(angleDiff) > 180)
             {
-                offset -= Math.signum(deltaTheta) * 360;
+                offset -= Math.signum(angleDiff) * 360;
             }
-            turnFilter.roll(deltaTheta);
+            turnFilter.roll(angleDiff);
 
             //set filtered motor powers
             power = turnFilter.getFilteredValue();
@@ -105,17 +105,17 @@ public abstract class MasterAutonomous extends MasterOpMode
             driveWheels(-power, power);
 
             telemetry.addData("power:", power);
-            telemetry.addData("dA:", deltaTheta);
+            telemetry.addData("dA:", angleDiff);
 
 
 
             //check if the turn is finished and the robot is settled
 
-            if (Math.abs(deltaTheta) < 3)
+            if (Math.abs(angleDiff) < 3)
             {
                 satisfactionCounter++;
             }
-            else if (Math.abs(deltaTheta) < 4)
+            else if (Math.abs(angleDiff) < 4)
             {
                 satisfactionCounter+= 0.4;
             }
@@ -143,7 +143,7 @@ public abstract class MasterAutonomous extends MasterOpMode
     public void driveStraight(double distance, double direction, boolean climbers) throws InterruptedException
     {
         double offset = 0;
-        double Δϴ;
+        double angleDiff;
         double power;
         double leftpower;
         double rightpower;
@@ -166,24 +166,24 @@ public abstract class MasterAutonomous extends MasterOpMode
             }
 
             currentOrientation = getCurrentGlobalOrientation();
-            Δϴ = targetAngle - currentOrientation;
+            angleDiff = targetAngle - currentOrientation;
             //roll sensor difference. we do this to maintain the PID filter's unawareness of the transition
             lasts[1] = lasts[0];
-            lasts[0] = Δϴ;
+            lasts[0] = angleDiff;
             sensorDiff = lasts[0]-lasts[1];
             //check 360-0 case
             if (Math.abs(sensorDiff) > 350)
             {
                 offset -= Math.signum(sensorDiff) * 360;
             }
-            Δϴ += offset;
+            angleDiff += offset;
             //check suboptimal direction case
             //should only resolve once
-            if (Math.abs(Δϴ) > 180)
+            if (Math.abs(angleDiff) > 180)
             {
-                offset -= Math.signum(Δϴ) * 360;
+                offset -= Math.signum(angleDiff) * 360;
             }
-            turnFilter.roll(Δϴ);
+            turnFilter.roll(angleDiff);
 
             //set filtered motor powers
             power = turnFilter.getFilteredValue();
