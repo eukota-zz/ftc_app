@@ -55,7 +55,7 @@ public class SynchTeleOp extends MasterTeleOp
         }
 
         double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
-        double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
+        double p2RightStickPower = Math.signum(pad2.right_stick_y * currentDrivePowerFactor) * Math.pow(2, pad2.right_stick_y * currentDrivePowerFactor);
 
         //set pad 2 servos equal to stick input
         //adjusted power is commented out for now
