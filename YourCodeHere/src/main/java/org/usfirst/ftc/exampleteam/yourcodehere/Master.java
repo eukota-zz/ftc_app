@@ -1,6 +1,5 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.hardware.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
