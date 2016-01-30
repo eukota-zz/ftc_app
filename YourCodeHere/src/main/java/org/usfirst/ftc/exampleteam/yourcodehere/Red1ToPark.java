@@ -19,15 +19,16 @@ public class Red1ToPark extends MasterAutonomous
 
         setAutoStartPosition(90);
 
-        wait(9000);
+        wait(2000);
         driveStraight(270, Constants.BACKWARDS, false);
         turnTo(135);
-        driveStraight(77, Constants.BACKWARDS, false);
+        driveStraight(73, Constants.BACKWARDS, false);
         wait(500);
         HikerDropper.deploy();
-        wait(2000);
-        driveStraight(77, Constants.FORWARDS * 0.4, false);
+        wait(4000);
+        driveStraight(73, Constants.FORWARDS * 0.4, false);
         HikerDropper.retract();
-        driveStraight(77, Constants.BACKWARDS * 0.4, false);
+        driveStraight(73, Constants.BACKWARDS * 0.4, false);
+
     }
 }

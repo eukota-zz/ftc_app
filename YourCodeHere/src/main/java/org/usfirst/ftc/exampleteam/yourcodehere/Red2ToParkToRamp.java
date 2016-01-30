@@ -28,11 +28,11 @@ public class Red2ToParkToRamp extends MasterAutonomous
         turnTo(180);
         driveStraight(85, Constants.BACKWARDS, false);
         turnTo(225);
-        driveStraight(65, Constants.BACKWARDS, false);
+        driveStraight(62, Constants.BACKWARDS, false);
         wait(500);
         HikerDropper.deploy();
-        wait(2000);
-        driveStraight(65, Constants.FORWARDS * 0.4, false);
+        wait(4000);
+        driveStraight(62, Constants.FORWARDS * 0.4, false);
         HikerDropper.retract();
         turnTo(135);
         driveStraight(74, Constants.FORWARDS, false);
