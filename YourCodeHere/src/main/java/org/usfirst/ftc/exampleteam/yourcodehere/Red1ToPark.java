@@ -20,7 +20,7 @@ public class Red1ToPark extends MasterAutonomous
         setAutoStartPosition(90);
 
         wait(9000);
-        driveStraight(270, Constants.BACKWARDS, false);
+        driveStraight(260, Constants.BACKWARDS, false);
         turnTo(135);
         driveStraight(77, Constants.BACKWARDS, false);
         wait(500);
