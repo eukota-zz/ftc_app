@@ -39,6 +39,8 @@ public class BatteryTest extends SynchronousOpMode
     String FILENAME = "SwerveBatteryLogger.txt";
     PrintWriter outputFile;
 
+    boolean keepRunning = true;
+
     @Override
     public void main() throws InterruptedException
     {
@@ -51,9 +53,13 @@ public class BatteryTest extends SynchronousOpMode
 
         eTime.reset();
         telemetry.log.add("Start Voltage: " + formatNumber(voltageSensor.getVoltage()));
+
+        //write initial unloaded voltage to the file
+        writeDataToPublicFile(voltageSensor.getVoltage());
+
         motor.setPower(1.0);
 
-        while (this.opModeIsActive())
+        while (this.opModeIsActive() && keepRunning)
         {
             /*
             // Break if elapsed time has exceeded test time
@@ -64,16 +70,16 @@ public class BatteryTest extends SynchronousOpMode
             }*/
 
             // Break if battery voltage drops below minimum safe value
-            if(voltageSensor.getVoltage() <= minimumSafeVoltage)
+            if(voltageSensor.getVoltage() < minimumSafeVoltage)
             {
                 telemetry.log.add("[STOPPED] Battery voltage below minimum safe value");
-                break;
+                keepRunning = false;
             }
 
             // Checks to see if another period has passed
-            if(eTime.time() - readings * period >= 0)
+            if(eTime.time() - (readings * period) >= 0)
             {
-                telemetry.log.add("Voltage at " + readings * period + " seconds: " + formatNumber(voltageSensor.getVoltage()));
+                //telemetry.log.add("Voltage at " + readings * period + " seconds: " + formatNumber(voltageSensor.getVoltage()));
                 writeDataToPublicFile(voltageSensor.getVoltage());
                 readings += 1;
             }
@@ -95,6 +101,15 @@ public class BatteryTest extends SynchronousOpMode
                             @Override
                             public Object value() {
                                 return formatNumber(voltageSensor.getVoltage());
+                            }
+                        })
+                );
+        telemetry.addLine
+                (
+                        this.telemetry.item("Readings: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatNumber(readings);
                             }
                         })
                 );
@@ -158,7 +173,7 @@ public class BatteryTest extends SynchronousOpMode
 
     public void writeDataToPublicFile(double voltage)
     {
-        String s = formatNumber(eTime.time()) + "," + formatNumber(voltage) + "\n\r*";
+        String s = formatNumber(eTime.time()) + "," + formatNumber(voltage) + "\r\n";
         writeDataToPublicFile(s);
     }
 
