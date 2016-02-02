@@ -13,7 +13,7 @@ public class Constants
     //servo constants
     public static final double ZIPLINEHITTER_NOTDEPLOYED = -0.85;
     public static final double ZIPLINEHITTER_DEPLOYED = 0.6;
-    public static final double HIKER_DROPPER_NOTDEPLOYED = -.90;
+    public static final double HIKER_DROPPER_NOTDEPLOYED = .20;
     public static final double HIKER_DROPPER_DEPLOYED = 0.68;
     public static final double HANGER_SERVO_NOTDEPLOYED = 0.0;
     public static final double HANGER_SERVO_STOP = 0.5;
