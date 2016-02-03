@@ -1,19 +1,11 @@
-package org.swerverobotics.ftc417.yourcodehere;
+package org.swerverobotics.ftc6220.yourcodehere;
+
+import org.swerverobotics.library.interfaces.OpModeRegistrar;
 
 import android.content.Context;
 
-import com.qualcomm.ftcrobotcontroller.opmodes.NxtTeleOp;
-
 import org.swerverobotics.library.SwerveUtil;
-import org.swerverobotics.library.examples.LinearAutonomousPolygon;
-import org.swerverobotics.library.examples.SynchTeleOp;
-import org.swerverobotics.library.examples.SynchTelemetryOp;
-import org.swerverobotics.library.interfaces.Autonomous;
-import org.swerverobotics.library.interfaces.IOpModeManager;
-import org.swerverobotics.library.interfaces.OnRobotRunning;
-import org.swerverobotics.library.interfaces.OnRobotStartupFailure;
-import org.swerverobotics.library.interfaces.OpModeRegistrar;
-import org.swerverobotics.library.interfaces.TeleOp;
+import org.swerverobotics.library.interfaces.*;
 
 /**
  * MyRobotControllerAdministration is a container for 'administrative' methods that interact
@@ -26,14 +18,15 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * important thing is the annotations with which they are decorated.
  *
  * As we've written things here, the code resides in an Android module named 'YourCodeHere' which
- * contains a package named 'org.swerverobotics.ftc417.yourcodehere'. If you wish to change that,
+ * contains a package named 'org.usfirst.ftc.exampleteam.yourcodehere'. If you wish to change that,
  * or to create multiple such modules with different names, that's pretty straightforward: you can
  * begin by copying the entire YourCodeHere folder, then renaming the src\main\java\org\...\yourcodehere
  * path to reflect your new package name, whatever that might be. That new package name will also
  * of course need to appear in your copied .java files (including package-info.java), so those will
- * need their 'package' statement at the top adjusted accordingly. Finally, perhaps less obviously,
+ * need their 'package' statement at the top adjusted accordingly. Perhaps less obviously,
  * the src\main\AndroidManifest.xml, which also contains the package name, will need to have the
- * 'package' attribute of the 'manifest' element adjusted.
+ * 'package' attribute of the 'manifest' element adjusted. Finally, the new modules should be added
+ * to the 'settings.gradle' file so they show up in Android Studio.
  *
  * @see TeleOp
  * @see Autonomous
@@ -42,7 +35,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * @see SynchTeleOp
  */
 public class MyRobotControllerAdministration
-    {
+{
     /**
      * Registers any library OpModes that you wish to display. Change this code to suit
      * your needs: the specific OpModes that are registered as this code comes from
@@ -56,15 +49,15 @@ public class MyRobotControllerAdministration
      */
     @OpModeRegistrar
     public static void registerMyOpModes(Context context, IOpModeManager manager)
-        {
+    {
         // As an example, we here register some examples from the Swerve library
         // and one of the FTC HQ example opmodes. You'll probably want to change that.
 
-        manager.register(SynchTeleOp.class);
-        manager.register(SynchTelemetryOp.class);
-        manager.register(LinearAutonomousPolygon.class);
-        manager.register("FTC HQ NxtTeleOp", NxtTeleOp.class);
-        }
+        //manager.register(SynchTeleOp.class);
+        //manager.register(SynchTelemetryOp.class);
+        //manager.register(LinearAutonomousPolygon.class);
+        //manager.register("FTC HQ NxtTeleOp", NxtTeleOp.class);
+    }
 
     /**
      * Any public static method annotated with {@link OnRobotRunning} is invoked when the robot
@@ -82,9 +75,9 @@ public class MyRobotControllerAdministration
      */
     @OnRobotRunning
     public static void playSoundOnRobotRunning(Context context)
-        {
+    {
         SwerveUtil.playSound(context, R.raw.nxtstartup);
-        }
+    }
 
     /**
      * Any public static method annotated with {@link OnRobotStartupFailure} is invoked when the robot
@@ -99,8 +92,8 @@ public class MyRobotControllerAdministration
      */
     @OnRobotStartupFailure
     public static void playSoundOnRobotStartupFailure(Context context)
-        {
+    {
         SwerveUtil.playSound(context, R.raw.chord);
-        }
-
     }
+
+}
