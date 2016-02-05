@@ -2,7 +2,6 @@ package org.swerverobotics.ftc8923.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.Disabled;
-import org.usfirst.ftc.exampleteam.yourcodehere.MasterAutonomous;
 
 /**
  * Robot starts on red side, goes to beacon,

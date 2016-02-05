@@ -2,7 +2,6 @@ package org.swerverobotics.ftc8923.yourcodehere;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.usfirst.ftc.exampleteam.yourcodehere.Master;
 
 public class JSONTest extends Master
 {

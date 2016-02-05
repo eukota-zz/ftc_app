@@ -1,7 +1,6 @@
 package org.swerverobotics.ftc8923.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
-import org.usfirst.ftc.exampleteam.yourcodehere.MasterAutonomous;
 
 /**
  * Place robot near the middle of the field on

@@ -5,7 +5,6 @@ import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IBNO055IMU;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
-import org.usfirst.ftc.exampleteam.yourcodehere.MasterTeleOp;
 
 /**
  * Testing IMU's and having fun doing it

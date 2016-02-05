@@ -1,8 +1,7 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
-import com.qualcomm.robotcore.hardware.*;
-import org.swerverobotics.library.*;
-import org.swerverobotics.library.interfaces.*;
+import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
  * A skeletal example of a do-nothing first OpMode. Go ahead and change this code

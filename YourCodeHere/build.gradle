@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 19
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 16
@@ -19,8 +18,10 @@ android {
         //
         // See also: http://developer.android.com/tools/building/configuring-gradle.html
         //
-        versionCode 6                       // http://developer.android.com/tools/publishing/versioning.html
-        versionName '@string/version_name'  // http://developer.android.com/tools/publishing/versioning.html
+        versionCode 5
+        // http://developer.android.com/tools/publishing/versioning.html
+        versionName '@string/version_name'
+        // http://developer.android.com/tools/publishing/versioning.html
     }
     buildTypes {
         release {
@@ -30,7 +31,6 @@ android {
             debuggable true
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
