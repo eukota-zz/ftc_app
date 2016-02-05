@@ -42,8 +42,8 @@ public abstract class MasterAutonomous extends MasterOpMode
         MotorRightBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         //IMU initialization
-        parameters.angleunit = IBNO055IMU.ANGLEUNIT.DEGREES;
-        parameters.accelunit = IBNO055IMU.ACCELUNIT.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = IBNO055IMU.ANGLEUNIT.DEGREES;
+        parameters.accelUnit = IBNO055IMU.ACCELUNIT.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = true;
         parameters.loggingTag = "BNO055";
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);

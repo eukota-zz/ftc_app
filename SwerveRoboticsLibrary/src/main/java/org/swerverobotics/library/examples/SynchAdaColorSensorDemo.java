@@ -1,8 +1,6 @@
 package org.swerverobotics.library.examples;
 
-import com.qualcomm.hardware.AdafruitI2cColorSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.LED;
 
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Disabled;
