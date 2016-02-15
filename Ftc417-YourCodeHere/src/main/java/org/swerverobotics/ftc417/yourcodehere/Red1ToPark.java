@@ -9,7 +9,7 @@ public class Red1ToPark extends MasterAuto
 {
     @Override
     protected void main() throws InterruptedException
-    {
+    {/*
         //Initialize our hardware
         initialize();
 
@@ -27,6 +27,8 @@ public class Red1ToPark extends MasterAuto
         wait(2000);
         driveStraight(77, Constants.SLOW_FORWARDS, false);
 //        HikerDropper.retract();
-        driveStraight(77, Constants.SLOW_BACKWARDS, false);
+      driveStraight(77, Constants.SLOW_BACKWARDS, false);
+      */
+        driveForwardDistanceIMU(1, 100);
     }
 }

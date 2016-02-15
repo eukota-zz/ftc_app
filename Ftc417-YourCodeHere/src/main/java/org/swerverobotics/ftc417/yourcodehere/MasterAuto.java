@@ -16,9 +16,6 @@ public abstract class MasterAuto extends MasterOpMode
     //IMU variable declaration
     ElapsedTime elapsed = new ElapsedTime();
     IBNO055IMU.Parameters parameters = new IBNO055IMU.Parameters();
-
-    PIDFilter turnFilter = new PIDFilter( 0.04, 0.00001, 0.01 ); ///< @todo may not be necessary
-
     EulerAngles angles;
 
     void initialize()
@@ -81,182 +78,15 @@ public abstract class MasterAuto extends MasterOpMode
         telemetry.update();
     }
 
-    /////// 6220 IMU Code
+    /////// IMU code
     public void setAutoStartPosition (double startingAngle) throws InterruptedException
     {
         autoStartPosition.orientation = startingAngle;
     }
 
 
-    //turn the robot to face a global direction
-    public void turnTo(double targetAngle) throws InterruptedException
-    {
-        double offset = 0;
-        double Δϴ;
-        double power;
-        boolean isTurnCompleted = false;
-        double currentOrientation;
-        double[] lasts = {0,0};
-        double sensorDiff;
-        double satisfactionCounter = 0;
-
-        while (!isTurnCompleted)
-        {
-            turnFilter.update();
-
-            currentOrientation = getCurrentGlobalOrientation();
-            Δϴ = targetAngle - currentOrientation;
-            //roll sensor difference. we do this to maintain the PID filter's unawareness of the transition
-            lasts[1] = lasts[0];
-            lasts[0] = Δϴ;
-            sensorDiff = lasts[0]-lasts[1];
-            //check 360-0 case
-            if (Math.abs(sensorDiff) > 350)
-            {
-                offset -= Math.signum(sensorDiff) * 360;
-            }
-            Δϴ += offset;
-            //check suboptimal direction case
-            //should only resolve once
-            if (Math.abs(Δϴ) > 180)
-            {
-                offset -= Math.signum(Δϴ) * 360;
-            }
-            turnFilter.roll(Δϴ);
-
-            //set filtered motor powers
-            power = turnFilter.getFilteredValue();
-            //cap power at 1 magnitude
-            if (Math.abs(power) > 1)
-            {
-                power = Math.signum(power);
-            }
-
-            /// @todo write turn function
-            this.driveLeft(-power);
-            this.driveRight(power);
-
-            telemetry.addData("power:", power);
-            telemetry.addData("dA:", Δϴ);
 
 
-
-            //check if the turn is finished and the robot is settled
-
-            if (Math.abs(Δϴ) < 3)
-            {
-                satisfactionCounter++;
-            }
-            else if (Math.abs(Δϴ) < 4)
-            {
-                satisfactionCounter+= 0.4;
-            }
-            else
-            {
-                satisfactionCounter = 0;
-            }
-
-
-            if (satisfactionCounter > 100)
-            {
-                isTurnCompleted = true;
-            }
-
-            telemetry.addData("satisfaction:", satisfactionCounter);
-            telemetry.update();
-
-            wait(1);
-            idle();
-        }
-        this.driveStop();
-
-    }
-
-    public void driveStraight(double distance, double direction, boolean climbers) throws InterruptedException
-    {
-        double offset = 0;
-        double Δϴ;
-        double power;
-        double leftpower;
-        double rightpower;
-        boolean isDriveCompleted = false;
-        double currentOrientation;
-        double[] lasts = {0,0};
-        double sensorDiff;
-        double timeFactor = 0.5;
-
-        double targetAngle = getCurrentGlobalOrientation();
-        double startDistance = getDistanceTraveled();
-
-        while (!isDriveCompleted)
-        {
-            turnFilter.update();
-
-            if (timeFactor < 1)
-            {
-                timeFactor += .005;
-            }
-
-            currentOrientation = getCurrentGlobalOrientation();
-            Δϴ = targetAngle - currentOrientation;
-            //roll sensor difference. we do this to maintain the PID filter's unawareness of the transition
-            lasts[1] = lasts[0];
-            lasts[0] = Δϴ;
-            sensorDiff = lasts[0]-lasts[1];
-            //check 360-0 case
-            if (Math.abs(sensorDiff) > 350)
-            {
-                offset -= Math.signum(sensorDiff) * 360;
-            }
-            Δϴ += offset;
-            //check suboptimal direction case
-            //should only resolve once
-            if (Math.abs(Δϴ) > 180)
-            {
-                offset -= Math.signum(Δϴ) * 360;
-            }
-            turnFilter.roll(Δϴ);
-
-            //set filtered motor powers
-            power = turnFilter.getFilteredValue();
-            //cap power at 0.4 magnitude
-            if (Math.abs(power) > 1)
-            {
-                power = 1*Math.signum(power);
-            }
-
-            leftpower = 0.9 + power;
-            rightpower = 0.9 - power;
-
-            telemetry.addData("power:", power);
-            telemetry.update();
-            //cap power at 1 magnitude
-            if (Math.abs(leftpower) > 1)
-            {
-                leftpower = Math.signum(leftpower);
-            }
-
-            //cap power at 1 magnitude
-            if (Math.abs(rightpower) > 1)
-            {
-                rightpower = Math.signum(rightpower);
-            }
-
-            this.driveLeft(leftpower * direction * timeFactor);
-            this.driveRight(rightpower * direction * timeFactor);
-
-            //check if the robot should stop
-            if (Math.abs(getDistanceTraveled() - startDistance) >= Math.abs(distance))
-            {
-                isDriveCompleted = true;
-            }
-
-            wait(1);
-            idle();
-        }
-        this.driveStop();
-
-    }
 
     //returns the average of the left/right encoders, giving a distance in CM
     private double getDistanceTraveled() // in CM
@@ -267,6 +97,38 @@ public abstract class MasterAuto extends MasterOpMode
         double distanceTraveledPerTick = Constants.BACK_LEFT_WHEEL_DIAMETER * Math.PI / Constants.TETRIX_ENC_TICKS;
         return tick*distanceTraveledPerTick/CORRECTION_FACTOR;
     }
+
+    public void driveForwardDistanceIMU(double power, int distance) throws InterruptedException
+    {  /*
+        motorLeft.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorRight.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+
+        motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        */
+
+
+        double calibratedHeading = imu.getAngularOrientation().heading;
+        double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+        double offsetMultiplier = 0.2;
+
+        while(Math.abs(getDistanceTraveled()) < Math.abs(distance))
+        {
+            // Use IMU to keep us driving straight
+            currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+            if(currentHeading > 180)
+                currentHeading = currentHeading - 360;
+            driveLeft(power + currentHeading * offsetMultiplier);
+            driveRight(power - currentHeading * offsetMultiplier);
+
+            // Wait until distance is reached
+            telemetry.update();
+            idle();
+        }
+
+     driveForward(0);
+    }
+
 
     //return the global orientation of the robot, accounting for autonomous start
     public double getCurrentGlobalOrientation()
