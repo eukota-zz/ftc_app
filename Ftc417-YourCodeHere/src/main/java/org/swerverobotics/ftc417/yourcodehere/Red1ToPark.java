@@ -30,5 +30,7 @@ public class Red1ToPark extends MasterAuto
       driveStraight(77, Constants.SLOW_BACKWARDS, false);
       */
         driveForwardDistanceIMU(1, 100);
+
+        turnRightDegrees(.5, 90);
     }
 }

@@ -129,6 +129,46 @@ public abstract class MasterAuto extends MasterOpMode
      driveForward(0);
     }
 
+    public void turnRightDegrees(double power, int angle) throws InterruptedException
+    {
+        double calibratedHeading = imu.getAngularOrientation().heading;
+        double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+
+        turnRight(power);
+
+        while(Math.abs(currentHeading) < Math.abs(angle))
+        {
+            currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
+            telemetry.log.add("current" + currentHeading);
+            if(currentHeading > 180)
+                currentHeading = currentHeading - 360;
+            // Wait until we've reached our target angle
+            telemetry.log.add("current" + currentHeading + " actual" + formatNumber(imu.getAngularOrientation().heading));
+            telemetry.update();
+            idle();
+        }
+
+        driveForward(0);
+    }
+
+    public void turnLeftDegrees(double power, int angle) throws InterruptedException
+    {
+        turnRightDegrees(-power, -angle);
+    }
+
+
+    public void turnLeft(double power)
+    {
+        driveLeft(-power);
+        driveRight(power);
+    }
+
+    public void turnRight(double power)
+    {
+        turnLeft(-power);
+    }
+
+
 
     //return the global orientation of the robot, accounting for autonomous start
     public double getCurrentGlobalOrientation()
