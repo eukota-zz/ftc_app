@@ -3,6 +3,8 @@ package org.swerverobotics.ftc8923.yourcodehere;
 import android.os.Environment;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -23,6 +25,7 @@ public class BatteryTest extends SynchronousOpMode
 {
     DcMotor motor = null;
     VoltageSensor voltageSensor;
+    DigitalChannel relay;
 
     int minimumSafeVoltage = 11;
     ElapsedTime eTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
@@ -41,23 +44,24 @@ public class BatteryTest extends SynchronousOpMode
 
     boolean keepRunning = true;
 
+    boolean relayIsOn = false;
+
     @Override
     public void main() throws InterruptedException
     {
         motor = hardwareMap.dcMotor.get("motor");
         voltageSensor = hardwareMap.voltageSensor.get("Motor Controller 1");
+        relay = hardwareMap.digitalChannel.get("relay");
+        relay.setMode(DigitalChannelController.Mode.OUTPUT);
+
         composeDashboard();
         openPublicFileForWriting(FILENAME);
 
         waitForStart();
 
         eTime.reset();
-        telemetry.log.add("Start Voltage: " + formatNumber(voltageSensor.getVoltage()));
 
-        //write initial unloaded voltage to the file
-        writeDataToPublicFile(voltageSensor.getVoltage());
-
-        motor.setPower(1.0);
+        startTest();
 
         while (this.opModeIsActive() && keepRunning)
         {
@@ -73,7 +77,8 @@ public class BatteryTest extends SynchronousOpMode
             if(voltageSensor.getVoltage() < minimumSafeVoltage)
             {
                 telemetry.log.add("[STOPPED] Battery voltage below minimum safe value");
-                keepRunning = false;
+
+                stopTest();
             }
 
             // Checks to see if another period has passed
@@ -93,8 +98,40 @@ public class BatteryTest extends SynchronousOpMode
         closePublicFile();
     }
 
+    void startTest()
+    {
+        keepRunning = true;
+
+        telemetry.log.add("Start Voltage: " + formatNumber(voltageSensor.getVoltage()));
+
+        //write initial unloaded voltage to the file
+        writeDataToPublicFile(voltageSensor.getVoltage());
+
+        //turn on the relay so we can start the test
+        relay.setState(true);
+
+        motor.setPower(1.0);
+    }
+
+    void stopTest()
+    {
+        keepRunning = false;
+
+        relay.setState(false);
+    }
+
+
     void composeDashboard()
     {
+        telemetry.addLine
+                (
+                        this.telemetry.item("Relay: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return relayIsOn;
+                            }
+                        })
+                );
         telemetry.addLine
                 (
                         this.telemetry.item("Current Voltage: ", new IFunc<Object>() {
