@@ -165,4 +165,10 @@ public abstract class MasterOpMode extends SynchronousOpMode
         driveRight(rightPower);
     }
 
+
+    public String formatNumber(double number)
+    {
+        return String.format("%.2f", number);
+    }
+
 }
