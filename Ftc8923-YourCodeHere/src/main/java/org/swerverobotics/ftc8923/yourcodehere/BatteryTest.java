@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.IFunc;
+import org.swerverobotics.library.interfaces.TeleOp;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -20,7 +21,7 @@ import java.io.PrintWriter;
  * a motor (a resistor wired to a motor port)
  * and periodically measuring the voltage
  */
-@Autonomous(name = "Battery Test")
+@TeleOp(name = "Battery Test")
 public class BatteryTest extends SynchronousOpMode
 {
     DcMotor motor = null;
@@ -43,8 +44,6 @@ public class BatteryTest extends SynchronousOpMode
     PrintWriter outputFile;
 
     boolean keepRunning = true;
-
-    boolean relayIsOn = false;
 
     @Override
     public void main() throws InterruptedException
@@ -72,6 +71,21 @@ public class BatteryTest extends SynchronousOpMode
                 telemetry.log.add("[STOPPED] Test time exceeded");
                 break;
             }*/
+
+            if (updateGamepads())
+            {
+                if (gamepad1.a)
+                {
+                    relay.setState(true);
+                }
+
+                if (gamepad1.b)
+                {
+                    relay.setState(false);
+                }
+
+            }
+
 
             // Break if battery voltage drops below minimum safe value
             if(voltageSensor.getVoltage() < minimumSafeVoltage)
@@ -128,7 +142,7 @@ public class BatteryTest extends SynchronousOpMode
                         this.telemetry.item("Relay: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return relayIsOn;
+                                return relay.getState();
                             }
                         })
                 );
