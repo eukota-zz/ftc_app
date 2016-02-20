@@ -119,7 +119,7 @@ public interface INA219
      * @param ireg the location from which to read the data; should be an integer register.
      * @return the data that was read
      */
-    int readLH(REGISTER ireg);
+    int readIntegerRegister(REGISTER ireg);
 
 
     /**

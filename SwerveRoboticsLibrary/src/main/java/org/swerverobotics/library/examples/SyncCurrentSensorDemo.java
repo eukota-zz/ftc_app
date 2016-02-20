@@ -6,6 +6,7 @@ import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
+import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
 import org.swerverobotics.library.interfaces.TeleOp;
 import org.swerverobotics.library.internal.AdaFruitINA219CurrentSensor;
@@ -16,7 +17,6 @@ import org.swerverobotics.library.internal.AdaFruitINA219CurrentSensor;
  * http://www.adafruit.com/products/904
  */
 @TeleOp(name = "Current Sensor Demo", group = "Swerve Examples")
-@Disabled
 public class SyncCurrentSensorDemo extends SynchronousOpMode
 {
     //----------------------------------------------------------------------------------------------
@@ -62,11 +62,19 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         // Wait until we're told to go
         waitForStart();
 
+
         // Loop and update the dashboard
-        while (opModeIsActive()) {
+       while (opModeIsActive()) {
             telemetry.update();
             idle();
         }
+
+
+        //double curr = currentSensor.getCurrent_mA();
+        //double bus = currentSensor.getBusVoltage_V();
+        //double shunt = currentSensor.getShuntVoltage_mV();
+
+
     }
 
     //----------------------------------------------------------------------------------------------
@@ -78,7 +86,14 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         telemetry.setUpdateIntervalMs(200);
 
         // At the beginning of each telemetry update, grab a bunch of data
-        // from the IMU that we will then display in separate lines.
+        // from the INA219 that we will display in separate lines.
+        telemetry.addAction(new Runnable() { @Override public void run()
+        {
+            loopCycles = getLoopCount();
+            i2cCycles  = ((II2cDeviceClientUser) currentSensor).getI2cDeviceClient().getI2cCycleCount();
+            ms         = elapsed.time() * 1000.0;
+        }
+        });
 
         telemetry.addLine(
                 telemetry.item("loop count: ", new IFunc<Object>() {
@@ -107,14 +122,14 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         telemetry.addLine(
                 telemetry.item("current: ", new IFunc<Object>() {
                     public Object value() {
-                        return formatCurrent( currentSensor.getCurrent_mA() );
+                        return formatCurrent(currentSensor.getCurrent_mA());
                     }
                 }));
 
         telemetry.addLine(
                 telemetry.item("bus voltage: ", new IFunc<Object>() {
                     public Object value() {
-                        return formatVoltage( currentSensor.getBusVoltage_V() );
+                        return formatVoltage(currentSensor.getBusVoltage_V());
                     }
                 }));
 
@@ -122,6 +137,14 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
                 telemetry.item("shunt voltage ", new IFunc<Object>() {
                     public Object value() {
                         return formatVoltage( currentSensor.getShuntVoltage_mV() );
+                    }
+                }));
+
+        telemetry.addLine(
+                telemetry.item("config ", new IFunc<Object>() {
+                    public Object value() {
+                        byte b[] = currentSensor.read(INA219.REGISTER.CONFIGURATION, 2);
+                        return  formatRawByte(b[1]) + " " + formatRawByte(b[0]);
                     }
                 }));
     }
@@ -140,7 +163,10 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         return String.format("%.2f", cyclesPerSecond);
     }
 
-
+    String formatRawByte(byte b)
+    {
+        return String.format("%02X", b);
+    }
 
     //----------------------------------------------------------------------------------------------
     // Utility

@@ -4,16 +4,11 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
-import com.qualcomm.robotcore.util.TypeConversion;
 
 import org.swerverobotics.library.ClassFactory;
-import org.swerverobotics.library.interfaces.IBNO055IMU;
-import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.II2cDeviceClient;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
-
-import java.nio.ByteOrder;
 
 import static junit.framework.Assert.assertTrue;
 import static org.swerverobotics.library.interfaces.NavUtil.meanIntegrate;
@@ -43,18 +38,47 @@ import static org.swerverobotics.library.internal.Util.handleCapturedInterrupt;
 public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 {
 
-    public AdaFruitINA219CurrentSensor(OpMode opmodeContext, I2cDevice i2cDevice, int i2cAddr8Bit)
-    {
-        this.opmodeContext          = opmodeContext;
+    //------------------------------------------------------------------------------------------
+    // State
+    //------------------------------------------------------------------------------------------
 
-        // We don't have the device auto-close since *we* handle the shutdown logic
-        this.deviceClient           = ClassFactory.createI2cDeviceClient(opmodeContext, ClassFactory.createI2cDevice(i2cDevice), i2cAddr8Bit, false);
-        //this.deviceClient.setReadWindow(lowerWindow);
-        //this.deviceClient.engage();
+    private final OpMode opmodeContext;
+    private final II2cDeviceClient deviceClient;
 
-        this.parameters            = null;
+    private Parameters parameters;
+
+    //TODO delete these objects left over from IMU acceleration integration algorithm, we don't use them
+    //private final Object dataLock = new Object();
+    //private final Object startStopLock = new Object();
+
+    // We always read as much as we can when we have nothing else to do
+    private static final II2cDeviceClient.READ_MODE readMode = II2cDeviceClient.READ_MODE.REPEAT;
+
+
+    // store the calibration value so we can use it when reading
+    private int ina219_calValue;
+
+    // The following multipliers are used to convert raw current and power
+    // values to mA and mW, taking into account the current config settings
+    private int ina219_currentDivider_mA;
+    private int ina219_powerDivider_mW;
+
+    //----------------------------------------------------------------------------------------------
+    // Construction
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Instantiate an AdaFruitINA219CurrentSensor on the indicated device whose I2C address is the one indicated.
+     */
+    public AdaFruitINA219CurrentSensor(OpMode opmodeContext, I2cDevice i2cDevice, INA219.Parameters params) {
+        this.opmodeContext = opmodeContext;
+
+        // Allow the device to auto-close since we don't have special shutdown logic
+        this.deviceClient = ClassFactory.createI2cDeviceClient(opmodeContext, ClassFactory.createI2cDevice(i2cDevice), params.i2cAddress.bVal, true);
+        this.deviceClient.engage();
+
+        this.parameters = params;
     }
-
 
     /**
      * Instantiate an AdaFruitINA219CurrrentSensor and then initialize it with the indicated set of parameters.
@@ -62,7 +86,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     public static INA219 create(OpMode opmodeContext, I2cDevice i2cDevice, INA219.Parameters parameters)
     {
         // Create a sensor which is a client of i2cDevice
-        INA219 result = new AdaFruitINA219CurrentSensor(opmodeContext, i2cDevice, parameters.i2cAddress.bVal);
+        INA219 result = new AdaFruitINA219CurrentSensor(opmodeContext, i2cDevice, parameters);
 
         // Initialize it with the indicated parameters
         result.initialize(parameters);
@@ -176,48 +200,6 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     }
 
 
-    //------------------------------------------------------------------------------------------
-    // State
-    //------------------------------------------------------------------------------------------
-
-    private final OpMode opmodeContext;
-    private final II2cDeviceClient deviceClient;
-
-    private Parameters parameters;
-
-    private final Object dataLock = new Object();
-
-    private final Object startStopLock = new Object();
-
-    // We always read as much as we can when we have nothing else to do
-    private static final II2cDeviceClient.READ_MODE readMode = II2cDeviceClient.READ_MODE.REPEAT;
-
-
-    // store the calibration value so we can use it when reading
-    private int ina219_calValue;
-
-    // The following multipliers are used to convert raw current and power
-    // values to mA and mW, taking into account the current config settings
-    private int ina219_currentDivider_mA;
-    private int ina219_powerDivider_mW;
-
-    //----------------------------------------------------------------------------------------------
-    // Construction
-    //----------------------------------------------------------------------------------------------
-
-    /**
-     * Instantiate an AdaFruitINA219CurrentSensor on the indicated device whose I2C address is the one indicated.
-     */
-    public AdaFruitINA219CurrentSensor(OpMode opmodeContext, I2cDevice i2cDevice, Parameters params) {
-        this.opmodeContext = opmodeContext;
-
-        // Allow the device to auto-close since we don't have special shutdown logic
-        this.deviceClient = ClassFactory.createI2cDeviceClient(opmodeContext, ClassFactory.createI2cDevice(i2cDevice), params.i2cAddress.bVal, true);
-        this.deviceClient.engage();
-
-        this.parameters = params;
-    }
-
 
     //------------------------------------------------------------------------------------------
     // II2cDeviceClientUser
@@ -233,7 +215,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
      * Get the raw bus voltage (16-bit signed integer, so +-32767)
      */
     private synchronized int getBusVoltage_raw() {
-        int value = this.readLH(REGISTER.BUS_VOLTAGE);
+        int value = this.readIntegerRegister(REGISTER.BUS_VOLTAGE);
 
         // Shift to the right 3 to drop CNVR and OVF and multiply by LSB
         return (int) ((value >> 3) * 4);
@@ -244,7 +226,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
      * Get the raw shunt voltage (16-bit signed integer, so +-32767)
      */
     private synchronized int getShuntVoltage_raw() {
-        int value = this.readLH(REGISTER.SHUNT_VOLTAGE);
+        int value = this.readIntegerRegister(REGISTER.SHUNT_VOLTAGE);
 
         return value;
     }
@@ -262,7 +244,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         this.write8(REGISTER.CALIBRATION, ina219_calValue);
 
         // Now we can safely read the CURRENT register!
-        int value = this.readLH(REGISTER.CURRENT);
+        int value = this.readIntegerRegister(REGISTER.CURRENT);
 
         return value;
     }
@@ -277,25 +259,57 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     // INA219 data retrieval
     //------------------------------------------------------------------------------------------
 
-    public synchronized byte read8(final REGISTER reg) {
+    /**
+     * We need one register window for reading from the INA219
+     *
+     */
+    /*
+    private static final II2cDeviceClient.ReadWindow window = newWindow(INA219.REGISTER.CONFIGURATION, INA219.REGISTER.CALIBRATION);
+
+    private static II2cDeviceClient.ReadWindow newWindow(INA219.REGISTER regFirst, INA219.REGISTER regMax)
+    {
+        return new II2cDeviceClient.ReadWindow(regFirst.bVal, regMax.bVal-regFirst.bVal, readMode);
+    }
+
+    private void ensureReadWindow(II2cDeviceClient.ReadWindow needed)
+    {
+        II2cDeviceClient.ReadWindow windowToSet = window;
+        this.deviceClient.ensureReadWindow(needed, windowToSet);
+    }
+   */
+
+    @Override public synchronized byte read8(final REGISTER reg) {
+        //ensureReadWindow(new II2cDeviceClient.ReadWindow(reg.bVal, 1, readMode));
         return deviceClient.read8(reg.bVal);
     }
 
-    public synchronized byte[] read(final REGISTER reg, final int cb) {
+    @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
+        //ensureReadWindow(new II2cDeviceClient.ReadWindow(reg.bVal, cb, readMode));
         return deviceClient.read(reg.bVal, cb);
     }
 
-    public void write8(REGISTER reg, int data) {
+    @Override public void write8(REGISTER reg, int data) {
         this.deviceClient.write8(reg.bVal, data);
     }
 
-    public void write(REGISTER reg, byte[] data) {
+    @Override public void write(REGISTER reg, byte[] data) {
         this.deviceClient.write(reg.bVal, data);
     }
 
-    public int readLH(REGISTER ireg) {
+    public int readIntegerRegister(REGISTER ireg) {
         byte[] bytes = this.read(ireg, 2);
-        return TypeConversion.byteArrayToInt(bytes, ByteOrder.LITTLE_ENDIAN);
+        //return TypeConversion.byteArrayToInt(bytes, ByteOrder.LITTLE_ENDIAN);
+        if (bytes.length==2)
+        {
+            int temp1 = bytes[1];
+            int temp2 = bytes[0];
+
+            //handle case in which no current is applied to sensor
+            if ( (temp1==0xFF) && (temp2==0xFF)) return 0;
+
+            return (temp1 << 8) + temp2;
+        }
+        else return 0;
     }
 
     //------------------------------------------------------------------------------------------
