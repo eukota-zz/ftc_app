@@ -2,9 +2,6 @@ package org.swerverobotics.library.interfaces;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
-import com.qualcomm.robotcore.util.TypeConversion;
-
-import java.nio.ByteOrder;
 
 /**
  * Interface API to the Adafruit INA219 current sensor.
@@ -46,14 +43,20 @@ public interface INA219
         public int shuntResistorInOhms = 100; //default resistor
 
         /**
+         *  the maximum expected current
+         */
+        public double maxExpectedCurrentInAmps = 2; //default expected max current
+
+
+        /**
          *  the range of the sensor in volts
          */
-        public int rangeInVolts = 32; //default range
+        public VOLTAGE_RANGE rangeInVolts = VOLTAGE_RANGE.VOLTS_32; //set default range
 
         /**
          *  the sensitivity of the sensor
          */
-        public int sensitivityInMilliamps = 100; //default sensitivity
+        public GAIN sensitivityInMilliamps = GAIN.GAIN_8_320MV; //set default sensitivity
 
 
 
@@ -82,13 +85,15 @@ public interface INA219
     // Status inquiry
     //----------------------------------------------------------------------------------------------
 
-    public void setCalibration(int rangeInVolts, int sensitivityInMilliamps, int shuntResistorInOhms);
+    public void setCalibration(INA219.Parameters parameters);
 
     public double getBusVoltage_V();
 
     public double getShuntVoltage_mV();
 
     public double getCurrent_mA();
+
+    public void resetINA219();
 
     //----------------------------------------------------------------------------------------------
     // Low level reading and writing 
@@ -113,7 +118,7 @@ public interface INA219
 
 
     /**
-     * Low level: read two byts of data starting at the indicated register
+     * Low level: read two bytes of data starting at the indicated register
      * and return the results as an integer
      *
      * @param ireg the location from which to read the data; should be an integer register.
@@ -138,6 +143,13 @@ public interface INA219
      */
     void write(REGISTER register, byte[] data);
 
+    /**
+     * Low level: write two bytes of data starting at the indicated register
+     *
+     * @param ireg the location into which to write the data; should be an integer register.
+     * @param value the integer to
+     */
+    void writeIntegerRegister(REGISTER ireg, int value);
 
     //------------------------------------------------------------------------------------------
     // Constants
@@ -186,22 +198,27 @@ public interface INA219
     /*---------------------------------------------------------------------*/
     public static final int INA219_CONFIG_RESET = (0x8000);  // Reset Bit
 
+    enum VOLTAGE_RANGE { VOLTS_16 (0x0000), VOLTS_32 (0x2000); public final byte bVal; VOLTAGE_RANGE(int i) { bVal =(byte)i; }}
     public static final int INA219_CONFIG_BVOLTAGERANGE_MASK = (0x2000);  // Bus Voltage Range Mask
     public static final int INA219_CONFIG_BVOLTAGERANGE_16V = (0x0000); // 0-16V Range
     public static final int INA219_CONFIG_BVOLTAGERANGE_32V = (0x2000);// 0-32V Range
 
+    enum GAIN { GAIN_1_40MV (0x0000), GAIN_2_80MV (0x0800), GAIN_4_160MV (0x1000), GAIN_8_320MV (0x1800); public final byte bVal; GAIN(int i) { bVal =(byte)i; }}
     public static final int INA219_CONFIG_GAIN_MASK = (0x1800);  // Gain Mask
     public static final int INA219_CONFIG_GAIN_1_40MV = (0x0000);  // Gain 1, 40mV Range
     public static final int INA219_CONFIG_GAIN_2_80MV = (0x0800);  // Gain 2, 80mV Range
     public static final int INA219_CONFIG_GAIN_4_160MV = (0x1000);  // Gain 4, 160mV Range
     public static final int INA219_CONFIG_GAIN_8_320MV = (0x1800);  // Gain 8, 320mV Range
 
+    enum BUS_ADC_RESOLUTION { RESOLUTION_9BIT (0x0080), RESOLUTION_10BIT (0x0100), RESOLUTION_11BIT (0x0200), RESOLUTION_12BIT (0x0400) ; public final byte bVal; BUS_ADC_RESOLUTION(int i) { bVal =(byte)i; }}
     public static final int INA219_CONFIG_BADCRES_MASK = (0x0780);  // Bus ADC Resolution Mask
     public static final int INA219_CONFIG_BADCRES_9BIT = (0x0080);  // 9-bit bus res = 0..511
     public static final int INA219_CONFIG_BADCRES_10BIT = (0x0100);  // 10-bit bus res = 0..1023
     public static final int INA219_CONFIG_BADCRES_11BIT = (0x0200);  // 11-bit bus res = 0..2047
     public static final int INA219_CONFIG_BADCRES_12BIT = (0x0400);  // 12-bit bus res = 0..4097
 
+    enum SHUNT_ADC_RESOLUTION { RESOLUTION_9BIT_1S_84US (0x0000), RESOLUTION_10BIT_1S_148US (0x0008), RESOLUTION_11BIT_1S_276US (0x0010), RESOLUTION_12BIT_1S_532US (0x0018),
+                                RESOLUTION_12BIT_2S_1060US (0x000048); public final byte bVal; SHUNT_ADC_RESOLUTION(int i) { bVal =(byte)i; } }
     public static final int INA219_CONFIG_SADCRES_MASK = (0x0078);  // Shunt ADC Resolution and Averaging Mask
     public static final int INA219_CONFIG_SADCRES_9BIT_1S_84US = (0x0000);  // 1 x 9-bit shunt sample
     public static final int INA219_CONFIG_SADCRES_10BIT_1S_148US = (0x0008);  // 1 x 10-bit shunt sample
@@ -215,6 +232,8 @@ public interface INA219
     public static final int INA219_CONFIG_SADCRES_12BIT_64S_34MS = (0x0070);  // 64 x 12-bit shunt samples averaged together
     public static final int INA219_CONFIG_SADCRES_12BIT_128S_69MS = (0x0078);  // 128 x 12-bit shunt samples averaged together
 
+    enum CONFIG_MODE { POWERDOWN(0x0000), SVOLT_TRIGGERED(0x0001), BVOLT_TRIGGERED(0x0002), SANDBVOLTTRIGGERED(0x0003),
+                       ADC_OFF(0x0004), SVOLT_CONTINUOUS(0x0005), BVOLT_CONTINUOUS(0x0006), SANDBVOLT_CONTINUOUS(0x0007); public final byte bVal; CONFIG_MODE(int i) { bVal =(byte)i; }}
     public static final int INA219_CONFIG_MODE_MASK = (0x0007);  // Operating Mode Mask
     public static final int INA219_CONFIG_MODE_POWERDOWN = (0x0000);
     public static final int INA219_CONFIG_MODE_SVOLT_TRIGGERED = (0x0001);

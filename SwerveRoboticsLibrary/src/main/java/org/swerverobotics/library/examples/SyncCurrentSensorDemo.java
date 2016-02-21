@@ -118,14 +118,14 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
                         return formatRate(ms / i2cCycles);
                     }
                 }));
-
+/*
         telemetry.addLine(
                 telemetry.item("current: ", new IFunc<Object>() {
                     public Object value() {
                         return formatCurrent(currentSensor.getCurrent_mA());
                     }
                 }));
-
+*/
         telemetry.addLine(
                 telemetry.item("bus voltage: ", new IFunc<Object>() {
                     public Object value() {
