@@ -98,8 +98,8 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // Remember the parameters for future use
         this.parameters = parameters;
 
-        resetINA219();
-        delayLore(20);
+        //resetINA219();
+        //delayLore(20);
 
         //TODO re-enable calibration setting. for now, just use default power up configuration.
         //setCalibration(parameters);
@@ -350,22 +350,25 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         //return TypeConversion.byteArrayToInt(bytes, ByteOrder.LITTLE_ENDIAN);
         if (bytes.length==2)
         {
-            int temp1 = bytes[1];
-            int temp2 = bytes[0];
+
+            //INA219 data sheet says that register values are sent most-significant-byte first
+            int tempMSB = bytes[0];
+            int tempLSB = bytes[1];
 
             //handle case in which no current is applied to sensor
-            if ( (temp1==0xFF) && (temp2==0xFF)) return 0;
+            if ( (tempMSB==0xFF) && (tempLSB==0xFF)) return 0;
 
-            return (temp1 << 8) + temp2;
+            return (tempMSB << 8) + tempLSB;
         }
         else return 0;
     }
 
     @Override public void writeIntegerRegister(REGISTER ireg, int value)
     {
+        //INA219 data sheet says that register values are sent most-significant-byte first
         byte[] b = new byte[2];
-        b[0] = (byte) (value & 0xFF);
-        b[1] = (byte) ((value & 0xFF00) >> 8);
+        b[0] = (byte) ((value & 0xFF00) >> 8); //most significant byte
+        b[1] = (byte) (value & 0xFF); //least significant byte
         this.write(ireg, b);
     }
 
