@@ -2,14 +2,11 @@ package org.swerverobotics.ftc8923.yourcodehere;
 
 import android.os.Environment;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -25,8 +22,6 @@ import java.util.Date;
 @TeleOp(name = "Battery Test")
 public class BatteryTest extends SynchronousOpMode
 {
-    DcMotor motor = null;
-    VoltageSensor voltageSensor;
     DigitalChannel relay;
 
     int minimumSafeVoltage = 11;
@@ -50,8 +45,6 @@ public class BatteryTest extends SynchronousOpMode
     @Override
     public void main() throws InterruptedException
     {
-        motor = hardwareMap.dcMotor.get("motor");
-        voltageSensor = hardwareMap.voltageSensor.get("Motor Controller 1");
         relay = hardwareMap.digitalChannel.get("relay");
         relay.setMode(DigitalChannelController.Mode.OUTPUT);
 
@@ -88,8 +81,9 @@ public class BatteryTest extends SynchronousOpMode
 
             }
 
-
             // Break if battery voltage drops below minimum safe value
+            // TODO Replace the stuff below with the new sensor
+            /*
             if(voltageSensor.getVoltage() < minimumSafeVoltage)
             {
                 telemetry.log.add("[STOPPED] Battery voltage below minimum safe value");
@@ -104,13 +98,14 @@ public class BatteryTest extends SynchronousOpMode
                 writeDataToPublicFile(voltageSensor.getVoltage());
                 readings += 1;
             }
+            */
 
             telemetry.update();
             idle();
         }
 
-        motor.setPower(0.0);
-        telemetry.log.add("End Voltage: " + formatNumber(voltageSensor.getVoltage()));
+        // TODO Replace with new sensor
+        //telemetry.log.add("End Voltage: " + formatNumber(voltageSensor.getVoltage()));
         closePublicFile();
     }
 
@@ -118,15 +113,15 @@ public class BatteryTest extends SynchronousOpMode
     {
         keepRunning = true;
 
-        telemetry.log.add("Start Voltage: " + formatNumber(voltageSensor.getVoltage()));
+        // TODO Replace with new sensor
+        //telemetry.log.add("Start Voltage: " + formatNumber(voltageSensor.getVoltage()));
 
         //write initial unloaded voltage to the file
-        writeDataToPublicFile(voltageSensor.getVoltage());
+        // TODO Replace with new sensor
+        //writeDataToPublicFile(voltageSensor.getVoltage());
 
         //turn on the relay so we can start the test
         relay.setState(true);
-
-        motor.setPower(1.0);
     }
 
     void stopTest()
@@ -135,7 +130,6 @@ public class BatteryTest extends SynchronousOpMode
 
         relay.setState(false);
     }
-
 
     void composeDashboard()
     {
@@ -152,8 +146,9 @@ public class BatteryTest extends SynchronousOpMode
                 (
                         this.telemetry.item("Current Voltage: ", new IFunc<Object>() {
                             @Override
-                            public Object value() {
-                                return formatNumber(voltageSensor.getVoltage());
+                            public Object value() {// TODO Replace with new sensor
+                                //return formatNumber(voltageSensor.getVoltage());
+                                return "Fix me";
                             }
                         })
                 );
@@ -246,5 +241,3 @@ public class BatteryTest extends SynchronousOpMode
         }
     }
 }
-
-
