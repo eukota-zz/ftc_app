@@ -29,8 +29,12 @@ public class Red1ToPark extends MasterAuto
 //        HikerDropper.retract();
       driveStraight(77, Constants.SLOW_BACKWARDS, false);
       */
+
+        //drop debris blocker
         driveForwardDistanceIMU(1, 100);
 
         turnRightDegrees(.5, 90);
+
+        driveForwardDistanceIMU(1, 15);
     }
 }
