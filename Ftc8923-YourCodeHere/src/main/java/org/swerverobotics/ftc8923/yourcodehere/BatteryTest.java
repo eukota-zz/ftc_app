@@ -15,6 +15,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Date;
 
 /**
  * Tests batteries by slowly draining them via
@@ -40,7 +41,8 @@ public class BatteryTest extends SynchronousOpMode
     // The total time to run the test, in minutes
     int testTime = 1;
 
-    String FILENAME = "SwerveBatteryLogger.txt";
+    // Substring is used to only take the date and time from the Date object
+    String FILENAME = "BatteryTest " + String.format("%tc", new Date(System.currentTimeMillis())).substring(4, 19) + ".txt";
     PrintWriter outputFile;
 
     boolean keepRunning = true;
