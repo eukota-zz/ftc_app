@@ -95,6 +95,7 @@ public interface INA219
 
     void resetINA219();
 
+
     //----------------------------------------------------------------------------------------------
     // Low level reading and writing 
     //----------------------------------------------------------------------------------------------
@@ -124,7 +125,7 @@ public interface INA219
      * @param ireg the location from which to read the data; should be an integer register.
      * @return the data that was read
      */
-    int readIntegerRegister(REGISTER ireg);
+    int readTwoByteINARegister(REGISTER ireg);
 
 
     /**
@@ -149,7 +150,7 @@ public interface INA219
      * @param ireg the location into which to write the data; should be an integer register.
      * @param value the integer to
      */
-    void writeIntegerRegister(REGISTER ireg, int value);
+    void writeTwoByteINARegister(REGISTER ireg, int value);
 
     //------------------------------------------------------------------------------------------
     // Constants

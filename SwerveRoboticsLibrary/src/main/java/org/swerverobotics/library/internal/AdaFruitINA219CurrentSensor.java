@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 
 import org.swerverobotics.library.ClassFactory;
+import org.swerverobotics.library.interfaces.IBNO055IMU;
 import org.swerverobotics.library.interfaces.II2cDeviceClient;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
@@ -74,8 +75,13 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         this.opmodeContext = opmodeContext;
 
         // Allow the device to auto-close since we don't have special shutdown logic
-        this.deviceClient = ClassFactory.createI2cDeviceClient(opmodeContext, ClassFactory.createI2cDevice(i2cDevice), params.i2cAddress.bVal, true);
+        this.deviceClient = ClassFactory.createI2cDeviceClient(opmodeContext, ClassFactory.createI2cDevice(i2cDevice), params.i2cAddress.bVal * 2, true);
         this.deviceClient.engage();
+
+        this.deviceClient.enableWriteCoalescing(false);
+
+        this.deviceClient.setLogging(params.loggingEnabled);
+        this.deviceClient.setLoggingTag(params.loggingTag);
 
         this.parameters = params;
     }
@@ -99,7 +105,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         this.parameters = parameters;
 
         resetINA219();
-        delayLore(20);
+        //delayLore(20);
 
         //TODO re-enable calibration setting. for now, just use default power up configuration.
         //setCalibration(parameters);
@@ -224,7 +230,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
                 INA219_CONFIG_SADCRES_12BIT_1S_532US |
                 INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
 
-        writeIntegerRegister(REGISTER.CONFIGURATION, config);
+        writeTwoByteINARegister(REGISTER.CONFIGURATION, config);
 
     }
 
@@ -246,7 +252,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
     public void resetINA219()
     {
-        this.writeIntegerRegister(REGISTER.CONFIGURATION, INA219_CONFIG_RESET);
+        this.writeTwoByteINARegister(REGISTER.CONFIGURATION, INA219_CONFIG_RESET);
     }
 
 
@@ -263,8 +269,13 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     /**
      * Get the raw bus voltage (16-bit signed integer, so +-32767)
      */
-    private synchronized int getBusVoltage_raw() {
-        int value = this.readIntegerRegister(REGISTER.BUS_VOLTAGE);
+    private synchronized int getBusVoltage_raw()
+    {
+        this.deviceClient.ensureReadWindow(
+                new II2cDeviceClient.ReadWindow(REGISTER.BUS_VOLTAGE.bVal, 16, readMode),
+                window);
+
+        int value = this.readTwoByteINARegister(REGISTER.BUS_VOLTAGE);
 
         // Shift to the right 3 to drop CNVR and OVF and multiply by LSB
         return (int) ((value >> 3) * 4);
@@ -274,8 +285,13 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     /**
      * Get the raw shunt voltage (16-bit signed integer, so +-32767)
      */
-    private synchronized int getShuntVoltage_raw() {
-        int value = this.readIntegerRegister(REGISTER.SHUNT_VOLTAGE);
+    private synchronized int getShuntVoltage_raw()
+    {
+        this.deviceClient.ensureReadWindow(
+                new II2cDeviceClient.ReadWindow(REGISTER.SHUNT_VOLTAGE.bVal, 16, readMode),
+                window);
+
+        int value = this.readTwoByteINARegister(REGISTER.SHUNT_VOLTAGE);
 
         return value;
     }
@@ -292,8 +308,12 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // value even if it's an unfortunate extra step
         this.write8(REGISTER.CALIBRATION, ina219_calValue);
 
+        this.deviceClient.ensureReadWindow(
+                new II2cDeviceClient.ReadWindow(REGISTER.CURRENT.bVal, 16, readMode),
+                window);
+
         // Now we can safely read the CURRENT register!
-        int value = this.readIntegerRegister(REGISTER.CURRENT);
+        int value = this.readTwoByteINARegister(REGISTER.CURRENT);
 
         return value;
     }
@@ -312,7 +332,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
      * We need one register window for reading from the INA219
      *
      */
-    /*
+
     private static final II2cDeviceClient.ReadWindow window = newWindow(INA219.REGISTER.CONFIGURATION, INA219.REGISTER.CALIBRATION);
 
     private static II2cDeviceClient.ReadWindow newWindow(INA219.REGISTER regFirst, INA219.REGISTER regMax)
@@ -325,11 +345,9 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         II2cDeviceClient.ReadWindow windowToSet = window;
         this.deviceClient.ensureReadWindow(needed, windowToSet);
     }
-   */
 
     @Override public synchronized byte read8(final REGISTER reg) {
-        //ensureReadWindow(new II2cDeviceClient.ReadWindow(reg.bVal, 1, readMode));
-        return deviceClient.read8(reg.bVal);
+                return deviceClient.read8(reg.bVal);
     }
 
     @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
@@ -339,13 +357,15 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
     @Override public void write8(REGISTER reg, int data) {
         this.deviceClient.write8(reg.bVal, data);
+        this.deviceClient.waitForWriteCompletions();
     }
 
     @Override public void write(REGISTER reg, byte[] data) {
         this.deviceClient.write(reg.bVal, data);
+        this.deviceClient.waitForWriteCompletions();
     }
 
-    @Override public int readIntegerRegister(REGISTER ireg) {
+    @Override public int readTwoByteINARegister(REGISTER ireg) {
         byte[] bytes = this.read(ireg, 2);
         //return TypeConversion.byteArrayToInt(bytes, ByteOrder.LITTLE_ENDIAN);
         if (bytes.length==2)
@@ -355,7 +375,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
             int tempMSB = bytes[0] & 0x000000FF;
             int tempLSB = bytes[1] & 0x000000FF;
 
-            //handle case in which no current is applied to sensor
+            //handle error case in which we get back 0xFF??
             //if ( (tempMSB==0xFF) && (tempLSB==0xFF)) return 0;
 
             return (tempMSB << 8) + tempLSB;
@@ -363,7 +383,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         else return 0;
     }
 
-    @Override public void writeIntegerRegister(REGISTER ireg, int value)
+    @Override public void writeTwoByteINARegister(REGISTER ireg, int value)
     {
         //INA219 data sheet says that register values are sent most-significant-byte first
         byte[] b = new byte[2];
