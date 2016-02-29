@@ -163,7 +163,15 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         telemetry.addLine(
                 telemetry.item("config ", new IFunc<Object>() {
                     public Object value() {
-                        int config = currentSensor.readTwoByteINARegister(INA219.REGISTER.CONFIGURATION);
+                        int config = currentSensor.getConfiguration();
+                        return  formatConfig(config);
+                    }
+                }));
+
+        telemetry.addLine(
+                telemetry.item("calibration ", new IFunc<Object>() {
+                    public Object value() {
+                        int config = currentSensor.getCalibration();
                         return  formatConfig(config);
                     }
                 }));
@@ -192,6 +200,8 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
     }
 
     String formatConfig (int config) { return String.format("0x%04X", config); }
+
+    String formatCalibration (int cali) { return String.format("0x%04X", cali); }
 
     //----------------------------------------------------------------------------------------------
     // Utility

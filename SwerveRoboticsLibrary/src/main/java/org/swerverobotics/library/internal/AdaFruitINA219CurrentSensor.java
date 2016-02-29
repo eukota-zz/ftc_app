@@ -56,8 +56,8 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
     // The following multipliers are used to convert raw current and power
     // values to mA and mW, taking into account the current config settings
-    private double ina219_currentDivider_mA;
-    private double ina219_powerDivider_mW;
+    private double ina219_currentMultiplier_mA;
+    private double ina219_powerMultiplier_mW;
 
     //----------------------------------------------------------------------------------------------
     // Construction
@@ -162,7 +162,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
         // 4. Choose an LSB between the min and max values
         //    (Preferrably a roundish number close to MinLSB)
-        // CurrentLSB = 0.001 (1000uA per bit)
+        // CurrentLSB = 0.001 (1mA per bit)
 
         //TODO replace this with a general calculation
         //What does "roundish" need to be in this context?
@@ -176,7 +176,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         //0.0496 comes from the ina219 datasheet page 17 equation 5
         calibrationValue = (int) Math.floor(0.0496 / (currentLSB * parameters.shuntResistorInKOhms));
 
-        ina219_calValue = calibrationValue;
+        ina219_calValue = calibrationValue; //calculates to 496 for our defaults
 
         // 6. Calculate the power LSB
         // PowerLSB = 20 * CurrentLSB  see datasheet page 18 equation 6
@@ -221,21 +221,26 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         double maxPower = maxCurrentBeforeOverflow * vbus_max;
 
         // Set multipliers to convert raw current/power values
-        ina219_currentDivider_mA = 0.001/currentLSB;  // Current LSB = 0.001A per bit (0.001/0.001 = 1)
-        ina219_powerDivider_mW = 0.001/powerLSB;      // PowerLSB = 0.02mW per bit   (0.001/0.020 = 0.05)
+        ina219_currentMultiplier_mA = currentLSB;  // Current LSB = 0.001A per bit
+        ina219_powerMultiplier_mW = powerLSB;      // PowerLSB = 0.02mW per bit
 
         // Set Calibration register to 'Cal' calculated above
-        this.write8(REGISTER.CALIBRATION, ina219_calValue);
+        writeTwoByteINARegister(REGISTER.CALIBRATION, ina219_calValue);
 
         // Set Config register to take into account the settings above
-        int config = INA219_CONFIG_BVOLTAGERANGE_16V |
-                INA219_CONFIG_GAIN_8_320MV |
-                INA219_CONFIG_BADCRES_12BIT |
-                INA219_CONFIG_SADCRES_12BIT_1S_532US |
+        int config = INA219_CONFIG_BVOLTAGERANGE_16V +
+                INA219_CONFIG_GAIN_8_320MV +
+                INA219_CONFIG_BADCRES_12BIT +
+                INA219_CONFIG_SADCRES_12BIT_1S_532US +
                 INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
 
         writeTwoByteINARegister(REGISTER.CONFIGURATION, config);
 
+    }
+
+    public int getCalibration()
+    {
+        return this.readTwoByteINARegister(REGISTER.CALIBRATION);
     }
 
     public double getBusVoltage_V()
@@ -253,14 +258,14 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     public double getCurrent_mA()
     {
         double valueDec = getCurrent_raw();
-        valueDec /= ina219_currentDivider_mA;
+        valueDec *= ina219_currentMultiplier_mA;
         return valueDec;
     }
 
     public double getPower_mW()
     {
         double valueDec = getPower_raw();
-        valueDec /= ina219_powerDivider_mW;
+        valueDec *= ina219_powerMultiplier_mW;
         return valueDec;
     }
 
@@ -318,9 +323,9 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // reset the cal register, meaning CURRENT and POWER will
         // not be available ... avoid this by always setting a cal
         // value even if it's an unfortunate extra step
-        this.write8(REGISTER.CALIBRATION, ina219_calValue);
+        this.writeTwoByteINARegister(REGISTER.CALIBRATION, ina219_calValue);
 
-        this.delayLore(20);//not sure if this is needed, just playing it safe
+        //this.delayLore(20);//not sure if this is needed, just playing it safe
 
         // Now we can safely read the CURRENT register!
         int value = this.readTwoByteINARegister(REGISTER.CURRENT);
@@ -337,9 +342,9 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // reset the cal register, meaning CURRENT and POWER will
         // not be available ... avoid this by always setting a cal
         // value even if it's an unfortunate extra step
-        this.write8(REGISTER.CALIBRATION, ina219_calValue);
+        writeTwoByteINARegister(REGISTER.CALIBRATION, ina219_calValue);
 
-        this.delayLore(20);//not sure if this is needed, just playing it safe
+        //this.delayLore(20);//not sure if this is needed, just playing it safe
 
         // Now we can safely read the CURRENT register!
         int value = this.readTwoByteINARegister(REGISTER.POWER);
