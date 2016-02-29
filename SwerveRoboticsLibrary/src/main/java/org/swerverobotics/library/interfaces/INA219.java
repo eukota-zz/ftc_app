@@ -39,26 +39,29 @@ public interface INA219
 
         /**
          *  the value of the shunt resistor
+         *
+         *  This really should be a bigger resistor for practical FTC use: the 100 ohms default resistor results in a max of 3.2 amps,
+         *  whereas a robot can use up to 20 amps.
          */
-        public int shuntResistorInOhms = 100; //default resistor
+        public double shuntResistorInKOhms = 0.100; //default resistor is 100 ohms
 
         /**
          *  the maximum expected current
          */
-        public double maxExpectedCurrentInAmps = 2; //default expected max current
+        public double maxExpectedCurrentInAmps = 20; //default expected max current
 
 
         /**
          *  the range of the sensor in volts
+         *  For now, disabling the ability for a user to set this. We will default to 16v.
          */
-        public VOLTAGE_RANGE rangeInVolts = VOLTAGE_RANGE.VOLTS_32; //set default range
+        //public VOLTAGE_RANGE rangeInVolts = VOLTAGE_RANGE.VOLTS_16; //set default range
 
         /**
          *  the sensitivity of the sensor
+         *  For now, disabling the ability for a user to set this. We will default to GAIN_8_320mv
          */
-        public GAIN sensitivityInMilliamps = GAIN.GAIN_8_320MV; //set default sensitivity
-
-
+        //public GAIN sensitivityInMilliamps = GAIN.GAIN_8_320MV; //set default sensitivity
 
         /**
          * debugging aid: enable logging for this device?
@@ -92,6 +95,10 @@ public interface INA219
     double getShuntVoltage_mV();
 
     double getCurrent_mA();
+
+    double getPower_mW();
+
+    int getConfiguration();
 
     void resetINA219();
 

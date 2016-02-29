@@ -48,7 +48,7 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         // semantically understands this particular kind of sensor.
 
         parameters.loggingEnabled = false;
-        parameters.shuntResistorInOhms = 100;
+        parameters.shuntResistorInKOhms = 0.100;
 
         ///TO DO instantiate our object
         currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("current"), parameters);
@@ -140,6 +140,13 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
                 }));
 
         telemetry.addLine(
+                telemetry.item("power: ", new IFunc<Object>() {
+                    public Object value() {
+                        return formatPower(currentSensor.getPower_mW());
+                    }
+                }));
+
+        telemetry.addLine(
                 telemetry.item("bus voltage: ", new IFunc<Object>() {
                     public Object value() {
                         return formatVoltage(currentSensor.getBusVoltage_V());
@@ -164,12 +171,14 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
     }
 
 
-    String formatVoltage(double voltage) {
-        return String.format("%.2f", voltage);
-    }
+    String formatVoltage(double voltage) { return String.format("%.2f", voltage); }
 
     String formatCurrent(double current) {
         return String.format("%.2f", current);
+    }
+
+    String formatPower(double power) {
+        return String.format("%.2f", power);
     }
 
     String formatRate(double cyclesPerSecond)

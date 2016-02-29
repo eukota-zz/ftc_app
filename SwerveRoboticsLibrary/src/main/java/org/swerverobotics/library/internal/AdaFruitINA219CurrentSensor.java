@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 
 import org.swerverobotics.library.ClassFactory;
-import org.swerverobotics.library.interfaces.IBNO055IMU;
+import org.swerverobotics.library.exceptions.UnexpectedI2CDeviceException;
 import org.swerverobotics.library.interfaces.II2cDeviceClient;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
@@ -48,21 +48,16 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
     private Parameters parameters;
 
-    //TODO delete these objects left over from IMU acceleration integration algorithm, we don't use them
-    //private final Object dataLock = new Object();
-    //private final Object startStopLock = new Object();
-
     // We always read as much as we can when we have nothing else to do
     private static final II2cDeviceClient.READ_MODE readMode = II2cDeviceClient.READ_MODE.REPEAT;
-
 
     // store the calibration value so we can use it when reading
     private int ina219_calValue;
 
     // The following multipliers are used to convert raw current and power
     // values to mA and mW, taking into account the current config settings
-    private int ina219_currentDivider_mA;
-    private int ina219_powerDivider_mW;
+    private double ina219_currentDivider_mA;
+    private double ina219_powerDivider_mW;
 
     //----------------------------------------------------------------------------------------------
     // Construction
@@ -105,10 +100,15 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         this.parameters = parameters;
 
         resetINA219();
-        //delayLore(20);
 
-        //TODO re-enable calibration setting. for now, just use default power up configuration.
-        //setCalibration(parameters);
+        int config = this.getConfiguration();
+
+        if (config != 0x399F)
+        {
+            throw new UnexpectedI2CDeviceException(config);
+        }
+
+        setCalibration(parameters);
     }
 
 
@@ -118,72 +118,76 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         int calibrationValue = 0;
 
         // Adafruit sample implementation code used heavily throughout this function.
+        // I am focusing on default settings that are likely to be useful to FTC.
         // All of the calculations are shown below if you want to change the settings.
         // You will also need to change any relevant register settings to be consistent,
-        // such as setting the VBUS_MAX to 16V instead of 32V, etc.
+        // such as setting the VBUS_MAX to 32V instead of 16V, etc.
 
-        // VBUS_MAX = 32V             (Assumes 32V, can also be set to 16V)
+        // VBUS_MAX = 16V             (Assumes 32V, can also be set to 16V)
         // VSHUNT_MAX = 0.32          (Assumes Gain 8, 320mV, can also be 0.16, 0.08, 0.04)
-        // RSHUNT = 0.1               (Resistor value in ohms)
+        // RSHUNT = 0.1               (Resistor value in kOhms)
 
         int vbus_max = 16; //default value for our framework
 
-        if (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_32)       vbus_max = 32;
-        else if (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_16)  vbus_max = 16;
+        //todo allow configuration of other values
+        //if (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_32)       vbus_max = 32;
+        //else if (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_16)  vbus_max = 16;
 
-        double vshunt_max = 0.04; //default value for our framework
+        double vshunt_max = 0.32; //default value for our framework
 
-        if (parameters.sensitivityInMilliamps == GAIN.GAIN_8_320MV)  vshunt_max = 0.32; //320mV
-        else if (parameters.sensitivityInMilliamps == GAIN.GAIN_4_160MV)  vshunt_max = 0.16; //160mV
-        else if (parameters.sensitivityInMilliamps == GAIN.GAIN_2_80MV)  vshunt_max = 0.08; //80mV
-        else if (parameters.sensitivityInMilliamps == GAIN.GAIN_1_40MV)  vshunt_max = 0.04; //40mV
+        //todo allow configuration of other values
+        //if (parameters.sensitivityInMilliamps == GAIN.GAIN_8_320MV)  vshunt_max = 0.32; //320mV
+        //else if (parameters.sensitivityInMilliamps == GAIN.GAIN_4_160MV)  vshunt_max = 0.16; //160mV
+        //else if (parameters.sensitivityInMilliamps == GAIN.GAIN_2_80MV)  vshunt_max = 0.08; //80mV
+        //else if (parameters.sensitivityInMilliamps == GAIN.GAIN_1_40MV)  vshunt_max = 0.04; //40mV
 
         // 1. Determine max possible current
         // MaxPossible_I = VSHUNT_MAX / RSHUNT
-        // MaxPossible_I = 3.2A
+        // MaxPossible_I = 3.2A for default resistor.
 
-        double maxPossibleCurrent = vshunt_max / parameters.shuntResistorInOhms;
+        double maxPossibleCurrent = vshunt_max / parameters.shuntResistorInKOhms;
 
         // 2. Determine max expected current
-        // MaxExpected_I = 2.0A
+        // MaxExpected_I = 20A    //In our implementation this value is provided in parameters
 
 
         // 3. Calculate possible range of LSBs (Min = 15-bit, Max = 12-bit)
         // MinimumLSB = MaxExpected_I/32767
-        // MinimumLSB = 0.000061              (61uA per bit)
+        // MinimumLSB = 0.00061              (61uA per bit)
         // MaximumLSB = MaxExpected_I/4096
-        // MaximumLSB = 0,000488              (488uA per bit)
+        // MaximumLSB = 0.00488              (488uA per bit)
 
         double minimumLSB = parameters.maxExpectedCurrentInAmps / 32767; //15 bit
         double maximumLSB = parameters.maxExpectedCurrentInAmps / 4096; //12 bit
 
         // 4. Choose an LSB between the min and max values
         //    (Preferrably a roundish number close to MinLSB)
-        // CurrentLSB = 0.0001 (100uA per bit)
+        // CurrentLSB = 0.001 (1000uA per bit)
 
-        //TODO replace this with a calculation
-        //TODO What does "roundish" need to be in this context?
-        double currentLSB = 0.0001;
+        //TODO replace this with a general calculation
+        //What does "roundish" need to be in this context?
+        //for now this is calculated based on the ftc defaults we're using.
+        double currentLSB = 0.001;
 
         // 5. Compute the calibration register
         // Cal = trunc (0.04096 / (Current_LSB * RSHUNT))
         // Cal = 4096 (0x1000)
 
-        //TODO why 0.0496?
-        calibrationValue = (int) Math.floor(0.0496 * (currentLSB * parameters.shuntResistorInOhms));
+        //0.0496 comes from the ina219 datasheet page 17 equation 5
+        calibrationValue = (int) Math.floor(0.0496 / (currentLSB * parameters.shuntResistorInKOhms));
 
         ina219_calValue = calibrationValue;
 
         // 6. Calculate the power LSB
-        // PowerLSB = 20 * CurrentLSB
-        // PowerLSB = 0.002 (2mW per bit)
-        double powerLSB = 20 * currentLSB; //TODO why 20?
+        // PowerLSB = 20 * CurrentLSB  see datasheet page 18 equation 6
+        // PowerLSB = 0.02 (20mW per bit)
+        double powerLSB = 20 * currentLSB;
 
         // 7. Compute the maximum current and shunt voltage values before overflow
         //
         // Max_Current = Current_LSB * 32767
-        // Max_Current = 3.2767A before overflow
-        double maxCurrent = currentLSB * 32768;
+        // Max_Current = 32.767A before overflow
+        double maxCurrent = currentLSB * 32767;
 
         //
         // If Max_Current > Max_Possible_I then
@@ -191,6 +195,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // Else
         //    Max_Current_Before_Overflow = Max_Current
         // End If
+        //this will be 3.2A with default resistor of 0.100
         double maxCurrentBeforeOverflow = 0;
         if (maxCurrent > maxPossibleCurrent) maxCurrentBeforeOverflow = maxPossibleCurrent;
         else maxCurrentBeforeOverflow = maxCurrent;
@@ -198,7 +203,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         //
         // Max_ShuntVoltage = Max_Current_Before_Overflow * RSHUNT
         // Max_ShuntVoltage = 0.32V
-        double maxShuntVoltage = maxCurrentBeforeOverflow * parameters.shuntResistorInOhms;
+        double maxShuntVoltage = maxCurrentBeforeOverflow * parameters.shuntResistorInKOhms;
         //
         // If Max_ShuntVoltage >= VSHUNT_MAX
         //    Max_ShuntVoltage_Before_Overflow = VSHUNT_MAX
@@ -211,20 +216,19 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
         // 8. Compute the Maximum Power
         // MaximumPower = Max_Current_Before_Overflow * VBUS_MAX
-        // MaximumPower = 3.2 * 32V
-        // MaximumPower = 102.4W
+        // MaximumPower = 3.2 * 16V
+        // MaximumPower = 51.2W
         double maxPower = maxCurrentBeforeOverflow * vbus_max;
 
         // Set multipliers to convert raw current/power values
-        //TODO replace these constants with calculations!
-        ina219_currentDivider_mA = 10;  // Current LSB = 100uA per bit (1000/100 = 10)
-        ina219_powerDivider_mW = 2;     // Power LSB = 1mW per bit (2/1)
+        ina219_currentDivider_mA = 0.001/currentLSB;  // Current LSB = 0.001A per bit (0.001/0.001 = 1)
+        ina219_powerDivider_mW = 0.001/powerLSB;      // PowerLSB = 0.02mW per bit   (0.001/0.020 = 0.05)
 
         // Set Calibration register to 'Cal' calculated above
         this.write8(REGISTER.CALIBRATION, ina219_calValue);
 
         // Set Config register to take into account the settings above
-        int config = INA219_CONFIG_BVOLTAGERANGE_32V |
+        int config = INA219_CONFIG_BVOLTAGERANGE_16V |
                 INA219_CONFIG_GAIN_8_320MV |
                 INA219_CONFIG_BADCRES_12BIT |
                 INA219_CONFIG_SADCRES_12BIT_1S_532US |
@@ -234,25 +238,41 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
     }
 
-    public double getBusVoltage_V() {
+    public double getBusVoltage_V()
+    {
         double value = getBusVoltage_raw();
         return value * 0.001;
     }
 
-    public double getShuntVoltage_mV() {
+    public double getShuntVoltage_mV()
+    {
         double value = getShuntVoltage_raw();
         return value * 0.01;
     }
 
-    public double getCurrent_mA() {
+    public double getCurrent_mA()
+    {
         double valueDec = getCurrent_raw();
         valueDec /= ina219_currentDivider_mA;
         return valueDec;
     }
 
+    public double getPower_mW()
+    {
+        double valueDec = getPower_raw();
+        valueDec /= ina219_powerDivider_mW;
+        return valueDec;
+    }
+
+    public int getConfiguration()
+    {
+       return this.readTwoByteINARegister(INA219.REGISTER.CONFIGURATION);
+    }
+
     public void resetINA219()
     {
         this.writeTwoByteINARegister(REGISTER.CONFIGURATION, INA219_CONFIG_RESET);
+        delayLore(40);//I don't know if this is needed; just playing it safe
     }
 
 
@@ -271,10 +291,6 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
      */
     private synchronized int getBusVoltage_raw()
     {
-        this.deviceClient.ensureReadWindow(
-                new II2cDeviceClient.ReadWindow(REGISTER.BUS_VOLTAGE.bVal, 16, readMode),
-                window);
-
         int value = this.readTwoByteINARegister(REGISTER.BUS_VOLTAGE);
 
         // Shift to the right 3 to drop CNVR and OVF and multiply by LSB
@@ -287,10 +303,6 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
      */
     private synchronized int getShuntVoltage_raw()
     {
-        this.deviceClient.ensureReadWindow(
-                new II2cDeviceClient.ReadWindow(REGISTER.SHUNT_VOLTAGE.bVal, 16, readMode),
-                window);
-
         int value = this.readTwoByteINARegister(REGISTER.SHUNT_VOLTAGE);
 
         return value;
@@ -308,12 +320,29 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // value even if it's an unfortunate extra step
         this.write8(REGISTER.CALIBRATION, ina219_calValue);
 
-        this.deviceClient.ensureReadWindow(
-                new II2cDeviceClient.ReadWindow(REGISTER.CURRENT.bVal, 16, readMode),
-                window);
+        this.delayLore(20);//not sure if this is needed, just playing it safe
 
         // Now we can safely read the CURRENT register!
         int value = this.readTwoByteINARegister(REGISTER.CURRENT);
+
+        return value;
+    }
+
+    /**
+     * Get the raw current value (16-bit signed integer, so +-32767)
+     */
+    private synchronized int getPower_raw() {
+        //Lore from Adafruit:
+        // Sometimes a sharp load will reset the INA219, which will
+        // reset the cal register, meaning CURRENT and POWER will
+        // not be available ... avoid this by always setting a cal
+        // value even if it's an unfortunate extra step
+        this.write8(REGISTER.CALIBRATION, ina219_calValue);
+
+        this.delayLore(20);//not sure if this is needed, just playing it safe
+
+        // Now we can safely read the CURRENT register!
+        int value = this.readTwoByteINARegister(REGISTER.POWER);
 
         return value;
     }
@@ -328,30 +357,12 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     // INA219 data retrieval
     //------------------------------------------------------------------------------------------
 
-    /**
-     * We need one register window for reading from the INA219
-     *
-     */
-
-    private static final II2cDeviceClient.ReadWindow window = newWindow(INA219.REGISTER.CONFIGURATION, INA219.REGISTER.CALIBRATION);
-
-    private static II2cDeviceClient.ReadWindow newWindow(INA219.REGISTER regFirst, INA219.REGISTER regMax)
-    {
-        return new II2cDeviceClient.ReadWindow(regFirst.bVal, regMax.bVal-regFirst.bVal, readMode);
-    }
-
-    private void ensureReadWindow(II2cDeviceClient.ReadWindow needed)
-    {
-        II2cDeviceClient.ReadWindow windowToSet = window;
-        this.deviceClient.ensureReadWindow(needed, windowToSet);
-    }
 
     @Override public synchronized byte read8(final REGISTER reg) {
                 return deviceClient.read8(reg.bVal);
     }
 
     @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
-        //ensureReadWindow(new II2cDeviceClient.ReadWindow(reg.bVal, cb, readMode));
         return deviceClient.read(reg.bVal, cb);
     }
 
@@ -370,13 +381,9 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         //return TypeConversion.byteArrayToInt(bytes, ByteOrder.LITTLE_ENDIAN);
         if (bytes.length==2)
         {
-
             //INA219 data sheet says that register values are sent most-significant-byte first
             int tempMSB = bytes[0] & 0x000000FF;
             int tempLSB = bytes[1] & 0x000000FF;
-
-            //handle error case in which we get back 0xFF??
-            //if ( (tempMSB==0xFF) && (tempLSB==0xFF)) return 0;
 
             return (tempMSB << 8) + tempLSB;
         }
