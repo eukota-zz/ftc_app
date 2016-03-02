@@ -31,10 +31,11 @@ public class Red1ToPark extends MasterAuto
       */
 
         //drop debris blocker
-        driveForwardDistanceIMU(1, 100);
+
+        driveBackwardDistanceIMU(1, 100);
 
         turnRightDegrees(.5, 90);
 
-        driveForwardDistanceIMU(1, 15);
+        driveBackwardDistanceIMU(1, 15);
     }
 }
