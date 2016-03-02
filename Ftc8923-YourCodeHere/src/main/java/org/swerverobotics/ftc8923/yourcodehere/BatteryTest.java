@@ -30,7 +30,7 @@ public class BatteryTest extends SynchronousOpMode
     INA219 currentSensor = null;
     AdaFruitINA219CurrentSensor.Parameters parameters = new AdaFruitINA219CurrentSensor.Parameters();
 
-    int minimumSafeVoltage = 11;
+    double minimumSafeVoltage = 11.5;
     ElapsedTime eTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
 
     // How often logs measurements should be taken, in seconds
@@ -76,6 +76,7 @@ public class BatteryTest extends SynchronousOpMode
 
         while (this.opModeIsActive() && keepRunning)
         {
+            // TODO Is this necessary?
             /*
             // Break if elapsed time has exceeded test time
             if(eTime.time() >= testTime * 60)
@@ -107,14 +108,12 @@ public class BatteryTest extends SynchronousOpMode
             else if(relay0.getState() && relay1.getState())
                 resistance = (resistor0 * resistor1) / (resistor0 + resistor1);
 
-            // TODO Put this back in when voltage sensing works
-            /*
             // Break if battery voltage drops below minimum safe value
-            if(currentSensor.getBusVoltage_V() < minimumSafeVoltage)
+            if(Math.abs(currentSensor.getBusVoltage_V()) < minimumSafeVoltage)
             {
                 telemetry.log.add("[STOPPED] Battery voltage below minimum safe value");
                 stopTest();
-            }*/
+            }
 
             // Checks to see if another period has passed
             if(eTime.time() - (readings * period) >= 0)
