@@ -2,7 +2,6 @@ package org.swerverobotics.ftc6220.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
 
-        import org.swerverobotics.library.interfaces.Autonomous;
 /*
 	Autonomous program turns 90 degrees.
 */
@@ -22,13 +21,13 @@ public class Red1ToPark extends MasterAutonomous
 
         setAutoStartPosition(90);
 
-        wait(2000);
+        pause(2000);
         driveStraight(270, Constants.BACKWARDS, false);
         turnTo(135);
         driveStraight(73, Constants.BACKWARDS, false);
-        wait(500);
+        pause(500);
         HikerDropper.deploy();
-        wait(4000);
+        pause(4000);
         driveStraight(73, Constants.FORWARDS * 0.4, false);
         HikerDropper.retract();
         driveStraight(73, Constants.BACKWARDS * 0.4, false);

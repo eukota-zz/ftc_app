@@ -147,20 +147,20 @@ public abstract class MasterOpMode extends SynchronousOpMode
         stopAllMotors();
     }
 
-    //this is so we can be able to initialize servos after wait for start (robot needs to fit in sizing box)
+    //this is so we can be able to initialize servos after pause for start (robot needs to fit in sizing box)
     public void initializeServoPositions()
     {
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
-        this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
-        this.RightZiplineHitter = new ServoToggler(ServoRightZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED);
+        this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED, this);
+        this.RightZiplineHitter = new ServoToggler(ServoRightZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED, this);
 
         this.HolderServoLeft.setDirection(Servo.Direction.REVERSE);
 
-        this.LeftHolder = new ServoToggler(HolderServoLeft, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
-        this.RightHolder = new ServoToggler(HolderServoRight, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED);
+        this.LeftHolder = new ServoToggler(HolderServoLeft, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED, this);
+        this.RightHolder = new ServoToggler(HolderServoRight, Constants.HOLDER_SERVO_NOTDEPLOYED, Constants.HOLDER_SERVO_DEPLOYED, this);
 
-        HikerDropper = new ServoToggler(ServoHikerDropper, Constants.HIKER_DROPPER_NOTDEPLOYED, Constants.HIKER_DROPPER_DEPLOYED);
+        this.HikerDropper = new ServoToggler(ServoHikerDropper, Constants.HIKER_DROPPER_NOTDEPLOYED, Constants.HIKER_DROPPER_DEPLOYED, this);
 
         this.HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
     }
@@ -183,6 +183,18 @@ public abstract class MasterOpMode extends SynchronousOpMode
             curMotor.setPower(0.0);
         }
     }
+
+    //pause a number of milliseconds
+    public void pause(int t) throws InterruptedException
+    {
+        //we don't use System.currentTimeMillis() because it can be inconsistent
+        long initialTime = System.nanoTime();
+        while((System.nanoTime() - initialTime)/1000/1000 < t)
+        {
+            idle();
+        }
+    }
+
 
     void configureDashboard()
     {

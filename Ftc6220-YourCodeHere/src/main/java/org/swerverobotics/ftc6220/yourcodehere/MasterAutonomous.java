@@ -130,7 +130,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             telemetry.addData("satisfaction:", satisfactionCounter);
             telemetry.update();
 
-            wait(1);
+            pause(1);
             idle();
         }
         stopAllMotors();
@@ -219,7 +219,7 @@ public abstract class MasterAutonomous extends MasterOpMode
                 isDriveCompleted = true;
             }
 
-            wait(1);
+            pause(1);
             idle();
         }
         stopDriveMotors();
@@ -247,18 +247,5 @@ public abstract class MasterAutonomous extends MasterOpMode
         angles = imu.getAngularOrientation();
         return 360-angles.heading;
     }
-
-
-    //wait a number of milliseconds
-    public void wait(int t) throws InterruptedException
-    {
-        //we don't use System.currentTimeMillis() because it can be inconsistent
-        long initialTime = System.nanoTime();
-        while((System.nanoTime() - initialTime)/1000/1000 < t)
-        {
-            idle();
-        }
-    }
-
 
 }

@@ -53,11 +53,11 @@ public class SynchTeleOp extends MasterTeleOp
         }
     }
 
-    private void handleDriverInput(Gamepad pad1, Gamepad pad2)
+    private void handleDriverInput(Gamepad pad1, Gamepad pad2) throws InterruptedException
     {
         if (pad2.y && !lastBtn[Y])
         {
-            HikerDropper.toggle();
+            HikerDropper.slowToggle();
         }
 
         double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
