@@ -107,12 +107,14 @@ public class BatteryTest extends SynchronousOpMode
             else if(relay0.getState() && relay1.getState())
                 resistance = (resistor0 * resistor1) / (resistor0 + resistor1);
 
+            // TODO Put this back in when voltage sensing works
+            /*
             // Break if battery voltage drops below minimum safe value
             if(currentSensor.getBusVoltage_V() < minimumSafeVoltage)
             {
                 telemetry.log.add("[STOPPED] Battery voltage below minimum safe value");
                 stopTest();
-            }
+            }*/
 
             // Checks to see if another period has passed
             if(eTime.time() - (readings * period) >= 0)
@@ -128,6 +130,7 @@ public class BatteryTest extends SynchronousOpMode
             idle();
         }
 
+        stopTest();
         telemetry.log.add("End Voltage: " + formatNumber(currentSensor.getBusVoltage_V()));
         closePublicFile();
     }
@@ -175,10 +178,16 @@ public class BatteryTest extends SynchronousOpMode
                 );
         telemetry.addLine
                 (
-                        this.telemetry.item("Current Voltage: ", new IFunc<Object>() {
+                        this.telemetry.item("Voltage: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
                                 return formatNumber(currentSensor.getBusVoltage_V());
+                            }
+                        }),
+                        this.telemetry.item("Current: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatNumber(currentSensor.getCurrent_mA());
                             }
                         })
                 );
@@ -202,12 +211,30 @@ public class BatteryTest extends SynchronousOpMode
                         })
                 );
 
+        telemetry.addLine(
+                telemetry.item("config ", new IFunc<Object>() {
+                    public Object value() {
+                        int config = currentSensor.getConfiguration();
+                        return formatConfig(config);
+                    }
+                }));
+
+        telemetry.addLine(
+                telemetry.item("calibration ", new IFunc<Object>() {
+                    public Object value() {
+                        int config = currentSensor.getCalibration();
+                        return formatConfig(config);
+                    }
+                }));
+
         /*
          * 3 extra lines are added, because there are messages
          * getting logged other than the periodical voltage reading
          */
         //telemetry.log.setCapacity(testTime * 60 / period + 3);
     }
+
+    String formatConfig (int config) { return String.format("0x%04X", config); }
 
     public String formatNumber(double number)
     {
