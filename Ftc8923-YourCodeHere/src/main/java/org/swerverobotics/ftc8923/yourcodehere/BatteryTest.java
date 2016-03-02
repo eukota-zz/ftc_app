@@ -2,31 +2,33 @@ package org.swerverobotics.ftc8923.yourcodehere;
 
 import android.os.Environment;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.Autonomous;
 import org.swerverobotics.library.interfaces.IFunc;
+import org.swerverobotics.library.interfaces.INA219;
 import org.swerverobotics.library.interfaces.TeleOp;
+import org.swerverobotics.library.internal.AdaFruitINA219CurrentSensor;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Date;
 
 /**
- * Tests batteries by slowly draining them via
- * a motor (a resistor wired to a motor port)
+ * Tests batteries by slowly draining them
  * and periodically measuring the voltage
  */
 @TeleOp(name = "Battery Test")
 public class BatteryTest extends SynchronousOpMode
 {
-    DcMotor motor = null;
-    VoltageSensor voltageSensor;
-    DigitalChannel relay;
+    DigitalChannel relay0 = null;
+    DigitalChannel relay1 = null;
+
+    INA219 currentSensor = null;
+    AdaFruitINA219CurrentSensor.Parameters parameters = new AdaFruitINA219CurrentSensor.Parameters();
 
     int minimumSafeVoltage = 11;
     ElapsedTime eTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
@@ -40,7 +42,12 @@ public class BatteryTest extends SynchronousOpMode
     // The total time to run the test, in minutes
     int testTime = 1;
 
-    String FILENAME = "SwerveBatteryLogger.txt";
+    double resistance = 0.0;
+    double resistor0 = 200.0;
+    double resistor1 = 3.0;
+
+    // Substring is used to only take the date and time from the Date object
+    String FILENAME = "BatteryTest " + String.format("%tc", new Date(System.currentTimeMillis())).substring(4, 19) + ".txt";
     PrintWriter outputFile;
 
     boolean keepRunning = true;
@@ -48,10 +55,15 @@ public class BatteryTest extends SynchronousOpMode
     @Override
     public void main() throws InterruptedException
     {
-        motor = hardwareMap.dcMotor.get("motor");
-        voltageSensor = hardwareMap.voltageSensor.get("Motor Controller 1");
-        relay = hardwareMap.digitalChannel.get("relay");
-        relay.setMode(DigitalChannelController.Mode.OUTPUT);
+        relay0 = hardwareMap.digitalChannel.get("relay0");
+        relay1 = hardwareMap.digitalChannel.get("relay1");
+        relay0.setMode(DigitalChannelController.Mode.OUTPUT);
+        relay1.setMode(DigitalChannelController.Mode.OUTPUT);
+
+        parameters.loggingEnabled = false;
+        parameters.shuntResistorInKOhms = 0.03;
+
+        currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("currentSensor"), parameters);
 
         composeDashboard();
         openPublicFileForWriting(FILENAME);
@@ -75,31 +87,42 @@ public class BatteryTest extends SynchronousOpMode
             if (updateGamepads())
             {
                 if (gamepad1.a)
-                {
-                    relay.setState(true);
-                }
-
+                    relay0.setState(true);
                 if (gamepad1.b)
-                {
-                    relay.setState(false);
-                }
-
+                    relay0.setState(false);
+                if (gamepad1.x)
+                    relay1.setState(true);
+                if (gamepad1.y)
+                    relay1.setState(false);
             }
 
+            // Calculate current resistance of the circuit
+            // both resistors are in parallel, and in series with respective relays
+            if(!relay0.getState() && !relay1.getState())
+                resistance = 0.0;
+            else if(relay0.getState() && !relay1.getState())
+                resistance = resistor0;
+            else if(!relay0.getState() && relay1.getState())
+                resistance = resistor1;
+            else if(relay0.getState() && relay1.getState())
+                resistance = (resistor0 * resistor1) / (resistor0 + resistor1);
 
+            // TODO Put this back in when voltage sensing works
+            /*
             // Break if battery voltage drops below minimum safe value
-            if(voltageSensor.getVoltage() < minimumSafeVoltage)
+            if(currentSensor.getBusVoltage_V() < minimumSafeVoltage)
             {
                 telemetry.log.add("[STOPPED] Battery voltage below minimum safe value");
-
                 stopTest();
-            }
+            }*/
 
             // Checks to see if another period has passed
             if(eTime.time() - (readings * period) >= 0)
             {
                 //telemetry.log.add("Voltage at " + readings * period + " seconds: " + formatNumber(voltageSensor.getVoltage()));
-                writeDataToPublicFile(voltageSensor.getVoltage());
+                String s = Math.round(eTime.time()) + "," + formatNumber(currentSensor.getBusVoltage_V()) +
+                    "," + formatNumber(resistance) + "\r\n";
+                writeDataToPublicFile(s);
                 readings += 1;
             }
 
@@ -107,8 +130,8 @@ public class BatteryTest extends SynchronousOpMode
             idle();
         }
 
-        motor.setPower(0.0);
-        telemetry.log.add("End Voltage: " + formatNumber(voltageSensor.getVoltage()));
+        stopTest();
+        telemetry.log.add("End Voltage: " + formatNumber(currentSensor.getBusVoltage_V()));
         closePublicFile();
     }
 
@@ -116,42 +139,55 @@ public class BatteryTest extends SynchronousOpMode
     {
         keepRunning = true;
 
-        telemetry.log.add("Start Voltage: " + formatNumber(voltageSensor.getVoltage()));
+        telemetry.log.add("Start Voltage: " + formatNumber(currentSensor.getBusVoltage_V()));
 
-        //write initial unloaded voltage to the file
-        writeDataToPublicFile(voltageSensor.getVoltage());
+        // Write initial unloaded voltage to the file
+        String s = Math.round(eTime.time()) + "," + formatNumber(currentSensor.getBusVoltage_V()) +
+                "," + formatNumber(resistance) + "\r\n";
+        writeDataToPublicFile(s);
 
-        //turn on the relay so we can start the test
-        relay.setState(true);
-
-        motor.setPower(1.0);
+        // Ensure relays are off, per Sig's request
+        relay0.setState(false);
+        relay1.setState(false);
     }
 
     void stopTest()
     {
         keepRunning = false;
 
-        relay.setState(false);
+        relay0.setState(false);
+        relay1.setState(false);
     }
-
 
     void composeDashboard()
     {
         telemetry.addLine
                 (
-                        this.telemetry.item("Relay: ", new IFunc<Object>() {
+                        this.telemetry.item("Relay1: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return relay.getState();
+                                return relay0.getState();
+                            }
+                        }),
+                        this.telemetry.item("Relay2: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return relay1.getState();
                             }
                         })
                 );
         telemetry.addLine
                 (
-                        this.telemetry.item("Current Voltage: ", new IFunc<Object>() {
+                        this.telemetry.item("Voltage: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return formatNumber(voltageSensor.getVoltage());
+                                return formatNumber(currentSensor.getBusVoltage_V());
+                            }
+                        }),
+                        this.telemetry.item("Current: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatNumber(currentSensor.getCurrent_mA());
                             }
                         })
                 );
@@ -170,10 +206,26 @@ public class BatteryTest extends SynchronousOpMode
                         this.telemetry.item("Elapsed Time: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return formatNumber(eTime.time());
+                                return Math.round(eTime.time());
                             }
                         })
                 );
+
+        telemetry.addLine(
+                telemetry.item("config ", new IFunc<Object>() {
+                    public Object value() {
+                        int config = currentSensor.getConfiguration();
+                        return formatConfig(config);
+                    }
+                }));
+
+        telemetry.addLine(
+                telemetry.item("calibration ", new IFunc<Object>() {
+                    public Object value() {
+                        int config = currentSensor.getCalibration();
+                        return formatConfig(config);
+                    }
+                }));
 
         /*
          * 3 extra lines are added, because there are messages
@@ -181,6 +233,8 @@ public class BatteryTest extends SynchronousOpMode
          */
         //telemetry.log.setCapacity(testTime * 60 / period + 3);
     }
+
+    String formatConfig (int config) { return String.format("0x%04X", config); }
 
     public String formatNumber(double number)
     {
@@ -244,5 +298,3 @@ public class BatteryTest extends SynchronousOpMode
         }
     }
 }
-
-

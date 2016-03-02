@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
@@ -30,15 +29,13 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
     AdaFruitINA219CurrentSensor.Parameters parameters = new AdaFruitINA219CurrentSensor.Parameters();
 
 
-    // Here we have state we use for updating the dashboard. The first of these is important
-    // to read only once per update, as its acquisition is expensive. The remainder, though,
-    // could probably be read once per item, at only a small loss in display accuracy.
+    // Here we have state we use for updating the dashboard.
 
-    double voltage;
-    double current;
     int loopCycles;
     int i2cCycles;
     double ms;
+    boolean i2cArmed;
+    boolean i2cEngaged;
 
     //----------------------------------------------------------------------------------------------
     // main() loop
@@ -51,7 +48,7 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         // semantically understands this particular kind of sensor.
 
         parameters.loggingEnabled = false;
-        parameters.shuntResistorInOhms = 100;
+        parameters.shuntResistorInKOhms = 0.100;
 
         ///TO DO instantiate our object
         currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("current"), parameters);
@@ -92,6 +89,8 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
             loopCycles = getLoopCount();
             i2cCycles  = ((II2cDeviceClientUser) currentSensor).getI2cDeviceClient().getI2cCycleCount();
             ms         = elapsed.time() * 1000.0;
+            i2cArmed = ((II2cDeviceClientUser) currentSensor).getI2cDeviceClient().isArmed();
+            i2cEngaged = ((II2cDeviceClientUser) currentSensor).getI2cDeviceClient().isEngaged();
         }
         });
 
@@ -106,7 +105,7 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
                         return i2cCycles;
                     }
                 }));
-
+/*
         telemetry.addLine(
                 telemetry.item("loop rate: ", new IFunc<Object>() {
                     public Object value() {
@@ -118,14 +117,35 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
                         return formatRate(ms / i2cCycles);
                     }
                 }));
+*/
 /*
+        telemetry.addLine(
+                telemetry.item("i2c armed: ", new IFunc<Object>() {
+                    public Object value() {
+                        return i2cArmed;
+                    }
+                }),
+                telemetry.item("i2c engaged: ", new IFunc<Object>() {
+                    public Object value() {
+                        return i2cEngaged;
+                    }
+                }));
+*/
+
         telemetry.addLine(
                 telemetry.item("current: ", new IFunc<Object>() {
                     public Object value() {
                         return formatCurrent(currentSensor.getCurrent_mA());
                     }
                 }));
-*/
+
+        telemetry.addLine(
+                telemetry.item("power: ", new IFunc<Object>() {
+                    public Object value() {
+                        return formatPower(currentSensor.getPower_mW());
+                    }
+                }));
+
         telemetry.addLine(
                 telemetry.item("bus voltage: ", new IFunc<Object>() {
                     public Object value() {
@@ -143,19 +163,30 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         telemetry.addLine(
                 telemetry.item("config ", new IFunc<Object>() {
                     public Object value() {
-                        int config = currentSensor.readIntegerRegister(INA219.REGISTER.CONFIGURATION);
+                        int config = currentSensor.getConfiguration();
                         return  formatConfig(config);
                     }
                 }));
+
+        telemetry.addLine(
+                telemetry.item("calibration ", new IFunc<Object>() {
+                    public Object value() {
+                        int config = currentSensor.getCalibration();
+                        return  formatConfig(config);
+                    }
+                }));
+
     }
 
 
-    String formatVoltage(double voltage) {
-        return String.format("%.2f", voltage);
-    }
+    String formatVoltage(double voltage) { return String.format("%.2f", voltage); }
 
     String formatCurrent(double current) {
         return String.format("%.2f", current);
+    }
+
+    String formatPower(double power) {
+        return String.format("%.2f", power);
     }
 
     String formatRate(double cyclesPerSecond)
@@ -169,6 +200,8 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
     }
 
     String formatConfig (int config) { return String.format("0x%04X", config); }
+
+    String formatCalibration (int cali) { return String.format("0x%04X", cali); }
 
     //----------------------------------------------------------------------------------------------
     // Utility
