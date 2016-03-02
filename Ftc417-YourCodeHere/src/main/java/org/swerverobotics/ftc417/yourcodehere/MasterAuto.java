@@ -129,6 +129,11 @@ public abstract class MasterAuto extends MasterOpMode
      driveForward(0);
     }
 
+    public void driveBackwardDistanceIMU(double power, int distance) throws InterruptedException
+    {
+        driveForwardDistanceIMU(-power, distance);
+    }
+
     public void turnRightDegrees(double power, int angle) throws InterruptedException
     {
         double calibratedHeading = imu.getAngularOrientation().heading;
