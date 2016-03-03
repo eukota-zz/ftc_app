@@ -43,7 +43,7 @@ public interface INA219
          *  This really should be a bigger resistor for practical FTC use: the 100 ohms default resistor results in a max of 3.2 amps,
          *  whereas a robot can use up to 20 amps.
          */
-        public double shuntResistorInKOhms = 0.100; //default resistor is 100 ohms
+        public double shuntResistorInOhms = 0.100; //default shunt resistor on the Adafruit INA219 is 0.100 ohms
 
         /**
          *  the maximum expected current

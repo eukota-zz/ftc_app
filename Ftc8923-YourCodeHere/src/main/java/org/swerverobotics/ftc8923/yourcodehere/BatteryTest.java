@@ -61,7 +61,7 @@ public class BatteryTest extends SynchronousOpMode
         relay1.setMode(DigitalChannelController.Mode.OUTPUT);
 
         parameters.loggingEnabled = false;
-        parameters.shuntResistorInKOhms = 0.03;
+        parameters.shuntResistorInOhms = 0.03;
 
         currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("currentSensor"), parameters);
 

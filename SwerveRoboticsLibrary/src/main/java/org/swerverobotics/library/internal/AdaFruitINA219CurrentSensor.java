@@ -145,7 +145,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // MaxPossible_I = VSHUNT_MAX / RSHUNT
         // MaxPossible_I = 3.2A for default resistor.
 
-        double maxPossibleCurrent = vshunt_max / parameters.shuntResistorInKOhms;
+        double maxPossibleCurrent = vshunt_max / parameters.shuntResistorInOhms;
 
         // 2. Determine max expected current
         // MaxExpected_I = 20A    //In our implementation this value is provided in parameters
@@ -174,7 +174,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // Cal = 4096 (0x1000)
 
         //0.0496 comes from the ina219 datasheet page 17 equation 5
-        calibrationValue = (int) Math.floor(0.0496 / (currentLSB * parameters.shuntResistorInKOhms));
+        calibrationValue = (int) Math.floor(0.0496 / (currentLSB * parameters.shuntResistorInOhms));
 
         ina219_calValue = calibrationValue; //calculates to 496 for our defaults
 
@@ -203,7 +203,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         //
         // Max_ShuntVoltage = Max_Current_Before_Overflow * RSHUNT
         // Max_ShuntVoltage = 0.32V
-        double maxShuntVoltage = maxCurrentBeforeOverflow * parameters.shuntResistorInKOhms;
+        double maxShuntVoltage = maxCurrentBeforeOverflow * parameters.shuntResistorInOhms;
         //
         // If Max_ShuntVoltage >= VSHUNT_MAX
         //    Max_ShuntVoltage_Before_Overflow = VSHUNT_MAX

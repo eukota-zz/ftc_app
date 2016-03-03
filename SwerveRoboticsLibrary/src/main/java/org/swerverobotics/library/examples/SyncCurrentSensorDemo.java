@@ -48,7 +48,7 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         // semantically understands this particular kind of sensor.
 
         parameters.loggingEnabled = false;
-        parameters.shuntResistorInKOhms = 0.100;
+        parameters.shuntResistorInOhms = 0.100;
 
         ///TO DO instantiate our object
         currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("current"), parameters);
