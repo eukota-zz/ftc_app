@@ -11,6 +11,9 @@ import org.swerverobotics.library.interfaces.II2cDeviceClient;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import static junit.framework.Assert.assertTrue;
 import static org.swerverobotics.library.interfaces.NavUtil.meanIntegrate;
 import static org.swerverobotics.library.interfaces.NavUtil.plus;
@@ -383,16 +386,16 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
     @Override public int readTwoByteINARegister(REGISTER ireg) {
         byte[] bytes = this.read(ireg, 2);
-        //return TypeConversion.byteArrayToInt(bytes, ByteOrder.LITTLE_ENDIAN);
+        int result = 0;
+
         if (bytes.length==2)
         {
             //INA219 data sheet says that register values are sent most-significant-byte first
-            int tempMSB = bytes[0] & 0x000000FF;
-            int tempLSB = bytes[1] & 0x000000FF;
-
-            return (tempMSB << 8) + tempLSB;
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            result = buffer.getShort();
         }
-        else return 0;
+
+        return result;
     }
 
     @Override public void writeTwoByteINARegister(REGISTER ireg, int value)
