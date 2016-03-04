@@ -118,9 +118,7 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     //TODO replace the range and sensitivities with enums and use those values in the initialization
     public void setCalibration(INA219.Parameters parameters)
     {
-        int calibrationValue = 0;
-
-        // Adafruit sample implementation code used heavily throughout this function.
+         // Adafruit sample implementation code used heavily throughout this function.
         // I am focusing on default settings that are likely to be useful to FTC.
         // All of the calculations are shown below if you want to change the settings.
         // You will also need to change any relevant register settings to be consistent,
@@ -128,21 +126,28 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
         // VBUS_MAX = 16V             (Assumes 32V, can also be set to 16V)
         // VSHUNT_MAX = 0.32          (Assumes Gain 8, 320mV, can also be 0.16, 0.08, 0.04)
-        // RSHUNT = 0.1               (Resistor value in kOhms)
+        // RSHUNT = 0.1               (Resistor value in Ohms)
 
-        int vbus_max = 16; //default value for our framework
+        //value to write to the calibration register
+        int calibrationValue = 0;
 
-        //todo allow configuration of other values
-        //if (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_32)       vbus_max = 32;
-        //else if (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_16)  vbus_max = 16;
+        //set the max expected voltage on the bus
+        int vbus_max = 16; //default value for our framework. Redundant with the next statements, but java wants it to be initialized.
+        if      (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_32)   vbus_max = 32;
+        else if (parameters.rangeInVolts == VOLTAGE_RANGE.VOLTS_16)   vbus_max = 16;
 
-        double vshunt_max = 0.32; //default value for our framework
+        //set the max voltage on the shunt
+        double vshunt_max = 0.32; //default value for our framework. Redundant with the next statements, but java wants it to be initialized.
+        //todo I'd prefer to use a switch statement, but java complains about using GAIN.SOMETHING as a switch constant
+        if      (parameters.sensitivityInMilliamps == GAIN.GAIN_8_320MV)  vshunt_max = 0.32; //320mV
+        else if (parameters.sensitivityInMilliamps == GAIN.GAIN_4_160MV)  vshunt_max = 0.16; //160mV
+        else if (parameters.sensitivityInMilliamps == GAIN.GAIN_2_80MV)   vshunt_max = 0.08; //80mV
+        else if (parameters.sensitivityInMilliamps == GAIN.GAIN_1_40MV)   vshunt_max = 0.04; //40mV
 
-        //todo allow configuration of other values
-        //if (parameters.sensitivityInMilliamps == GAIN.GAIN_8_320MV)  vshunt_max = 0.32; //320mV
-        //else if (parameters.sensitivityInMilliamps == GAIN.GAIN_4_160MV)  vshunt_max = 0.16; //160mV
-        //else if (parameters.sensitivityInMilliamps == GAIN.GAIN_2_80MV)  vshunt_max = 0.08; //80mV
-        //else if (parameters.sensitivityInMilliamps == GAIN.GAIN_1_40MV)  vshunt_max = 0.04; //40mV
+        //constants for contributing to the configuration register
+        int voltRangeConfigConstant = parameters.rangeInVolts.iVal;
+        int gainRangeConfigConstant = parameters.sensitivityInMilliamps.iVal;
+
 
         // 1. Determine max possible current
         // MaxPossible_I = VSHUNT_MAX / RSHUNT
@@ -152,7 +157,6 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
         // 2. Determine max expected current
         // MaxExpected_I = 20A    //In our implementation this value is provided in parameters
-
 
         // 3. Calculate possible range of LSBs (Min = 15-bit, Max = 12-bit)
         // MinimumLSB = MaxExpected_I/32767
@@ -230,12 +234,14 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
         // Set Calibration register to 'Cal' calculated above
         writeTwoByteINARegister(REGISTER.CALIBRATION, ina219_calValue);
 
+
+
         // Set Config register to take into account the settings above
-        int config = INA219_CONFIG_BVOLTAGERANGE_16V +
-                INA219_CONFIG_GAIN_8_320MV +
-                INA219_CONFIG_BADCRES_12BIT +
-                INA219_CONFIG_SADCRES_12BIT_1S_532US +
-                INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
+        int config = voltRangeConfigConstant +
+                     gainRangeConfigConstant +
+                     INA219_CONFIG_BADCRES_12BIT +
+                     INA219_CONFIG_SADCRES_12BIT_1S_532US +
+                     INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
 
         writeTwoByteINARegister(REGISTER.CONFIGURATION, config);
 

@@ -67,6 +67,8 @@ public class ServoToggler
     {
         double stepServoForward = (servoDeployedPosition-servoRetractedPosition)/24;
 
+        opmode.stopAllMotors();
+
         for (double f = servoRetractedPosition; f < servoDeployedPosition; f+=stepServoForward)
         {
             servo.setPosition(f);
@@ -80,6 +82,8 @@ public class ServoToggler
     public void slowRetract() throws InterruptedException
     {
         double stepServoBack = (servoRetractedPosition-servoDeployedPosition)/24;
+
+        opmode.stopAllMotors();
 
         for (double b = servoDeployedPosition; b > servoRetractedPosition; b+=stepServoBack)
         {

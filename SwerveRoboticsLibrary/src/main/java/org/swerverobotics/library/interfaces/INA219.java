@@ -55,13 +55,13 @@ public interface INA219
          *  the range of the sensor in volts
          *  For now, disabling the ability for a user to set this. We will default to 16v.
          */
-        //public VOLTAGE_RANGE rangeInVolts = VOLTAGE_RANGE.VOLTS_16; //set default range
+        public VOLTAGE_RANGE rangeInVolts = VOLTAGE_RANGE.VOLTS_16; //set default range
 
         /**
          *  the sensitivity of the sensor
          *  For now, disabling the ability for a user to set this. We will default to GAIN_8_320mv
          */
-        //public GAIN sensitivityInMilliamps = GAIN.GAIN_8_320MV; //set default sensitivity
+        public GAIN sensitivityInMilliamps = GAIN.GAIN_8_320MV; //set default sensitivity
 
         /**
          * debugging aid: enable logging for this device?
@@ -207,12 +207,12 @@ public interface INA219
     /*---------------------------------------------------------------------*/
     int INA219_CONFIG_RESET = (0x8000);  // Reset Bit
 
-    //enum VOLTAGE_RANGE { VOLTS_16 (0x0000), VOLTS_32 (0x2000); public final byte bVal; VOLTAGE_RANGE(int i) { bVal =(byte)i; }}
+    enum VOLTAGE_RANGE { VOLTS_16 (0x0000), VOLTS_32 (0x2000); public final int iVal; VOLTAGE_RANGE(int i) { iVal = i; }}
     int INA219_CONFIG_BVOLTAGERANGE_MASK = (0x2000);  // Bus Voltage Range Mask
     int INA219_CONFIG_BVOLTAGERANGE_16V = (0x0000); // 0-16V Range
     int INA219_CONFIG_BVOLTAGERANGE_32V = (0x2000);// 0-32V Range
 
-    //enum GAIN { GAIN_1_40MV (0x0000), GAIN_2_80MV (0x0800), GAIN_4_160MV (0x1000), GAIN_8_320MV (0x1800); public final byte bVal; GAIN(int i) { bVal =(byte)i; }}
+    enum GAIN { GAIN_1_40MV (0x0000), GAIN_2_80MV (0x0800), GAIN_4_160MV (0x1000), GAIN_8_320MV (0x1800); public final int iVal; GAIN(int i) { iVal = i; }}
     int INA219_CONFIG_GAIN_MASK = (0x1800);  // Gain Mask
     int INA219_CONFIG_GAIN_1_40MV = (0x0000);  // Gain 1, 40mV Range
     int INA219_CONFIG_GAIN_2_80MV = (0x0800);  // Gain 2, 80mV Range
