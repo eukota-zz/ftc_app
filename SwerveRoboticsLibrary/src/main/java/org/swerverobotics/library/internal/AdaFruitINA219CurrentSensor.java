@@ -37,11 +37,8 @@ import static org.swerverobotics.library.internal.Util.handleCapturedInterrupt;
  *  05       Calibration              0000                 R/W           Sets full-scale range and LSB of current and power measurements. Overall system calibration
  *
  *
- *
- *      THIS CODE IS CURRENTLY UNTESTED. (pun may have been intended, so sue me.)
- *
  */
-public class AdaFruitINA219CurrentSensor implements I2cDeviceSynchUser, INA219
+public final class AdaFruitINA219CurrentSensor implements I2cDeviceSynchUser, INA219, IOpModeStateTransitionEvents
 {
 
     //------------------------------------------------------------------------------------------
@@ -74,8 +71,8 @@ public class AdaFruitINA219CurrentSensor implements I2cDeviceSynchUser, INA219
     public AdaFruitINA219CurrentSensor(OpMode opmodeContext, I2cDevice i2cDevice, INA219.Parameters params) {
         this.opmodeContext = opmodeContext;
 
-        // Allow the device to auto-close since we don't have special shutdown logic
-        this.deviceClient = ClassFactory.createI2cDeviceClient(opmodeContext, ClassFactory.createI2cDevice(i2cDevice), params.i2cAddress.bVal * 2, true);
+        this.deviceClient = ClassFactory.createI2cDeviceSynch(i2cDevice, params.i2cAddress.bVal * 2);
+
         this.deviceClient.engage();
 
         this.deviceClient.enableWriteCoalescing(false);
@@ -97,6 +94,18 @@ public class AdaFruitINA219CurrentSensor implements I2cDeviceSynchUser, INA219
         // Initialize it with the indicated parameters
         result.initialize(parameters);
         return result;
+    }
+
+    @Override synchronized public boolean onUserOpModeStop()
+    {
+        this.deviceClient.close();
+        return true;
+    }
+
+    @Override synchronized public boolean onRobotShutdown()
+    {
+        this.deviceClient.close();
+        return true;
     }
 
     public void initialize(Parameters parameters)

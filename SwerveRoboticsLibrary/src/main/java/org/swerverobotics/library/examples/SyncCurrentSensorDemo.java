@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.I2cDeviceSynchUser;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
@@ -92,8 +93,8 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
             loopCycles = getLoopCount();
             i2cCycles  = i2cDevice.getCallbackCount();
             ms         = elapsed.milliseconds();
-            i2cArmed = ((II2cDeviceClientUser) currentSensor).getI2cDeviceSynch().isArmed();
-            i2cEngaged = ((II2cDeviceClientUser) currentSensor).getI2cDeviceSynch().isEngaged();
+            //i2cArmed = ((I2cDeviceSynchUser) currentSensor).getI2cDeviceSynch().isArmed();
+            //i2cEngaged = ((I2cDeviceSynchUser) currentSensor).getI2cDeviceSynch().isEngaged();
         }
         });
 
