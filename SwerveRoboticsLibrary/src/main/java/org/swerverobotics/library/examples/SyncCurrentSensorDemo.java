@@ -1,5 +1,6 @@
 package org.swerverobotics.library.examples;
 
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
@@ -23,6 +24,7 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
     //----------------------------------------------------------------------------------------------
 
     // Our sensors, motors, and other devices go here, along with other long term state
+    I2cDevice i2cDevice;
     INA219 currentSensor;
     ElapsedTime elapsed = new ElapsedTime();
 
@@ -51,7 +53,8 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         parameters.shuntResistorInOhms = 0.100;
 
         ///TO DO instantiate our object
-        currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("current"), parameters);
+        i2cDevice = hardwareMap.i2cDevice.get("current");
+        currentSensor = ClassFactory.createAdaFruitINA219(i2cDevice, parameters);
 
         // Set up our dashboard computations
         composeDashboard();
@@ -87,10 +90,10 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         telemetry.addAction(new Runnable() { @Override public void run()
         {
             loopCycles = getLoopCount();
-            i2cCycles  = ((II2cDeviceClientUser) currentSensor).getI2cDeviceClient().getI2cCycleCount();
-            ms         = elapsed.time() * 1000.0;
-            i2cArmed = ((II2cDeviceClientUser) currentSensor).getI2cDeviceClient().isArmed();
-            i2cEngaged = ((II2cDeviceClientUser) currentSensor).getI2cDeviceClient().isEngaged();
+            i2cCycles  = i2cDevice.getCallbackCount();
+            ms         = elapsed.milliseconds();
+            i2cArmed = ((II2cDeviceClientUser) currentSensor).getI2cDeviceSynch().isArmed();
+            i2cEngaged = ((II2cDeviceClientUser) currentSensor).getI2cDeviceSynch().isEngaged();
         }
         });
 

@@ -4,9 +4,11 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.exceptions.UnexpectedI2CDeviceException;
+import org.swerverobotics.library.interfaces.I2cDeviceSynchUser;
 import org.swerverobotics.library.interfaces.II2cDeviceClient;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
 import org.swerverobotics.library.interfaces.INA219;
@@ -39,7 +41,7 @@ import static org.swerverobotics.library.internal.Util.handleCapturedInterrupt;
  *      THIS CODE IS CURRENTLY UNTESTED. (pun may have been intended, so sue me.)
  *
  */
-public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
+public class AdaFruitINA219CurrentSensor implements I2cDeviceSynchUser, INA219
 {
 
     //------------------------------------------------------------------------------------------
@@ -47,12 +49,12 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
     //------------------------------------------------------------------------------------------
 
     private final OpMode opmodeContext;
-    private final II2cDeviceClient deviceClient;
+    private final I2cDeviceSynch deviceClient;
 
     private Parameters parameters;
 
     // We always read as much as we can when we have nothing else to do
-    private static final II2cDeviceClient.READ_MODE readMode = II2cDeviceClient.READ_MODE.REPEAT;
+    private static final I2cDeviceSynch.ReadMode readMode = I2cDeviceSynch.ReadMode.REPEAT;
 
     // store the calibration value so we can use it when reading
     private int ina219_calValue;
@@ -291,16 +293,16 @@ public class AdaFruitINA219CurrentSensor implements II2cDeviceClientUser, INA219
 
 
     //------------------------------------------------------------------------------------------
-    // II2cDeviceClientUser
+    // I2cDeviceSynchUser
     //------------------------------------------------------------------------------------------
 
     @Override
-    public II2cDeviceClient getI2cDeviceClient() {
+    public I2cDeviceSynch getI2cDeviceSynch()
+    {
         return this.deviceClient;
     }
 
-
-    /**
+/**
      * Get the raw bus voltage (16-bit signed integer, so +-32767)
      */
     private synchronized int getBusVoltage_raw()
