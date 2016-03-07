@@ -23,11 +23,11 @@ public abstract class MasterTeleOp extends MasterOpMode
         this.motorFrontRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.motorBackLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.motorBackRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        this.motorCollector.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        //this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        //this.motorCollector.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         //this.motorHook.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         //this.motorLift.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        //this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
     }
 

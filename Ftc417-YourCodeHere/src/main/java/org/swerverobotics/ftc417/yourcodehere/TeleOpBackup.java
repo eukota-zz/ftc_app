@@ -9,8 +9,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * 417 teleop
  */
 @TeleOp(name="TeleOpBackup", group="417")
-public class TeleOpBackup extends MasterTeleOp
-{
+public class TeleOpBackup extends MasterTeleOp {
 
     boolean controllerSwitch = false;
     boolean motorCollectorInMotion = false;
@@ -20,21 +19,19 @@ public class TeleOpBackup extends MasterTeleOp
     boolean motorLiftInMotion = false;
     boolean motorHookInMotion = false;
 
-    @Override protected void main() throws InterruptedException
-    {
+    @Override
+    protected void main() throws InterruptedException {
         initialize();
 
         // Wait until the game begins
         this.waitForStart();
 
         // Enter a loop processing all the input we receive
-        while (this.opModeIsActive())
-        {
-            telemetry.addData("motorDeliverySlider_encoder",this.motorDeliverySlider.getCurrentPosition());
-            if (this.updateGamepads())
-            {
+        while (this.opModeIsActive()) {
+            //telemetry.addData("motorDeliverySlider_encoder",this.motorDeliverySlider.getCurrentPosition());
+            if (this.updateGamepads()) {
                 //control collector motor
-                if (this.gamepad1.left_bumper || this.gamepad2.left_bumper)
+                /*if (this.gamepad1.left_bumper || this.gamepad2.left_bumper)
                 {
                     this.motorCollector.setPower(FULL_SPEED_REVERSE);
                     motorCollectorInMotion = true;
@@ -84,21 +81,17 @@ public class TeleOpBackup extends MasterTeleOp
                 {
                     this.motorDeliverySlider.setPower(STOPPED);
                     motorSliderState = enumMotorSliderState.stopped;
-                }
+                }*/
 
 
-                if(this.gamepad1.left_trigger >0.1 || this.gamepad2.left_trigger >0.1)
-                {
+                if (this.gamepad1.left_trigger > 0.1 || this.gamepad2.left_trigger > 0.1) {
                     controllerSwitch = true;
-                }
-                else
-                {
+                } else {
                     controllerSwitch = false;
                 }
-                if(!controllerSwitch)
-                {
+                if (!controllerSwitch) {
 
-                    if (servoClimberLeftInMotion)
+                    /*if (servoClimberLeftInMotion)
                     {
                         this.servoClimberLeft.setPosition(.5);
                         servoClimberLeftInMotion = false;
@@ -107,43 +100,32 @@ public class TeleOpBackup extends MasterTeleOp
                     {
                         this.servoClimberRight.setPosition(.5);
                         servoClimberRightInMotion = false;
-                    }
+                    }*/
 
-                    if(this.gamepad1.y || this.gamepad2.y)
-                    {
+                    if (this.gamepad1.y || this.gamepad2.y) {
                         // this.motorLift.setPower(FULL_SPEED);
                         motorLiftInMotion = true;
-                    }
-                    else if(this.gamepad1.a || this.gamepad2.a)
-                    {
+                    } else if (this.gamepad1.a || this.gamepad2.a) {
                         //this.motorLift.setPower(FULL_SPEED_REVERSE);
                         motorLiftInMotion = true;
-                    }
-                    else if (motorLiftInMotion)
-                    {
+                    } else if (motorLiftInMotion) {
                         //this.motorLift.setPower(STOPPED);
                         motorLiftInMotion = false;
                     }
 
-                    if(this.gamepad1.x || this.gamepad2.x)
-                    {
+                    if (this.gamepad1.x || this.gamepad2.x) {
                         //this.motorHook.setPower(FULL_SPEED);
                         motorHookInMotion = true;
-                    }
-                    else if(this.gamepad1.b || this.gamepad2.b)
-                    {
+                    } else if (this.gamepad1.b || this.gamepad2.b) {
                         //this.motorHook.setPower(FULL_SPEED_REVERSE);
                         motorHookInMotion = true;
-                    }
-                    else if (motorHookInMotion)
-                    {
+                    } else if (motorHookInMotion) {
                         //this.motorHook.setPower(STOPPED);
                         motorHookInMotion = false;
                     }
-                }
-                else//-----switch the controller to control zip line hitters-------------------------
+                } else//-----switch the controller to control zip line hitters-------------------------
                 {
-                    if(this.gamepad1.y || this.gamepad2.y)
+                    /*if(this.gamepad1.y || this.gamepad2.y)
                     {
                         this.servoClimberLeft.setPosition(1);
                         servoClimberLeftInMotion = true;
@@ -181,35 +163,36 @@ public class TeleOpBackup extends MasterTeleOp
                     this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
                     this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
+                }*/
+
+                    float powerLeft = Range.clip(gamepad1.left_stick_y, -1f, 1f);
+                    float powerRight = Range.clip(gamepad1.right_stick_y, -1f, 1f);
+                    // Tell the motors
+                    this.motorFrontLeft.setPower(powerLeft);
+                    this.motorFrontRight.setPower(powerRight);
+                    this.motorBackLeft.setPower(powerLeft * .9);
+                    this.motorBackRight.setPower(powerRight * .9);
+
                 }
 
-                float powerLeft = Range.clip(gamepad1.left_stick_y, -1f, 1f);
-                float powerRight = Range.clip(gamepad1.right_stick_y, -1f, 1f);
-                // Tell the motors
-                this.motorFrontLeft.setPower(powerLeft );
-                this.motorFrontRight.setPower(powerRight );
-                this.motorBackLeft.setPower(powerLeft *.9);
-                this.motorBackRight.setPower(powerRight * .9);
-
-            }
-
-            //prevent delivery slide from over-extending
-            if ((motorSliderState == enumMotorSliderState.forwards) && (this.motorDeliverySlider.getCurrentPosition() >= 13000 ))
+                //prevent delivery slide from over-extending
+            /*if ((motorSliderState == enumMotorSliderState.forwards) && (this.motorDeliverySlider.getCurrentPosition() >= 13000 ))
             {
                 this.motorDeliverySlider.setPower(STOPPED);
                 motorSliderState = enumMotorSliderState.stopped;
 
+            }*/
+
+                // Emit telemetry
+                this.telemetry.addData("Drive mode", driveModeLabel[driveMode.ordinal()]);
+                telemetry.addData("leftstick", this.gamepad1.left_stick_y);
+                telemetry.addData("rightstick", this.gamepad1.right_stick_y);
+                this.telemetry.update();
+
+                this.idle(); // Let the rest of the system run until there's a stimulus from the robot controller runtime.
             }
-
-            // Emit telemetry
-            this.telemetry.addData("Drive mode", driveModeLabel[driveMode.ordinal()]);
-            telemetry.addData("leftstick", this.gamepad1.left_stick_y);
-            telemetry.addData("rightstick", this.gamepad1.right_stick_y);
-            this.telemetry.update();
-
-            this.idle(); // Let the rest of the system run until there's a stimulus from the robot controller runtime.
         }
+
+
     }
-
-
 }

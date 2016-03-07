@@ -21,13 +21,13 @@ public class TeleOpMain extends MasterTeleOp
         // Enter a loop processing all the input we receive
         while (this.opModeIsActive())
         {
-            telemetry.addData("motorDeliverySlider_encoder",this.motorDeliverySlider.getCurrentPosition());
+            //telemetry.addData("motorDeliverySlider_encoder",this.motorDeliverySlider.getCurrentPosition());
             if (this.updateGamepads())
             {
                 //Controller 2
 
                 //delivery mech
-                if(this.gamepad2.x || this.gamepad2.dpad_left)
+                /*if(this.gamepad2.x || this.gamepad2.dpad_left)
                 {
                     deliveryToggler.moveForward();
                 }
@@ -79,7 +79,7 @@ public class TeleOpMain extends MasterTeleOp
                 else
                 {
                     debrisMoverToggler.stop();
-                }
+                }*/
                 //slow mode
                 if(this.gamepad1.left_trigger > Constants.SLOW_MODE_DEADZONE || this.gamepad1.right_trigger > Constants.SLOW_MODE_DEADZONE)
                 {
@@ -101,20 +101,20 @@ public class TeleOpMain extends MasterTeleOp
 
                 if(this.gamepad1.start || this.gamepad2.start)
                 {
-                    this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-                    this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+                    //this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+                    //this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
                 }
                 // Tell the motors
                 driveLeft(gamepad1.left_stick_y);
                 driveRight(gamepad1.right_stick_y);
 
-                collectorToggler.setSpeed(gamepad2.right_stick_y);
-                slideToggler.setSpeed(- gamepad2.left_stick_y);
+                //collectorToggler.setSpeed(gamepad2.right_stick_y);
+                //slideToggler.setSpeed(- gamepad2.left_stick_y);
 
             }
 
-            slideToggler.checkPositionInRange();
+            //slideToggler.checkPositionInRange();
 
 
             // Emit telemetry

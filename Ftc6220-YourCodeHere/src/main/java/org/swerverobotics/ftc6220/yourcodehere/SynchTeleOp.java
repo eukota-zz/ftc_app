@@ -15,6 +15,11 @@ public class SynchTeleOp extends MasterTeleOp
     //TODO encapsulate
     //lefthang,righthang,leftzip,rightzip,hiker
     boolean[] lastBtn = new boolean[5];
+    static final int LEFT_BUMPER = 0;
+    static final int RIGHT_BUMPER = 1;
+    static final int B = 2;
+    static final int X = 3;
+    static final int Y = 4;
 
     @Override
     protected void main() throws InterruptedException
@@ -37,31 +42,31 @@ public class SynchTeleOp extends MasterTeleOp
                 this.driveRobot(this.gamepad1);
             }
 
-            /*hanger.checkRange();
-            telemetry.addData("tapeposition", hanger.getTapePosition());*/
+            hanger.checkHanger();
+            //telemetry.addData("tapeposition", hanger.getTapePosition());
 
             // Emit telemetry with the newest possible values
-            //this.telemetry.update();
+            this.telemetry.update();
 
             // Let the rest of the system run until there's a stimulus from the robot controller runtime.
             this.idle();
         }
     }
 
-    private void handleDriverInput(Gamepad pad1, Gamepad pad2)
+    private void handleDriverInput(Gamepad pad1, Gamepad pad2) throws InterruptedException
     {
-        if (pad2.y && !lastBtn[4])
+        if (pad2.y && !lastBtn[Y])
         {
-            HikerDropper.toggle();
+            HikerDropper.slowToggle();
         }
 
         double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
-        double p2RightStickPower = Math.signum(pad2.right_stick_y * currentDrivePowerFactor) * Math.pow(2, pad2.right_stick_y * currentDrivePowerFactor);
+        double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
 
         //set pad 2 servos equal to stick input
         //adjusted power is commented out for now
         double adjustedPower = p2RightStickPower; //hanger.checkStalled(p2RightStickPower);
-        hanger.moveHangerWithoutEncoders(adjustedPower);
+        hanger.moveHanger(adjustedPower);
 
         telemetry.addData("Hanger Power:", adjustedPower);
 
@@ -70,23 +75,22 @@ public class SynchTeleOp extends MasterTeleOp
         HangerServo.setPosition((p2LeftStickPower + 1) / 2);
 
         //deploy the holder
-        if (pad2.b && !lastBtn[2])
+        if (pad2.b && !lastBtn[B])
         {
             RightHolder.toggle();
         }
-        if (pad2.x && !lastBtn[3])
+
+        if (pad2.x && !lastBtn[X])
         {
             LeftHolder.toggle();
         }
 
-
-        if (pad2.left_bumper && !lastBtn[0])
+        if (pad2.left_bumper && !lastBtn[LEFT_BUMPER])
         {
             LeftZiplineHitter.toggle();
         }
 
-        //The ServoRightZiplineHitter reads from (0-1), which is different than the ServoLeftZiplineHitter(0-360)
-        if (pad2.right_bumper && !lastBtn[1])
+        if (pad2.right_bumper && !lastBtn[RIGHT_BUMPER])
         {
             RightZiplineHitter.toggle();
         }
@@ -118,11 +122,11 @@ public class SynchTeleOp extends MasterTeleOp
         }
 
         //update button prev states
-        lastBtn[0] = pad2.left_bumper;
-        lastBtn[1] = pad2.right_bumper;
-        lastBtn[2] = pad2.b;
-        lastBtn[3] = pad2.x;
-        lastBtn[4] = pad2.y;
+        lastBtn[LEFT_BUMPER] = pad2.left_bumper;
+        lastBtn[RIGHT_BUMPER] = pad2.right_bumper;
+        lastBtn[B] = pad2.b;
+        lastBtn[X] = pad2.x;
+        lastBtn[Y] = pad2.y;
     }
 
 

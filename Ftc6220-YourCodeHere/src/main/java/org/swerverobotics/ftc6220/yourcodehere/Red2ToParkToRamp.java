@@ -23,15 +23,15 @@ public class Red2ToParkToRamp extends MasterAutonomous
 
         setAutoStartPosition(135);
 
-        wait(100);
+        pause(100);
         driveStraight(125, Constants.BACKWARDS, false);
         turnTo(180);
         driveStraight(85, Constants.BACKWARDS, false);
         turnTo(225);
         driveStraight(62, Constants.BACKWARDS, false);
-        wait(500);
+        pause(500);
         HikerDropper.deploy();
-        wait(4000);
+        pause(4000);
         driveStraight(62, Constants.FORWARDS * 0.4, false);
         HikerDropper.retract();
         turnTo(135);

@@ -24,13 +24,13 @@ public class WAIT_Red1ToPark extends MasterAutonomous
 
         setAutoStartPosition(90);
 
-        wait(8000);
+        pause(8000);
         driveStraight(270, Constants.BACKWARDS, false);
         turnTo(135);
         driveStraight(77, Constants.BACKWARDS, false);
-        wait(500);
+        pause(500);
         HikerDropper.deploy();
-        wait(2000);
+        pause(2000);
         driveStraight(77, Constants.FORWARDS * 0.4, false);
         HikerDropper.retract();
         driveStraight(77, Constants.BACKWARDS * 0.4, false);
