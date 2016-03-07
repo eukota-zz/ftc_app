@@ -91,7 +91,7 @@ public abstract class MasterAuto extends MasterOpMode
     //returns the average of the left/right encoders, giving a distance in CM
     private double getDistanceTraveled() // in CM
     {
-        double CORRECTION_FACTOR = 4; ///< @todo needs calibrated
+        double CORRECTION_FACTOR = 1; ///< @todo needs calibrated
         //double avgTick = (MotorLeftBack.getCurrentPosition() + MotorRightBack.getCurrentPosition())/2;
         double tick=this.motorBackLeft.getCurrentPosition();
         double distanceTraveledPerTick = Constants.BACK_LEFT_WHEEL_DIAMETER * Math.PI / Constants.TETRIX_ENC_TICKS;
@@ -99,25 +99,18 @@ public abstract class MasterAuto extends MasterOpMode
     }
 
     public void driveForwardDistanceIMU(double power, int distance) throws InterruptedException
-    {  /*
-        motorLeft.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorRight.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-
-        motorLeft.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        motorRight.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        */
-
-
+    {
         double calibratedHeading = imu.getAngularOrientation().heading;
         double currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
         double offsetMultiplier = 0.2;
-
+        telemetry.log.add("set variables");
         while(Math.abs(getDistanceTraveled()) < Math.abs(distance))
         {
             // Use IMU to keep us driving straight
             currentHeading = imu.getAngularOrientation().heading - calibratedHeading;
             if(currentHeading > 180)
                 currentHeading = currentHeading - 360;
+            //telemetry.log.add("driveWheels");
             driveLeft(power + currentHeading * offsetMultiplier);
             driveRight(power - currentHeading * offsetMultiplier);
 
@@ -128,6 +121,26 @@ public abstract class MasterAuto extends MasterOpMode
 
      driveForward(0);
     }
+    public void driveBackwardDistanceIMU(double power, int distance) throws InterruptedException
+    {
+        driveForwardDistanceIMU(-power, -distance);
+    }
+    public void driveForwardDistance(double power, int distance) throws InterruptedException
+    {
+
+        driveForward(power);
+
+        while(getDistanceTraveled() <= distance)
+        {
+            // Wait until distance is reached
+            telemetry.update();
+            idle();
+        }
+
+        driveStop();
+
+    }
+
 
     public void turnRightDegrees(double power, int angle) throws InterruptedException
     {
@@ -180,6 +193,20 @@ public abstract class MasterAuto extends MasterOpMode
     {
         angles = imu.getAngularOrientation();
         return 360-angles.heading;
+    }
+
+
+    void blockerUp() throws InterruptedException
+    {
+        debrisMoverToggler.moveForward();
+        delay(9000);
+        debrisMoverToggler.stop();
+    }
+    void blockerDown() throws InterruptedException
+    {
+        debrisMoverToggler.moveReverse();
+        delay(9000);
+        debrisMoverToggler.stop();
     }
 
 

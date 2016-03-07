@@ -9,15 +9,15 @@ public class Red1ToPark extends MasterAuto
 {
     @Override
     protected void main() throws InterruptedException
-    {/*
+    {
         //Initialize our hardware
         initialize();
 
         // Wait until we've been given the ok to go
         waitForStart();
 
-        setAutoStartPosition(90);
-
+       // setAutoStartPosition(90);
+/*
         wait(9000);
         driveStraight(270, Constants.BACKWARDS, false);
         turnTo(135);
@@ -29,8 +29,13 @@ public class Red1ToPark extends MasterAuto
 //        HikerDropper.retract();
       driveStraight(77, Constants.SLOW_BACKWARDS, false);
       */
-        driveForwardDistanceIMU(1, 100);
 
-        turnRightDegrees(.5, 90);
+        blockerUp();
+        driveForwardDistance(.2, 183);
+        telemetry.log.add("reversing");
+        driveBackwardDistanceIMU(.5, 183);
+//        driveForwardDistanceIMU(1, 100);
+
+//        turnRightDegrees(.5, 90);
     }
 }
