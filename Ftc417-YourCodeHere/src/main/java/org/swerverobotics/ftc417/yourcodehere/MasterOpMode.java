@@ -20,25 +20,23 @@ public abstract class MasterOpMode extends SynchronousOpMode
     DcMotor motorFrontRight = null;
     DcMotor motorBackLeft  = null;
     DcMotor motorBackRight = null;
-    //DcMotor motorCollector = null;
-    //DcMotor motorDeliverySlider = null;
-    //DcMotor motorHook = null;
-    //DcMotor motorLift = null;
-    //Servo   servoDelivery = null;
-    //Servo   servoClimberLeft = null;
-    //Servo   servoClimberRight = null;
-    //Servo   servoDebrisMover = null;
+    DcMotor motorCollector = null;
+    DcMotor motorDeliverySlider = null;
+    DcMotor motorHook = null;
+    DcMotor motorLift = null;
+    Servo   servoDelivery = null;
+    Servo   servoSlideRetractor = null;
+    Servo   servoDebrisMover = null;
 
     //sensors
     IBNO055IMU imu = null;
 
     //Variables to control the accessories
-    //CRServoToggler climberLeftToggler = null;
-    //CRServoToggler climberRightToggler = null;
-    //CRServoToggler deliveryToggler = null;
-    //CRServoToggler debrisMoverToggler = null;
-    //MotorRangedToggler slideToggler = null;
-    //MotorToggler collectorToggler = null;
+    CRServoToggler slideRetractorToggler = null;
+    CRServoToggler deliveryToggler = null;
+    CRServoToggler debrisMoverToggler = null;
+    MotorRangedToggler slideToggler = null;
+    MotorToggler collectorToggler = null;
 
     MotorToggler motorFrontRightToggle = null;
     MotorToggler motorBackRightToggle = null;
@@ -69,15 +67,14 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.motorFrontRight = this.hardwareMap.dcMotor.get("motorFrontRight");
         this.motorBackLeft = this.hardwareMap.dcMotor.get("motorBackLeft");
         this.motorBackRight = this.hardwareMap.dcMotor.get("motorBackRight");
-        //this.motorCollector = this.hardwareMap.dcMotor.get("motorCollector");
-        //this.motorDeliverySlider = this.hardwareMap.dcMotor.get("motorDeliverySlider");
-        //this.servoDelivery = this.hardwareMap.servo.get("servoDelivery");
-        //this.servoClimberLeft = this.hardwareMap.servo.get("servoClimberLeft");
-        //this.servoClimberRight = this.hardwareMap.servo.get("servoClimberRight");
-        //this.servoDebrisMover = this.hardwareMap.servo.get("servoDebrisMover");
-        // this.imu = this.hardwareMap.i2cDevice.get("imu");
-//        this.motorHook = this.hardwareMap.dcMotor.get("motorHook");
-//        this.motorLift = this.hardwareMap.dcMotor.get("motorLift");
+        this.motorCollector = this.hardwareMap.dcMotor.get("motorCollector");
+        this.motorDeliverySlider = this.hardwareMap.dcMotor.get("motorDeliverySlider");
+        this.servoDelivery = this.hardwareMap.servo.get("servoDelivery");
+        this.servoSlideRetractor = this.hardwareMap.servo.get("servoSlide");
+        this.servoDebrisMover = this.hardwareMap.servo.get("servoDebrisMover");
+        //this.imu = this.hardwareMap.i2cDevice.get("imu");@TODO fix imu
+        this.motorHook = this.hardwareMap.dcMotor.get("motorHook");
+        this.motorLift = this.hardwareMap.dcMotor.get("motorLift");
 
         telemetry.log.add("motors and servos found");
 
@@ -85,20 +82,18 @@ public abstract class MasterOpMode extends SynchronousOpMode
         // so that it can take the same power level values as the other motor.
         this.motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         this.motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
-        //this.servoClimberLeft.setPosition(.5);
-        //this.servoClimberRight.setPosition(.5);
-        //this.servoDelivery.setPosition(.5);
-        //this.servoDebrisMover.setPosition(.5);
+        this.servoSlideRetractor.setPosition(.5);
+        this.servoDelivery.setPosition(.5);
+        this.servoDebrisMover.setPosition(.5);
 
         telemetry.log.add("servo initial positions set");
 
         //Variables to control the accessories
-        //climberLeftToggler = new CRServoToggler(this.servoClimberLeft);
-        //climberRightToggler = new CRServoToggler(this.servoClimberRight);
-        //deliveryToggler = new CRServoToggler(this.servoDelivery);
-        //slideToggler = new MotorRangedToggler(this.motorDeliverySlider, -100000, 130000);
-        //collectorToggler = new MotorToggler(this.motorCollector);
-        //debrisMoverToggler = new CRServoToggler(this.servoDebrisMover);
+        slideRetractorToggler = new CRServoToggler(this.servoSlideRetractor);
+        deliveryToggler = new CRServoToggler(this.servoDelivery);
+        slideToggler = new MotorRangedToggler(this.motorDeliverySlider, -100000, 130000);
+        collectorToggler = new MotorToggler(this.motorCollector);
+        debrisMoverToggler = new CRServoToggler(this.servoDebrisMover);
 
         motorFrontRightToggle = new MotorToggler(this.motorFrontRight);
         motorBackRightToggle = new MotorToggler(this.motorBackRight);

@@ -121,10 +121,7 @@ public abstract class MasterAuto extends MasterOpMode
 
      driveForward(0);
     }
-    public void driveBackwardDistanceIMU(double power, int distance) throws InterruptedException
-    {
-        driveForwardDistanceIMU(-power, -distance);
-    }
+
     public void driveForwardDistance(double power, int distance) throws InterruptedException
     {
 

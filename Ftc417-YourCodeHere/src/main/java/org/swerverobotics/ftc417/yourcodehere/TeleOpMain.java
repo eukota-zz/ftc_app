@@ -27,7 +27,7 @@ public class TeleOpMain extends MasterTeleOp
                 //Controller 2
 
                 //delivery mech
-                /*if(this.gamepad2.x || this.gamepad2.dpad_left)
+                if(this.gamepad2.x || this.gamepad2.dpad_left)
                 {
                     deliveryToggler.moveForward();
                 }
@@ -40,33 +40,7 @@ public class TeleOpMain extends MasterTeleOp
                     deliveryToggler.stop();
                 }
 
-                //left climber
-                if(this.gamepad2.left_trigger > 0)
-                {
-                    climberLeftToggler.moveReverse();
-                }
-                else if(this.gamepad2.left_bumper)
-                {
-                    climberLeftToggler.moveForward();
-                }
-                else
-                {
-                    climberLeftToggler.stop();
-                }
 
-                //right climber
-                if(this.gamepad2.right_trigger > 0)
-                {
-                    climberRightToggler.moveForward();
-                }
-                else if(this.gamepad2.right_bumper)
-                {
-                    climberRightToggler.moveReverse();
-                }
-                else
-                {
-                    climberRightToggler.stop();
-                }
                 //debris pusher
                 if(this.gamepad1.a)
                 {
@@ -79,7 +53,7 @@ public class TeleOpMain extends MasterTeleOp
                 else
                 {
                     debrisMoverToggler.stop();
-                }*/
+                }
                 //slow mode
                 if(this.gamepad1.left_trigger > Constants.SLOW_MODE_DEADZONE || this.gamepad1.right_trigger > Constants.SLOW_MODE_DEADZONE)
                 {
@@ -101,16 +75,30 @@ public class TeleOpMain extends MasterTeleOp
 
                 if(this.gamepad1.start || this.gamepad2.start)
                 {
-                    //this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-                    //this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+                    this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+                    this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
                 }
                 // Tell the motors
                 driveLeft(gamepad1.left_stick_y);
                 driveRight(gamepad1.right_stick_y);
 
-                //collectorToggler.setSpeed(gamepad2.right_stick_y);
-                //slideToggler.setSpeed(- gamepad2.left_stick_y);
+                collectorToggler.setSpeed(gamepad2.right_stick_y);
+                if(gamepad2.left_stick_y>0)
+                {
+                    servoSlideRetractor.setPosition(.5);
+                    slideToggler.setSpeed(-gamepad2.left_stick_y);
+                }
+                else if(gamepad2.left_stick_y == 0)
+                {
+                    this.motorDeliverySlider.setPowerFloat();
+                    servoSlideRetractor.setPosition(.5);
+                }
+                else
+                {
+                    this.motorDeliverySlider.setPowerFloat();
+                    servoSlideRetractor.setPosition(1);
+                }
 
             }
 
