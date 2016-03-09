@@ -3,6 +3,7 @@ package org.swerverobotics.ftc417.yourcodehere;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.IBNO055IMU;
 
@@ -22,14 +23,14 @@ public abstract class MasterOpMode extends SynchronousOpMode
     DcMotor motorBackRight = null;
     DcMotor motorCollector = null;
     DcMotor motorDeliverySlider = null;
-    DcMotor motorHook = null;
-    DcMotor motorLift = null;
     Servo   servoDelivery = null;
     Servo   servoSlideRetractor = null;
     Servo   servoDebrisMover = null;
 
     //sensors
     IBNO055IMU imu = null;
+
+    IBNO055IMU.Parameters   parameters = new IBNO055IMU.Parameters();
 
     //Variables to control the accessories
     CRServoToggler slideRetractorToggler = null;
@@ -72,9 +73,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.servoDelivery = this.hardwareMap.servo.get("servoDelivery");
         this.servoSlideRetractor = this.hardwareMap.servo.get("servoSlide");
         this.servoDebrisMover = this.hardwareMap.servo.get("servoDebrisMover");
-        //this.imu = this.hardwareMap.i2cDevice.get("imu");@TODO fix imu
-        this.motorHook = this.hardwareMap.dcMotor.get("motorHook");
-        this.motorLift = this.hardwareMap.dcMotor.get("motorLift");
+        imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
         telemetry.log.add("motors and servos found");
 
