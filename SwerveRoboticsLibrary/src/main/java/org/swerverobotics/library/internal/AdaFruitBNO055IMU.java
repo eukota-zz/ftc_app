@@ -242,8 +242,8 @@ public final class AdaFruitBNO055IMU implements IBNO055IMU, I2cDeviceSynchUser, 
         // Per Section 3.9.2 Built In Self Test, when we manually kick of a self test,
         // the accelerometer, gyro, and magnetometer are tested, but the microcontroller is not.
         // So: we only wait for successful results from those three.
-        final int successfulResult = 0x07;
-        final int successfulResultMask = 0x07;
+        final int successfulResult     = 0x05;
+        final int successfulResultMask = 0x05; // mcu, gyr, mag, accel == lower nibble
 
         while (!selfTestSuccessful && elapsed.milliseconds() < msAwaitSelfTest)
             {
