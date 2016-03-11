@@ -22,16 +22,16 @@ public class Red2ToPark extends MasterAutonomous
         setAutoStartPosition(135);
 
         pause(100);
-        driveStraight(119, Constants.BACKWARDS, false);
+        driveStraight(125, Constants.BACKWARDS, false);
         turnTo(180);
-        driveStraight(82, Constants.BACKWARDS, false);
+        driveStraight(100, Constants.BACKWARDS, false);
         turnTo(225);
         driveStraight(62, Constants.BACKWARDS, false);
         pause(500);
-        HikerDropper.deploy();
-        pause(4000);
+        HikerDropper.slowToggle();
+        pause(3000);
         driveStraight(62, Constants.FORWARDS * 0.4, false);
-        HikerDropper.retract();
+        HikerDropper.slowToggle();
         driveStraight(62, Constants.BACKWARDS * 0.4, false);
     }
 }

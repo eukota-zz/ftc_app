@@ -93,7 +93,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             turnFilter.roll(angleDiff);
 
             //set filtered motor powers; we added a constant to increase turning power
-            power = 1.15 * turnFilter.getFilteredValue();
+            power = Constants.TURNING_POW_ADJUSTMENT * turnFilter.getFilteredValue();
             //cap power at 1 magnitude
             if (Math.abs(power) > 1)
             {
@@ -108,13 +108,13 @@ public abstract class MasterAutonomous extends MasterOpMode
 
             //check if the turn is finished and the robot is settled
 
-            if (Math.abs(angleDiff) < 3)
+            if (Math.abs(angleDiff) < 2.5)
             {
                 satisfactionCounter++;
             }
-            else if (Math.abs(angleDiff) < 4)
+            else if (Math.abs(angleDiff) < 3.5)
             {
-                satisfactionCounter+= 0.4;
+                satisfactionCounter+= 0.3;
             }
             else
             {

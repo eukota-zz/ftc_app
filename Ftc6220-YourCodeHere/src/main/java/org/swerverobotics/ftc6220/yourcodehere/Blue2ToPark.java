@@ -23,16 +23,16 @@ public class Blue2ToPark extends MasterAutonomous
         setAutoStartPosition(45);
 
         pause(100);
-        driveStraight(106, Constants.BACKWARDS, false);
+        driveStraight(125, Constants.BACKWARDS, false);
         turnTo(0);
-        driveStraight(82, Constants.BACKWARDS, false);
+        driveStraight(100, Constants.BACKWARDS, false);
         turnTo(-45);
         driveStraight(62, Constants.BACKWARDS, false);
         pause(500);
-        HikerDropper.deploy();
-        pause(4000);
+        HikerDropper.slowToggle();
+        pause(3000);
         driveStraight(62, Constants.FORWARDS * 0.4, false);
-        HikerDropper.retract();
+        HikerDropper.slowToggle();
         driveStraight(62, Constants.BACKWARDS * 0.4, false);
     }
 }
