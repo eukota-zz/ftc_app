@@ -26,34 +26,31 @@ public class TeleOpMain extends MasterTeleOp
             {
                 //Controller 2
 
+                //Delivery tilt
+                if(this.gamepad2.dpad_left)
+                {
+                    servoDelivery.setPosition(Constants.TILT_LEFT);
+                }
+                else if(this.gamepad2.dpad_right)
+                {
+                    servoDelivery.setPosition(Constants.TILT_RIGHT);
+                }
+                else
+                {
+                    servoDelivery.setPosition(Constants.FLAT);
+                }
+
                 //delivery mech
-                if(this.gamepad2.x || this.gamepad2.dpad_left)
+                if(this.gamepad2.x)
                 {
-                    deliveryToggler.moveForward();
-                }
-                else if(this.gamepad2.y || this.gamepad2.dpad_right)
-                {
-                    deliveryToggler.moveReverse();
-                }
-                else
-                {
-                    deliveryToggler.stop();
+                    debrisDoorLeftToggler.toggle();
                 }
 
+                if(this.gamepad2.b)
+                {
+                    debrisDoorRightToggler.toggle();
+                }
 
-                //debris pusher
-                if(this.gamepad1.a)
-                {
-                    debrisMoverToggler.moveForward();
-                }
-                else if(this.gamepad1.b)
-                {
-                    debrisMoverToggler.moveReverse();
-                }
-                else
-                {
-                    debrisMoverToggler.stop();
-                }
                 //slow mode
                 if(this.gamepad1.left_trigger > Constants.SLOW_MODE_DEADZONE || this.gamepad1.right_trigger > Constants.SLOW_MODE_DEADZONE)
                 {
@@ -84,21 +81,7 @@ public class TeleOpMain extends MasterTeleOp
                 driveRight(gamepad1.right_stick_y);
 
                 collectorToggler.setSpeed(gamepad2.right_stick_y);
-                if(gamepad2.left_stick_y>0)
-                {
-                    servoSlideRetractor.setPosition(.5);
-                    slideToggler.setSpeed(-gamepad2.left_stick_y);
-                }
-                else if(gamepad2.left_stick_y == 0)
-                {
-                    this.motorDeliverySlider.setPowerFloat();
-                    servoSlideRetractor.setPosition(.5);
-                }
-                else
-                {
-                    this.motorDeliverySlider.setPowerFloat();
-                    servoSlideRetractor.setPosition(1);
-                }
+                slideToggler.setSpeed(gamepad2.left_stick_y * .25);
 
             }
 

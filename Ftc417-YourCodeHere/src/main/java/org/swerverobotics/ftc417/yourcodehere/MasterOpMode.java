@@ -24,8 +24,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
     DcMotor motorCollector = null;
     DcMotor motorDeliverySlider = null;
     Servo   servoDelivery = null;
-    Servo   servoSlideRetractor = null;
-    Servo   servoDebrisMover = null;
+    Servo   servoDebrisDoorLeft = null;
+    Servo   servoDebrisDoorRight = null;
 
     //sensors
     IBNO055IMU imu = null;
@@ -35,7 +35,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
     //Variables to control the accessories
     CRServoToggler slideRetractorToggler = null;
     CRServoToggler deliveryToggler = null;
-    CRServoToggler debrisMoverToggler = null;
+    ServoToggler debrisDoorLeftToggler = null;
+    ServoToggler debrisDoorRightToggler = null;
     MotorRangedToggler slideToggler = null;
     MotorToggler collectorToggler = null;
 
@@ -71,28 +72,26 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.motorCollector = this.hardwareMap.dcMotor.get("motorCollector");
         this.motorDeliverySlider = this.hardwareMap.dcMotor.get("motorDeliverySlider");
         this.servoDelivery = this.hardwareMap.servo.get("servoDelivery");
-        this.servoSlideRetractor = this.hardwareMap.servo.get("servoSlide");
-        this.servoDebrisMover = this.hardwareMap.servo.get("servoDebrisMover");
+        this.servoDebrisDoorLeft = this.hardwareMap.servo.get("servoDebrisDoorLeft");
+        this.servoDebrisDoorRight = this.hardwareMap.servo.get("servoDebrisDoorRight");
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
         telemetry.log.add("motors and servos found");
 
         // Two of the four motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
-        this.motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        this.motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
-        this.servoSlideRetractor.setPosition(.5);
+        this.motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+        this.motorBackRight.setDirection(DcMotor.Direction.REVERSE);
         this.servoDelivery.setPosition(.5);
-        this.servoDebrisMover.setPosition(.5);
 
         telemetry.log.add("servo initial positions set");
 
         //Variables to control the accessories
-        slideRetractorToggler = new CRServoToggler(this.servoSlideRetractor);
         deliveryToggler = new CRServoToggler(this.servoDelivery);
         slideToggler = new MotorRangedToggler(this.motorDeliverySlider, -100000, 130000);
         collectorToggler = new MotorToggler(this.motorCollector);
-        debrisMoverToggler = new CRServoToggler(this.servoDebrisMover);
+        debrisDoorLeftToggler = new ServoToggler(this.servoDebrisDoorLeft, Constants.LEFT_CLOSED, Constants.LEFT_OPEN, this);
+        debrisDoorRightToggler = new ServoToggler(this.servoDebrisDoorRight, Constants.RIGHT_CLOSED, Constants.RIGHT_OPEN, this);
 
         motorFrontRightToggle = new MotorToggler(this.motorFrontRight);
         motorBackRightToggle = new MotorToggler(this.motorBackRight);

@@ -29,11 +29,14 @@ public class Red1ToPark extends MasterAuto
 //        HikerDropper.retract();
       driveStraight(77, Constants.SLOW_BACKWARDS, false);
       */
+        telemetry.log.add("forwards");
+        driveForwardDistanceIMU(.2, 183);
 
-        blockerUp();
-        driveForwardDistance(.2, 183);
+        telemetry.log.add("turning");
+        turnLeftDegrees(.5, 45);
+
         telemetry.log.add("reversing");
-        driveBackwardDistanceIMU(.5, 183);
+        driveForwardDistanceIMU(.5, 10);
 //        driveForwardDistanceIMU(1, 100);
 
 //        turnRightDegrees(.5, 90);

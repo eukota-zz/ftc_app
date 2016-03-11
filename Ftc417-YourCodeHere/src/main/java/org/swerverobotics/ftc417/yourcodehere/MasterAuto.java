@@ -28,7 +28,7 @@ public abstract class MasterAuto extends MasterOpMode
         this.motorFrontLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.motorFrontRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.motorBackLeft.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.motorBackRight.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+        this.motorBackRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.motorDeliverySlider.setMode(DcMotorController.RunMode.RESET_ENCODERS);
         this.motorCollector.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.motorDeliverySlider.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
@@ -89,11 +89,11 @@ public abstract class MasterAuto extends MasterOpMode
     //returns the average of the left/right encoders, giving a distance in CM
     private double getDistanceTraveled() // in CM
     {
-        double CORRECTION_FACTOR = 1; ///< @todo needs calibrated
-        //double avgTick = (MotorLeftBack.getCurrentPosition() + MotorRightBack.getCurrentPosition())/2;
-        double tick=this.motorBackLeft.getCurrentPosition();
-        double distanceTraveledPerTick = Constants.BACK_LEFT_WHEEL_DIAMETER * Math.PI / Constants.TETRIX_ENC_TICKS;
-        return tick*distanceTraveledPerTick/CORRECTION_FACTOR;
+        double CORRECTION_FACTOR = 3; ///< @todo needs calibrated
+        double avgTick = (motorBackLeft.getCurrentPosition() + motorBackRight.getCurrentPosition())/2;
+        //double tick=this.motorBackLeft.getCurrentPosition();
+        double distanceTraveledPerTick = Constants.BACK_LEFT_WHEEL_DIAMETER * Math.PI / Constants.ANDYMARK_ENC_TICKS;
+        return avgTick*distanceTraveledPerTick/CORRECTION_FACTOR;
     }
 
     public void driveForwardDistanceIMU(double power, int distance) throws InterruptedException
@@ -117,7 +117,7 @@ public abstract class MasterAuto extends MasterOpMode
             idle();
         }
 
-     driveForward(0);
+        driveForward(0);
     }
 
     public void driveForwardDistance(double power, int distance) throws InterruptedException
@@ -125,10 +125,11 @@ public abstract class MasterAuto extends MasterOpMode
 
         driveForward(power);
 
-        while(getDistanceTraveled() <= distance)
+        while (getDistanceTraveled() <= distance)
         {
             // Wait until distance is reached
             telemetry.update();
+            telemetry.addData("encoder", motorBackLeft.getCurrentPosition());
             idle();
         }
 
@@ -194,22 +195,5 @@ public abstract class MasterAuto extends MasterOpMode
         angles = imu.getAngularOrientation();
         return 360-angles.heading;
     }
-
-
-    void blockerUp() throws InterruptedException
-    {
-        debrisMoverToggler.moveForward();
-        delay(9000);
-        debrisMoverToggler.stop();
-    }
-    void blockerDown() throws InterruptedException
-    {
-        debrisMoverToggler.moveReverse();
-        delay(9000);
-        debrisMoverToggler.stop();
-    }
-
-
-
 
 }
