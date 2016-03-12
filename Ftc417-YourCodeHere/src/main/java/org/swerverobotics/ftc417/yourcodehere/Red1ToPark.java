@@ -4,7 +4,7 @@ import org.swerverobotics.library.interfaces.Autonomous;
 /*
 	Autonomous program turns 90 degrees.
 */
-@Autonomous(name = "AUTO Red 1 -> Park", group = "417")
+@Autonomous(name = "AUTO Red 1 -> Ramp", group = "417")
 public class Red1ToPark extends MasterAuto
 {
     @Override
@@ -29,8 +29,14 @@ public class Red1ToPark extends MasterAuto
 //        HikerDropper.retract();
       driveStraight(77, Constants.SLOW_BACKWARDS, false);
       */
+        //Wait ten seconds so we can cross the line
+        Thread.sleep(10000);
+
         telemetry.log.add("forwards");
         driveForwardDistanceIMU(.2, 183);
+
+
+        Thread.sleep(500);
 
         telemetry.log.add("turning");
         turnLeftDegrees(.5, 45);
