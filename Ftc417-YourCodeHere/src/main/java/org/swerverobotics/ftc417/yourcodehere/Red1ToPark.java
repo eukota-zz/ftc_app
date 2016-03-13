@@ -30,13 +30,12 @@ public class Red1ToPark extends MasterAuto
       driveStraight(77, Constants.SLOW_BACKWARDS, false);
       */
         //Wait ten seconds so we can cross the line
-        Thread.sleep(10000);
+        delay(10000);
 
         telemetry.log.add("forwards");
         driveForwardDistanceIMU(.2, 183);
-
-
-        Thread.sleep(500);
+        
+        delay(500);
 
         telemetry.log.add("turning");
         turnLeftDegrees(.5, 45);
