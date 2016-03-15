@@ -26,7 +26,10 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
 {
     private final OpMode opmodeContext;
     private final I2cDeviceSynch deviceClient;
+
     private TCS34725.Parameters parameters;
+
+    private static final I2cDeviceSynch.ReadMode readMode = I2cDeviceSynch.ReadMode.REPEAT;
 
     //private final I2cDeviceSynch i2CDeviceSynch;
 
@@ -44,11 +47,13 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
 
         this.deviceClient = ClassFactory.createI2cDeviceSynch(i2cDevice, params.i2cAddress.bVal * 2);
 
+        this.engage();
+
         this.deviceClient.enableWriteCoalescing(false);
 
         this.deviceClient.setLogging(params.loggingEnabled);
         this.deviceClient.setLoggingTag(params.loggingTag);
-        this.engage();
+
 
         this.parameters = params;
     }
@@ -72,92 +77,115 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
 
         boolean armed = this.deviceClient.isArmed();
 
-        byte[] buffer = this.read(REGISTER.ENABLE, 2);
-
-        byte aa = REGISTER.DEVICE_ID.bVal;
-        byte bb = REGISTER.ATIME.bVal;
-        byte cc = REGISTER.ENABLE.bVal;
-
         byte id = this.getDeviceID();
 
-        byte atime = this.read8(REGISTER.ATIME);
-
-       /* if (id != ADAFRUIT_TCS34725_PARTNUM)
+       /* if ( (id != ADAFRUIT_TCS34725_PARTNUM) )
         {
             throw new UnexpectedI2CDeviceException(id);
         }
         */
 
         // Set the gain and integration time
-        //write8(TCS34725_ATIME, parameters.integrationTime.byteVal);
-        //write8(TCS34725_CONTROL, parameters.gain.byteVal);
+        setIntegrationTime(parameters.integrationTime);
+        setGain(parameters.gain);
 
         // Enable the device
+        enable();
+    }
+
+    private synchronized void enable()
+    {
+        write8(REGISTER.ENABLE, TCS34725_ENABLE_PON );
+        delayLore(3); //from Adafruit sample implementation
         write8(REGISTER.ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN );
-
-        delayLore(10);
-
-        byte enableReg = read8(REGISTER.ENABLE);
-
-        int c = enableReg | 0x00;
-
-
-
-        //write8(TCS34725_ENABLE, TCS34725_ENABLE_PON);
-       // delayExtra(3);
-        //this.i2CDeviceSynch.write8(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
-
-        //setCalibration(parameters);
     }
 
-
-    void delayExtra(int ms) {
-        delay(ms + 10);
+    private synchronized void disable()
+    {
+        /* Turn the device off to save power */
+        byte reg = read8(REGISTER.ENABLE);
+        write8(REGISTER.ENABLE, reg & ~(TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN));
     }
 
-    /**
-     * delayLore() implements a delay that is specified in the device datasheet and therefore should be correct
-     *
-     * @see #delay(int)
-     */
-    void delay(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            handleCapturedInterrupt(e);
-        }
+    private synchronized void setIntegrationTime(INTEGRATION_TIME time)
+    {
+        write8(REGISTER.ATIME, time.byteVal);
     }
 
-    /**
-     * delayLore() implements a delay that only known by lore and mythology to be necessary.
-     *
-     * @see #delay(int)
-     */
-    private void delayLore(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            handleCapturedInterrupt(e);
-        }
+    private synchronized void setGain(GAIN gain)
+    {
+        write8(REGISTER.CONTROL, gain.byteVal);
     }
 
-    private void engage() {
+    public synchronized byte getState()
+    {
+        byte b = this.read8(REGISTER.ENABLE);
+        return b;
+    }
+
+    public synchronized byte getDeviceID()
+    {
+        byte b = this.read8(REGISTER.DEVICE_ID);
+        return b;
+    }
+
+    //@Override
+    public synchronized int red() {
+        //try this alternative reading method to see if it give more correct results
+        return this.readColorRegister(REGISTER.RED);
+    }
+
+    //@Override
+    public synchronized int green() {
+        //try the same reading method that worked for the current sensor
+        return this.readTwoByteRegister(REGISTER.GREEN);
+    }
+
+    //@Override
+    public synchronized int blue() { return this.readColorRegister(REGISTER.BLUE); }
+
+    //@Override
+    public synchronized int alpha() {
+        return this.readColorRegister(REGISTER.CLEAR);
+    }
+
+    //@Override
+    public synchronized int argb() {
+        return Color.argb(this.alpha(), this.red(), this.green(), this.blue());
+    }
+
+    //@Override
+    public synchronized void enableLed(boolean enable)
+    // We can't directly control the LED with I2C; it's always on
+    {
         /*
-        if (!this.helper.isEngaged()) {
-            this.helper.engage();
-            this.i2CDeviceSynch.engage();
+        if (!this.ledStateIsKnown || this.ledIsEnabled != enable) {
+            if (enable) {
+                this.ledIsEnabled = enable;
+                this.ledStateIsKnown = true;
+            } else
+                throw new IllegalArgumentException("disabling LED is not supported");
         }
         */
+        throw new IllegalArgumentException("controlling LED is not supported on the Adafruit color sensor; use a digital channel for that.");
+    }
+
+    //@Override
+    public synchronized int getI2cAddress() {
+        return this.deviceClient.getI2cAddr();
+    }
+
+    //@Override
+    public synchronized void setI2cAddress(int i2cAddr8Bit) {
+        this.deviceClient.setI2cAddr(i2cAddr8Bit);
+    }
+
+
+    private void engage() {
         this.deviceClient.engage();
     }
 
     private void disengage() {
-        /*
-        if (this.helper.isEngaged()) {
-            this.i2CDeviceSynch.disengage();
-            this.helper.disengage();
-        }
-        */
         this.deviceClient.disengage();
     }
 
@@ -208,21 +236,30 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
     //----------------------------------------------------------------------------------------------
 
     @Override public synchronized byte read8(final REGISTER reg) {
-        return deviceClient.read8(reg.bVal);
+        return deviceClient.read8(reg.byteVal);
     }
 
     @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
-        return deviceClient.read(reg.bVal, cb);
+        return deviceClient.read(reg.byteVal, cb);
     }
 
     @Override public void write8(REGISTER reg, int data) {
-        this.deviceClient.write8(reg.bVal, data);
+        this.deviceClient.write8(reg.byteVal, data);
         this.deviceClient.waitForWriteCompletions();
     }
 
     @Override public void write(REGISTER reg, byte[] data) {
-        this.deviceClient.write(reg.bVal, data);
+        this.deviceClient.write(reg.byteVal, data);
         this.deviceClient.waitForWriteCompletions();
+    }
+
+    public int readColorRegister(TCS34725.REGISTER reg) {
+        //the color registers are two bytes
+        byte lowByte = this.deviceClient.read8(reg.byteVal);
+        byte highByte = this.deviceClient.read8(reg.byteVal+1);
+
+        int result = ((highByte & 0xFF) << 8) + (lowByte & 0xFF);
+        return result;
     }
 
 
@@ -250,65 +287,42 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
         this.write(ireg, b);
     }
 
-    private synchronized byte getDeviceID()
-    {
-        byte b = this.read8(REGISTER.DEVICE_ID);
-        return b;
+
+    void delayExtra(int ms) {
+        delay(ms + 10);
     }
 
-    //@Override
-    public synchronized int red() {
-        return this.readTwoByteRegister(REGISTER.RED);
-    }
-
-    //@Override
-    public synchronized int green() {
-        return this.readTwoByteRegister(REGISTER.GREEN);
-    }
-
-    //@Override
-    public synchronized int blue() {
-        return this.readTwoByteRegister(REGISTER.BLUE);
-    }
-
-    //@Override
-    public synchronized int alpha() {
-        return this.readTwoByteRegister(REGISTER.CLEAR);
-    }
-
-    //@Override
-    public synchronized int argb() {
-        return Color.argb(this.alpha(), this.red(), this.green(), this.blue());
-    }
-
-    //@Override
-    public synchronized void enableLed(boolean enable)
-    // We can't directly control the LED with I2C; it's always on
-    {
-        /*
-        if (!this.ledStateIsKnown || this.ledIsEnabled != enable) {
-            if (enable) {
-                this.ledIsEnabled = enable;
-                this.ledStateIsKnown = true;
-            } else
-                throw new IllegalArgumentException("disabling LED is not supported");
+    /**
+     * delayLore() implements a delay that is specified in the device datasheet and therefore should be correct
+     *
+     * @see #delay(int)
+     */
+    void delay(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            handleCapturedInterrupt(e);
         }
-        */
-        //throw new IllegalArgumentException("controlling LED is not supported on the Adafruit color sensor; use a digital channel for that.");
     }
 
-    //@Override
-    public synchronized int getI2cAddress() {
-        return this.deviceClient.getI2cAddr();
+    /**
+     * delayLore() implements a delay that only known by lore and mythology to be necessary.
+     *
+     * @see #delay(int)
+     */
+    private void delayLore(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            handleCapturedInterrupt(e);
+        }
     }
-
-    //@Override
-    public synchronized void setI2cAddress(int i2cAddr8Bit) {
-        this.deviceClient.setI2cAddr(i2cAddr8Bit);
-    }
-
-
 
 
 }
+
+/*
+  some code borrowed from Adafruit's sample implementation at:
+  https://github.com/adafruit/Adafruit_TCS34725
+ */
 

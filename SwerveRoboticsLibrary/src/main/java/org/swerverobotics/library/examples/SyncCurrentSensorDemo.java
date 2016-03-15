@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.I2cDeviceSynchUser;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.II2cDeviceClientUser;
@@ -18,6 +19,7 @@ import org.swerverobotics.library.internal.AdaFruitINA219CurrentSensor;
  * http://www.adafruit.com/products/904
  */
 @TeleOp(name = "Current Sensor Demo", group = "Swerve Examples")
+@Disabled
 public class SyncCurrentSensorDemo extends SynchronousOpMode
 {
     //----------------------------------------------------------------------------------------------

@@ -23,7 +23,7 @@ public interface TCS34725 /*extends ColorSensor*/
     void initialize(Parameters parameters);
 
     /**
-     * Instances of Parameters contain data indicating how a absolute orientation
+     * Instances of Parameters contain data indicating how the
      * sensor is to be initialized.
      *
      * @see #initialize(Parameters)
@@ -35,11 +35,11 @@ public interface TCS34725 /*extends ColorSensor*/
          */
         public I2CADDR i2cAddress = I2CADDR.DEFAULT;
 
+        //default integration time for our implementation
+        public INTEGRATION_TIME integrationTime = INTEGRATION_TIME.MS_2_4;
 
-        //public INTEGRATION_TIME integrationTime = INTEGRATION_TIME.MS_2_4;
-
-        //public GAIN gain = GAIN.GAIN_4;
-
+        //default gain for our implementation
+        public GAIN gain = GAIN.GAIN_4;
 
         /**
          * debugging aid: enable logging for this device?
@@ -66,6 +66,11 @@ public interface TCS34725 /*extends ColorSensor*/
     int green();
     int blue();
     int alpha();
+
+    //a few extras to assist my debugging
+    byte getDeviceID();
+    byte getState();
+
 
     //----------------------------------------------------------------------------------------------
     // Status inquiry
@@ -169,10 +174,10 @@ public interface TCS34725 /*extends ColorSensor*/
         BLUE(0x1A);
 
         //------------------------------------------------------------------------------------------
-        public final byte bVal;
+        public final byte byteVal;
 
         REGISTER(int i) {
-            this.bVal = (byte) i;
+            this.byteVal = (byte) i;
         }
     }
 
@@ -182,10 +187,10 @@ public interface TCS34725 /*extends ColorSensor*/
         GAIN_16(0x02),
         GAIN_64(0x03);
 
-        public final byte bVal;
+        public final byte byteVal;
 
         GAIN(int i) {
-            this.bVal = (byte) i;
+            this.byteVal = (byte) i;
         }
     }
 
@@ -232,7 +237,7 @@ public interface TCS34725 /*extends ColorSensor*/
 
     int TCS34725_ADDRESS          = 0x29;
 
-    int ADAFRUIT_TCS34725_PARTNUM = 0x44;
+    byte ADAFRUIT_TCS34725_PARTNUM = 0x44;
 
     int TCS34725_COMMAND_BIT      = 0x80;
 

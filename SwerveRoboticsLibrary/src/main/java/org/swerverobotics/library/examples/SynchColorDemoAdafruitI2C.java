@@ -1,12 +1,10 @@
 package org.swerverobotics.library.examples;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TCS34725;
 import org.swerverobotics.library.interfaces.TeleOp;
@@ -19,7 +17,7 @@ import org.swerverobotics.library.internal.AdaFruitTCS34725ColorSensor;
 public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
 {
     I2cDevice i2cDevice;
-    TCS34725 color;
+    TCS34725 colorSensor;
 
     //NOTE: the Adafruit color sensor's LED is not controllable via I2C.
     //You'll need to connect it to a digital channel and control it that way
@@ -40,7 +38,7 @@ public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
     {
         i2cDevice = hardwareMap.i2cDevice.get("adacolor");
         //this.color = this.hardwareMap.colorSensor.get("colorSensor");
-        this.color = ClassFactory.createAdaFruitTCS34725(i2cDevice, parameters);
+        this.colorSensor = ClassFactory.createAdaFruitTCS34725(i2cDevice, parameters);
 
         // Set up our dashboard computations
         composeDashboard();
@@ -48,10 +46,6 @@ public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("red", this.color.red());
-            telemetry.addData("green", this.color.green());
-            telemetry.addData("blue", this.color.blue());
-            telemetry.addData("alpha", this.color.alpha());
             telemetry.update();
             this.idle();
         }
@@ -111,22 +105,42 @@ public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
                 }));
 */
 
+
         telemetry.addLine(
                 telemetry.item("red: ", new IFunc<Object>() {
                     public Object value() {
-                        return (color.red());
+                        return (colorSensor.red());
                     }
                 }),
                 telemetry.item("green: ", new IFunc<Object>() {
                     public Object value() {
-                        return (color.green());
+                        return (colorSensor.green());
                     }
                 }),
                 telemetry.item("blue: ", new IFunc<Object>() {
                     public Object value() {
-                        return (color.blue());
+                        return (colorSensor.blue());
                     }
                 })
                 );
+
+
+        telemetry.addLine(
+                telemetry.item("deviceID: ", new IFunc<Object>() {
+                    public Object value() {
+                        return formatHEXByte(colorSensor.getDeviceID());
+                    }
+                }),
+                telemetry.item("state: ", new IFunc<Object>() {
+                    public Object value() {
+                        return formatHEXByte(colorSensor.getState());
+                    }
+                })
+        );
+    }
+
+    String formatHEXByte(byte b)
+    {
+        return String.format("0x%02X", b);
     }
 }
