@@ -108,13 +108,13 @@ public abstract class MasterAutonomous extends MasterOpMode
 
             //check if the turn is finished and the robot is settled
 
-            if (Math.abs(angleDiff) < 2.5)
+            if (Math.abs(angleDiff) < 3.0)
             {
                 satisfactionCounter++;
             }
-            else if (Math.abs(angleDiff) < 3.5)
+            else if (Math.abs(angleDiff) < 4.0)
             {
-                satisfactionCounter+= 0.3;
+                satisfactionCounter+= 0.6;
             }
             else
             {
@@ -122,7 +122,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             }
 
 
-            if (satisfactionCounter > 100)
+            if (satisfactionCounter > 80)
             {
                 isTurnCompleted = true;
             }
