@@ -120,6 +120,7 @@ public class BatteryTest extends SynchronousOpMode
             {
                 //telemetry.log.add("Voltage at " + readings * period + " seconds: " + formatNumber(voltageSensor.getVoltage()));
                 String s = Math.round(eTime.time()) + "," + formatNumber(currentSensor.getBusVoltage_V()) +
+                        "," + formatNumber(currentSensor.getCurrent_mA()) +
                     "," + formatNumber(resistance) + "\r\n";
                 writeDataToPublicFile(s);
                 readings += 1;
