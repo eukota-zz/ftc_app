@@ -14,12 +14,13 @@ public class Constants
     public static final double ZIPLINEHITTER_NOTDEPLOYED = -0.85;
     public static final double ZIPLINEHITTER_DEPLOYED = 0.6;
     public static final double HIKER_DROPPER_NOTDEPLOYED = 0.11;
-    public static final double HIKER_DROPPER_DEPLOYED = 0.69;
+    public static final double HIKER_DROPPER_DEPLOYED = 0.67;
     public static final double HANGER_SERVO_NOTDEPLOYED = 0.0;
     public static final double HANGER_SERVO_STOP = 0.5;
     public static final double HANGER_SERVO_DEPLOYED = 1.0;
-    public static final double HOLDER_SERVO_NOTDEPLOYED = 0.8;
+    public static final double HOLDER_SERVO_NOTDEPLOYED = 0.6;
     public static final double HOLDER_SERVO_DEPLOYED = -1.0;
+    public static final double SERVO_STEPS = 36;
 
     //deadzone constant
     public static final float JOYSTICK_DEADZONE = 0.05f;
@@ -37,7 +38,7 @@ public class Constants
     public static final double BACKWARDS = -FORWARDS;
     public static final double SLOW_FORWARDS = 0.3 * FORWARDS;
     public static final double SLOW_BACKWARDS = 0.3 * BACKWARDS;
-    public static final double TURNING_POW_ADJUSTMENT = 1.3;
+    public static final double TURNING_POW_ADJUSTMENT = 1.32;
 
     //IMU and encoder constants
     public static final int ANDYMARK_ENC_TICKS = 1120;
