@@ -82,6 +82,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
         // so that it can take the same power level values as the other motor.
         this.motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         this.motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+        this.motorDeliverySlider.setDirection(DcMotor.Direction.REVERSE);
         this.servoDelivery.setPosition(.5);
 
         telemetry.log.add("servo initial positions set");
