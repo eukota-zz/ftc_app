@@ -43,6 +43,9 @@ public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
     protected void main() throws InterruptedException
     {
         i2cDevice = hardwareMap.i2cDevice.get("adacolor");
+
+        parameters.gain = TCS34725.GAIN.GAIN_4; //select the chip's gain
+
         this.colorSensor = ClassFactory.createAdaFruitTCS34725(i2cDevice, parameters);
 
         // Set up our dashboard computations
