@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TCS34725;
 import org.swerverobotics.library.interfaces.TeleOp;
@@ -12,16 +13,21 @@ import org.swerverobotics.library.internal.AdaFruitTCS34725ColorSensor;
 
 /**
  * This SynchronousOpMode illustrates using an AdaFruit Color Sensor over i2c.
+ * It includes support for setting the Gain and Integration Time of the chip,
+ * something that is not available yet in the FTC implementation of this device.
+ *
+ * Note: when configuring your robot controller, choose "I2C_DEVICE" for this
+ * device, instead of "ADAFRUIT_COLOR_SENSOR"
  */
 @TeleOp(name = "AdaFruit I2C Color Demo", group = "Swerve Examples")
+@Disabled
 public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
 {
     I2cDevice i2cDevice;
     TCS34725 colorSensor;
 
     //NOTE: the Adafruit color sensor's LED is not controllable via I2C.
-    //You'll need to connect it to a digital channel and control it that way
-    //boolean ledIsOn;
+    //You'll need to connect the LED to a digital channel and control it that way
 
     AdaFruitTCS34725ColorSensor.Parameters parameters = new  AdaFruitTCS34725ColorSensor.Parameters();
 
@@ -37,7 +43,6 @@ public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
     protected void main() throws InterruptedException
     {
         i2cDevice = hardwareMap.i2cDevice.get("adacolor");
-        //this.color = this.hardwareMap.colorSensor.get("colorSensor");
         this.colorSensor = ClassFactory.createAdaFruitTCS34725(i2cDevice, parameters);
 
         // Set up our dashboard computations

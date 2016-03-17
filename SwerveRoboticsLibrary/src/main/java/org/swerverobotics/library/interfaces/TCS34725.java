@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
  * https://www.adafruit.com/products/1334?&main_page=product_info&products_id=1334
  * https://github.com/adafruit/Adafruit_TCS34725
  */
-public interface TCS34725 /*extends ColorSensor*/
+public interface TCS34725 extends ColorSensor
 {
     //----------------------------------------------------------------------------------------------
     // Construction
@@ -62,30 +62,20 @@ public interface TCS34725 /*extends ColorSensor*/
     //----------------------------------------------------------------------------------------------
 
     //implementers should override the ColorSensor methods
+    /*
     int red();
     int green();
     int blue();
     int alpha();
-
-    //a few extras to assist my debugging
-    byte getDeviceID();
-    byte getState();
+    */
 
 
     //----------------------------------------------------------------------------------------------
     // Status inquiry
     //----------------------------------------------------------------------------------------------
 
-    //int getStatus();
-
-    //int setGain();
-
-    //void setCalibration(TCS34725.Parameters parameters);
-    //int getCalibration();
-
-    //int getConfiguration();
-
-    //void reset();
+    byte getDeviceID();
+    byte getState();
 
 
     //----------------------------------------------------------------------------------------------
@@ -112,12 +102,22 @@ public interface TCS34725 /*extends ColorSensor*/
 
     /**
      * Low level: read two bytes of data starting at the indicated register
-     * and return the results as an integer
+     * and return the results as an unsigned integer
      *
-     * @param ireg the location from which to read the data; should be an integer register.
+     * @param reg the location from which to read the data; should be an integer register.
      * @return the data that was read
      */
-    int readTwoByteRegister(REGISTER ireg);
+    int readColorRegister(TCS34725.REGISTER reg);
+
+
+    /**
+     * Low level: read two bytes of data starting at the indicated register
+     * and return the results as a signed integer
+     *
+     * @param reg the location from which to read the data; should be an integer register.
+     * @return the data that was read
+     */
+    int readTwoByteRegister(REGISTER reg);
 
 
     /**

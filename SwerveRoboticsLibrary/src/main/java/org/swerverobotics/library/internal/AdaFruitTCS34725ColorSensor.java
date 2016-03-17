@@ -2,18 +2,14 @@ package org.swerverobotics.library.internal;
 
 import android.graphics.Color;
 
-import com.qualcomm.hardware.adafruit.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.*;
-import com.qualcomm.robotcore.util.*;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.exceptions.UnexpectedI2CDeviceException;
-import org.swerverobotics.library.interfaces.INA219;
 import org.swerverobotics.library.interfaces.TCS34725;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import static org.swerverobotics.library.internal.Util.handleCapturedInterrupt;
 
@@ -31,12 +27,6 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
 
     private static final I2cDeviceSynch.ReadMode readMode = I2cDeviceSynch.ReadMode.REPEAT;
 
-    //private final I2cDeviceSynch i2CDeviceSynch;
-
-    //@todo remove led support since it's not controllable via the i2c port. Interested students can use a digital channel to control it independently.
-    //boolean ledIsEnabled;
-    //boolean ledStateIsKnown;
-    //I2cDeviceReplacementHelper<ColorSensor> helper;
 
     //----------------------------------------------------------------------------------------------
     // Construction
@@ -73,17 +63,15 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
         // Remember the parameters for future use
         this.parameters = parameters;
 
-        //resetINA219();
 
         boolean armed = this.deviceClient.isArmed();
 
         byte id = this.getDeviceID();
 
-       /* if ( (id != ADAFRUIT_TCS34725_PARTNUM) )
+        if ( (id != ADAFRUIT_TCS34725_PARTNUM) )
         {
             throw new UnexpectedI2CDeviceException(id);
         }
-        */
 
         // Set the gain and integration time
         setIntegrationTime(parameters.integrationTime);
@@ -96,7 +84,7 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
     private synchronized void enable()
     {
         write8(REGISTER.ENABLE, TCS34725_ENABLE_PON );
-        delayLore(3); //from Adafruit sample implementation
+        delayLore(6); //Adafruit's sample implementation uses 3ms; I'm adding an extra 3ms
         write8(REGISTER.ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN );
     }
 
@@ -129,32 +117,32 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
         return b;
     }
 
-    //@Override
+    @Override
     public synchronized int red() {
         //try this alternative reading method to see if it give more correct results
         return this.readColorRegister(REGISTER.RED);
     }
 
-    //@Override
+    @Override
     public synchronized int green() {
         //try the same reading method that worked for the current sensor
-        return this.readTwoByteRegister(REGISTER.GREEN);
+        return this.readColorRegister(REGISTER.GREEN);
     }
 
-    //@Override
+    @Override
     public synchronized int blue() { return this.readColorRegister(REGISTER.BLUE); }
 
-    //@Override
+    @Override
     public synchronized int alpha() {
         return this.readColorRegister(REGISTER.CLEAR);
     }
 
-    //@Override
+    @Override
     public synchronized int argb() {
         return Color.argb(this.alpha(), this.red(), this.green(), this.blue());
     }
 
-    //@Override
+    @Override
     public synchronized void enableLed(boolean enable)
     // We can't directly control the LED with I2C; it's always on
     {
@@ -170,12 +158,12 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
         throw new IllegalArgumentException("controlling LED is not supported on the Adafruit color sensor; use a digital channel for that.");
     }
 
-    //@Override
+    @Override
     public synchronized int getI2cAddress() {
         return this.deviceClient.getI2cAddr();
     }
 
-    //@Override
+    @Override
     public synchronized void setI2cAddress(int i2cAddr8Bit) {
         this.deviceClient.setI2cAddr(i2cAddr8Bit);
     }
@@ -211,22 +199,22 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
     // HardwareDevice
     //----------------------------------------------------------------------------------------------
 
-    //@Override
+    @Override
     public void close() {
         this.deviceClient.close();
     }
 
-    //@Override
+    @Override
     public int getVersion() {
         return 1;
     }
 
-    //@Override
+    @Override
     public String getConnectionInfo() {
         return this.deviceClient.getConnectionInfo();
     }
 
-    //@Override
+    @Override
     public String getDeviceName() {
         return "Swerve AdaFruit I2C Color Sensor";
     }
@@ -236,41 +224,45 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
     //----------------------------------------------------------------------------------------------
 
     @Override public synchronized byte read8(final REGISTER reg) {
-        return deviceClient.read8(reg.byteVal);
+        return deviceClient.read8(reg.byteVal | 0x80);
     }
 
     @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
-        return deviceClient.read(reg.byteVal, cb);
+        return deviceClient.read(reg.byteVal | 0x80, cb);
     }
 
     @Override public void write8(REGISTER reg, int data) {
-        this.deviceClient.write8(reg.byteVal, data);
+        this.deviceClient.write8(reg.byteVal | 0x80, data);
         this.deviceClient.waitForWriteCompletions();
     }
 
     @Override public void write(REGISTER reg, byte[] data) {
-        this.deviceClient.write(reg.byteVal, data);
+        this.deviceClient.write(reg.byteVal | 0x80, data);
         this.deviceClient.waitForWriteCompletions();
     }
 
     public int readColorRegister(TCS34725.REGISTER reg) {
-        //the color registers are two bytes
-        byte lowByte = this.deviceClient.read8(reg.byteVal);
-        byte highByte = this.deviceClient.read8(reg.byteVal+1);
-
-        int result = ((highByte & 0xFF) << 8) + (lowByte & 0xFF);
-        return result;
-    }
-
-
-    @Override
-    public int readTwoByteRegister(TCS34725.REGISTER ireg) {
-        byte[] bytes = this.read(ireg, 2);
+        byte[] bytes = this.read(reg, 2);
         int result = 0;
 
         if (bytes.length==2)
         {
-            //INA219 data sheet says that register values are sent most-significant-byte first
+            //colors are two bytes, unsigned
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            result = buffer.getShort() & 0xFFFF;
+        }
+
+        return result;
+    }
+
+
+    public int readTwoByteRegister(TCS34725.REGISTER reg) {
+        byte[] bytes = this.read(reg, 2);
+        int result = 0;
+
+        if (bytes.length==2)
+        {
+            //read a two-byte signed number
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
             result = buffer.getShort();
         }
@@ -280,7 +272,6 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
 
     @Override public void writeTwoByteRegister(TCS34725.REGISTER ireg, int value)
     {
-        //INA219 data sheet says that register values are sent most-significant-byte first
         byte[] b = new byte[2];
         b[0] = (byte) ((value & 0x0000FF00) >> 8); //most significant byte
         b[1] = (byte)  (value & 0x000000FF); //least significant byte
