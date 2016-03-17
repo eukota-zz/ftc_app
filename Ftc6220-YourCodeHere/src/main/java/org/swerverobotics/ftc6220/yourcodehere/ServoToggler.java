@@ -81,7 +81,7 @@ public class ServoToggler
 
     public void slowRetract() throws InterruptedException
     {
-        double stepServoBack = (servoRetractedPosition-servoDeployedPosition)/24;
+        double stepServoBack = (servoRetractedPosition-servoDeployedPosition)/Constants.SERVO_STEPS;
 
         opmode.stopAllMotors();
 
