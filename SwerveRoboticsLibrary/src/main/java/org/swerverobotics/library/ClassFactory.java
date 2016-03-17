@@ -289,6 +289,60 @@ public final class ClassFactory
         }
 
 
+        //AdaFruit i2c color sensor
+
+        /**
+         * Instantiates a driver object for an AdaFruit TCS34725 color sensor which resides at the indicated I2cDevice using
+         * default values for configuration parameters.
+         *
+         * @param opmodeContext the OpMode within which this creation is taking place
+         * @param i2cDevice     the robot controller runtime object representing the sensor
+         * @return              the interface to the instantiated sensor object.
+         * @see #createAdaFruitTCS34725(OpMode, I2cDevice, TCS34725.Parameters)
+         */
+        public static TCS34725 createAdaFruitTCS34725(OpMode opmodeContext, I2cDevice i2cDevice)
+        {
+            return createAdaFruitTCS34725(opmodeContext, i2cDevice, new TCS34725.Parameters());
+        }
+
+        /**
+         * Instantiates a driver object for an AdaFruit INA219 sensor which resides at the indicated I2cDevice using
+         * the provided configuration parameters. This creation method only functions in a SynchronousOpMode.
+         *
+         * @param i2cDevice     the robot controller runtime object representing the sensor
+         * @param parameters    the parameters with which the sensor should be initialized
+         * @return              the interface to the instantiated sensor object.
+         * @see #createAdaFruitINA219(OpMode, I2cDevice, INA219.Parameters)
+         */
+        public static TCS34725 createAdaFruitTCS34725(I2cDevice i2cDevice, TCS34725.Parameters parameters)
+        {
+            SwerveThreadContext.assertSynchronousThread();
+            return createAdaFruitTCS34725(SwerveThreadContext.getOpMode(), i2cDevice, parameters);
+        }
+
+        /**
+         * Instantiates a driver object for an AdaFruit INA219 sensor which resides at the indicated I2cDevice using
+         * the provided configuration parameters.
+         *
+         * <p>This sensor is used to sense current.</p>
+         *
+         *
+         * @param opmodeContext the OpMode within which this creation is taking place
+         * @param i2cDevice     the robot controller runtime object representing the sensor
+         * @param parameters    the parameters with which the sensor should be initialized
+         * @return              the interface to the instantiated sensor object. This object also
+         *                      supports the II2cDeviceClientUser interface, which can be useful
+         *                      for debugging.
+         * @see #createAdaFruitINA219(OpMode, I2cDevice)
+         */
+        public static TCS34725 createAdaFruitTCS34725(OpMode opmodeContext, I2cDevice i2cDevice, TCS34725.Parameters parameters)
+        {
+            return AdaFruitTCS34725ColorSensor.create(opmodeContext, i2cDevice, parameters);
+        }
+
+
+
+
 
         //----------------------------------------------------------------------------------------------
     // Low level I2cDevice creation
