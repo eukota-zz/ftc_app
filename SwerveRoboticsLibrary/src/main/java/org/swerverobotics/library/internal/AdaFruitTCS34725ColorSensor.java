@@ -224,20 +224,20 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
     //----------------------------------------------------------------------------------------------
 
     @Override public synchronized byte read8(final REGISTER reg) {
-        return deviceClient.read8(reg.byteVal | 0x80);
+        return deviceClient.read8(reg.byteVal | TCS34725_COMMAND_BIT);
     }
 
     @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
-        return deviceClient.read(reg.byteVal | 0x80, cb);
+        return deviceClient.read(reg.byteVal | TCS34725_COMMAND_BIT, cb);
     }
 
     @Override public void write8(REGISTER reg, int data) {
-        this.deviceClient.write8(reg.byteVal | 0x80, data);
+        this.deviceClient.write8(reg.byteVal | TCS34725_COMMAND_BIT, data);
         this.deviceClient.waitForWriteCompletions();
     }
 
     @Override public void write(REGISTER reg, byte[] data) {
-        this.deviceClient.write(reg.byteVal | 0x80, data);
+        this.deviceClient.write(reg.byteVal | TCS34725_COMMAND_BIT, data);
         this.deviceClient.waitForWriteCompletions();
     }
 
@@ -249,6 +249,9 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
         {
             //colors are two bytes, unsigned
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            //make unsigned by and'ing with 0x0000FFFF
+            //this will cause Java to treat the resulting value as an unsigned int, rather than as a signed short
+            //because the most significant bit won't be 1 (which denotes "is negative" in 2's complement numbers)
             result = buffer.getShort() & 0xFFFF;
         }
 
