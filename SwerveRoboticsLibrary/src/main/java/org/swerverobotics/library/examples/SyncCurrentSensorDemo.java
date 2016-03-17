@@ -55,7 +55,7 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
         parameters.loggingEnabled = false;
         parameters.shuntResistorInOhms = 0.100;
 
-        ///TO DO instantiate our object
+        ///instantiate our object
         i2cDevice = hardwareMap.i2cDevice.get("current");
         currentSensor = ClassFactory.createAdaFruitINA219(i2cDevice, parameters);
 
@@ -71,12 +71,6 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
             telemetry.update();
             idle();
         }
-
-
-        //double curr = currentSensor.getCurrent_mA();
-        //double bus = currentSensor.getBusVoltage_V();
-        //double shunt = currentSensor.getShuntVoltage_mV();
-
 
     }
 
@@ -209,60 +203,4 @@ public class SyncCurrentSensorDemo extends SynchronousOpMode
 
     String formatCalibration (int cali) { return String.format("0x%04X", cali); }
 
-    //----------------------------------------------------------------------------------------------
-    // Utility
-    //----------------------------------------------------------------------------------------------
-
-    /**
-     * Normalize the angle into the range [-180,180)
-     */
-    double normalizeDegrees(double degrees) {
-        while (degrees >= 180.0) degrees -= 360.0;
-        while (degrees < -180.0) degrees += 360.0;
-        return degrees;
-    }
-
-    double degreesFromRadians(double radians) {
-        return radians * 180.0 / Math.PI;
-    }
-
-    /**
-     * Turn a system status into something that's reasonable to show in telemetry
-     */
-    String decodeStatus(int status) {
-        switch (status) {
-            case 0:
-                return "idle";
-            case 1:
-                return "syserr";
-            case 2:
-                return "periph";
-            case 3:
-                return "sysinit";
-            case 4:
-                return "selftest";
-            case 5:
-                return "fusion";
-            case 6:
-                return "running";
-        }
-        return "unk";
-    }
-
-    /**
-     * Turn a calibration code into something that is reasonable to show in telemetry
-     */
-    String decodeCalibration(int status) {
-        StringBuilder result = new StringBuilder();
-
-        result.append(String.format("s%d", (status >> 2) & 0x03));  // SYS calibration status
-        result.append(" ");
-        result.append(String.format("g%d", (status >> 2) & 0x03));  // GYR calibration status
-        result.append(" ");
-        result.append(String.format("a%d", (status >> 2) & 0x03));  // ACC calibration status
-        result.append(" ");
-        result.append(String.format("m%d", (status >> 0) & 0x03));  // MAG calibration status
-
-        return result.toString();
-    }
 }

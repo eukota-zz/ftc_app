@@ -128,7 +128,7 @@ public interface INA219
 
     /**
      * Low level: read two bytes of data starting at the indicated register
-     * and return the results as an integer
+     * and return the results as a signed integer
      *
      * @param ireg the location from which to read the data; should be an integer register.
      * @return the data that was read

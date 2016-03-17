@@ -409,7 +409,7 @@ public final class AdaFruitINA219CurrentSensor implements I2cDeviceSynchUser, IN
         {
             //INA219 data sheet says that register values are sent most-significant-byte first
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            result = buffer.getShort();
+            result = buffer.getShort(); //signed integer
         }
 
         return result;
