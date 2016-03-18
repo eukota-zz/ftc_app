@@ -81,7 +81,7 @@ public class TeleOpMain extends MasterTeleOp
                 driveRight(gamepad1.right_stick_y);
 
                 collectorToggler.setSpeed(gamepad2.right_stick_y);
-                slideToggler.setSpeed(gamepad2.left_stick_y * 0.75);
+                slideToggler.setSpeed(gamepad2.left_stick_y);
 
             }
 
