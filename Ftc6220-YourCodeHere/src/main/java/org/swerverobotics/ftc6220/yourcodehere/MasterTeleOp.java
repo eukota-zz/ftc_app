@@ -62,7 +62,7 @@ public abstract class MasterTeleOp extends MasterOpMode
 
 
     //This is the methods that passes stick values to the drive
-    void driveRobot(Gamepad pad) throws InterruptedException
+    void driveRobot(Gamepad pad, Gamepad pad2) throws InterruptedException
     {
         // Remember that the gamepad sticks range from -1 to +1, and that the motor
         // power levels range over the same amount
@@ -71,10 +71,20 @@ public abstract class MasterTeleOp extends MasterOpMode
         double p1LeftStickPower  = stickCurve(pad.left_stick_y) * currentDrivePowerFactor;
         double p1RightStickPower = stickCurve(pad.right_stick_y) * currentDrivePowerFactor;
 
+        double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
+        double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
+        double adjustedPower = p2RightStickPower; //hanger.checkStalled(p2RightStickPower);
+
         double leftSidePower;
         double rightSidePower;
         double climberPower = pad.right_trigger * -1;
 
+        //adjusted power is commented out for now
+        hanger.moveHanger(adjustedPower);
+
+        telemetry.addData("Hanger Power:", adjustedPower);
+
+        HangerServo.setPosition((p2LeftStickPower + 1) / 2);
 
         //field driving mode
         if (currentDriveMode == DriveMode.Field)
@@ -95,14 +105,28 @@ public abstract class MasterTeleOp extends MasterOpMode
             driveWheels(leftSidePower, rightSidePower);
             driveClimbers(-climberPower, -climberPower);
         }
+
         //drive climb mode
         else if (currentDriveMode == DriveMode.Ramp)
         {
             //read input from the controller. The climbers should turn with the wheels
-            leftSidePower  = -p1LeftStickPower;
-            rightSidePower = -p1RightStickPower;
-            driveWheels(leftSidePower, rightSidePower);
-            driveClimbers(leftSidePower, rightSidePower);
+            if (Math.signum(adjustedPower) == 1.0)
+            {
+                MotorLeftBack.setPower(0.625 * -p1LeftStickPower);
+                MotorRightBack.setPower(0.625 * -p1RightStickPower);
+                MotorLeftTriangle.setPower(-p1LeftStickPower);
+                MotorRightTriangle.setPower(-p1RightStickPower);
+                driveClimbers(0.5 * -p1LeftStickPower,0.5 * -p1RightStickPower);
+            }
+
+            else
+            {
+                MotorLeftBack.setPower(1.25 * -p1LeftStickPower);
+                MotorRightBack.setPower(1.25 * -p1RightStickPower);
+                MotorLeftTriangle.setPower(-p1LeftStickPower);
+                MotorRightTriangle.setPower(-p1RightStickPower);
+                driveClimbers(-p1LeftStickPower,-p1RightStickPower);
+            }
         }
     }
 }

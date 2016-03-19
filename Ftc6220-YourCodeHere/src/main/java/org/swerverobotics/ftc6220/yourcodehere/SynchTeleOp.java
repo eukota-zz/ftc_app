@@ -39,7 +39,7 @@ public class SynchTeleOp extends MasterTeleOp
                 // There is (likely) new gamepad input available.
                 this.handleDriverInput(this.gamepad1, this.gamepad2);
 
-                this.driveRobot(this.gamepad1);
+                this.driveRobot(this.gamepad1, this.gamepad2);
             }
 
             hanger.checkHanger();
@@ -59,20 +59,9 @@ public class SynchTeleOp extends MasterTeleOp
         {
             HikerDropper.slowToggle();
         }
-
-        double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
-        double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
-
         //set pad 2 servos equal to stick input
-        //adjusted power is commented out for now
-        double adjustedPower = p2RightStickPower; //hanger.checkStalled(p2RightStickPower);
-        hanger.moveHanger(adjustedPower);
-
-        telemetry.addData("Hanger Power:", adjustedPower);
 
         telemetry.update();
-
-        HangerServo.setPosition((p2LeftStickPower + 1) / 2);
 
         //deploy the holder
         if (pad2.b && !lastBtn[B])
