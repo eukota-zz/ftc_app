@@ -183,8 +183,8 @@ public abstract class MasterAutonomous extends MasterOpMode
             turnFilter.roll(angleDiff);
 
             //set filtered motor powers
-            power = turnFilter.getFilteredValue();
-            //cap power at 0.4 magnitude
+            power = Constants.TURNING_POW_ADJUSTMENT * turnFilter.getFilteredValue();
+            //cap power at 1 magnitude
             if (Math.abs(power) > 1)
             {
                 power = 1*Math.signum(power);

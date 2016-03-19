@@ -23,14 +23,14 @@ public class Blue1ToPark extends MasterAutonomous
         setAutoStartPosition(90);
 
         pause(2000);
-        driveStraight(280, Constants.BACKWARDS, false);
+        driveStraight(261, Constants.BACKWARDS, false);
         turnTo(45);
-        driveStraight(80, Constants.BACKWARDS, false);
+        driveStraight(75, Constants.BACKWARDS, false);
         pause(500);
         HikerDropper.slowToggle();
         pause(4000);
-        driveStraight(80, Constants.FORWARDS * 0.4, false);
+        driveStraight(75, Constants.FORWARDS * 0.4, false);
         HikerDropper.slowToggle();
-        driveStraight(80, Constants.BACKWARDS * 0.4, false);
+        driveStraight(75, Constants.BACKWARDS * 0.4, false);
     }
 }

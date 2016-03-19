@@ -24,13 +24,13 @@ public class Red1ToPark extends MasterAutonomous
         pause(2000);
         driveStraight(280, Constants.BACKWARDS, false);
         turnTo(135);
-        driveStraight(80, Constants.BACKWARDS, false);
+        driveStraight(75, Constants.BACKWARDS, false);
         pause(500);
         HikerDropper.slowToggle();
         pause(4000);
-        driveStraight(80, Constants.FORWARDS * 0.4, false);
+        driveStraight(75, Constants.FORWARDS * 0.4, false);
         HikerDropper.slowToggle();
-        driveStraight(80, Constants.BACKWARDS * 0.4, false);
+        driveStraight(75, Constants.BACKWARDS * 0.4, false);
 
     }
 }
