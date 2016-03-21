@@ -22,7 +22,7 @@ public class Red2ToPark extends MasterAutonomous
         setAutoStartPosition(135);
 
         pause(100);
-        driveStraight(125, Constants.BACKWARDS, false);
+        driveStraight(130, Constants.BACKWARDS, false);
         turnTo(180);
         driveStraight(105, Constants.BACKWARDS, false);
         turnTo(225);

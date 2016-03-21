@@ -73,7 +73,7 @@ public class ServoToggler
         {
             servo.setPosition(f);
 
-            opmode.pause(40);
+            opmode.pause(42);
         }
         servo.setPosition(servoDeployedPosition);
         isDeployed = true;
@@ -89,7 +89,7 @@ public class ServoToggler
         {
             servo.setPosition(b);
 
-            opmode.pause(40);
+            opmode.pause(42);
         }
         servo.setPosition(servoRetractedPosition);
         isDeployed = false;

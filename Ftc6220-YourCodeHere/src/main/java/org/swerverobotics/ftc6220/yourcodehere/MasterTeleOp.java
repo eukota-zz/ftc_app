@@ -84,7 +84,7 @@ public abstract class MasterTeleOp extends MasterOpMode
 
         telemetry.addData("Hanger Power:", adjustedPower);
 
-        HangerServo.setPosition((p2LeftStickPower + 1) / 2);
+        HangerServo.setPosition((0.5 * p2LeftStickPower + 1) / 2);
 
         //field driving mode
         if (currentDriveMode == DriveMode.Field)

@@ -15,9 +15,9 @@ public class Constants
     public static final double ZIPLINEHITTER_DEPLOYED = 0.6;
     public static final double HIKER_DROPPER_NOTDEPLOYED = 0.11;
     public static final double HIKER_DROPPER_DEPLOYED = 0.69;
-    public static final double HANGER_SERVO_NOTDEPLOYED = 0.0;
+    public static final double HANGER_SERVO_NOTDEPLOYED = 0.25;
     public static final double HANGER_SERVO_STOP = 0.5;
-    public static final double HANGER_SERVO_DEPLOYED = 1.0;
+    public static final double HANGER_SERVO_DEPLOYED = 0.75;
     public static final double HOLDER_SERVO_NOTDEPLOYED = 0.6;
     public static final double HOLDER_SERVO_DEPLOYED = -1.0;
     public static final double SERVO_STEPS = 36;
