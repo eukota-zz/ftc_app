@@ -341,6 +341,55 @@ public final class ClassFactory
         }
 
 
+        //AdaFruit i2c multiplexer
+
+        /**
+         * Instantiates a driver object for an AdaFruit TCA9548A i2c mutiplexer which resides at the indicated I2cDevice using
+         * default values for configuration parameters.
+         *
+         * @param opmodeContext the OpMode within which this creation is taking place
+         * @param i2cDevice     the robot controller runtime object representing the multiplexer
+         * @return              the interface to the instantiated multiplexer object.
+         * @see #createAdaFruitTCA9548A(OpMode, I2cDevice, TCA9548A.Parameters)
+         */
+        public static TCA9548A createAdaFruitTCA9548A(OpMode opmodeContext, I2cDevice i2cDevice)
+        {
+            return createAdaFruitTCA9548A(opmodeContext, i2cDevice, new TCA9548A.Parameters());
+        }
+
+        /**
+         * Instantiates a driver object for an AdaFruit TCA9548A i2c mutiplexer which resides at the indicated I2cDevice using
+         * the provided configuration parameters. This creation method only functions in a SynchronousOpMode.
+         *
+         * @param i2cDevice     the robot controller runtime object representing the multiplexer
+         * @param parameters    the parameters with which the device should be initialized
+         * @return              the interface to the instantiated multiplexer object.
+         * @see #createAdaFruitTCA9548A(OpMode, I2cDevice, TCA9548A.Parameters)
+         */
+        public static TCA9548A createAdaFruitTCSTCA9548A(I2cDevice i2cDevice, TCA9548A.Parameters parameters)
+        {
+            SwerveThreadContext.assertSynchronousThread();
+            return createAdaFruitTCA9548A(SwerveThreadContext.getOpMode(), i2cDevice, parameters);
+        }
+
+        /**
+         * Instantiates a driver object for an AdaFruit TCA9548A i2c mutiplexer which resides at the indicated I2cDevice using
+         * the provided configuration parameters.
+         *
+         *
+         * @param opmodeContext the OpMode within which this creation is taking place
+         * @param i2cDevice     the robot controller runtime object representing the multiplexer
+         * @param parameters    the parameters with which the multiplexer should be initialized
+         * @return              the interface to the instantiated multiplexer object. This object also
+         *                      supports the II2cDeviceClientUser interface, which can be useful
+         *                      for debugging.
+         * @see #createAdaFruitTCA9548A(OpMode, I2cDevice)
+         */
+        public static TCA9548A createAdaFruitTCA9548A(OpMode opmodeContext, I2cDevice i2cDevice, TCA9548A.Parameters parameters)
+        {
+            return AdaFruitTCA9548AI2CMultiplexer.create(opmodeContext, i2cDevice, parameters);
+        }
+
 
 
 
