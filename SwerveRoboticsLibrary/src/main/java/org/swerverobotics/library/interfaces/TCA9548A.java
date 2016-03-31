@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 /**
  * Interface API to the Adafruit TCA9548A i2c multiplexer.
  * You can create an implementation of this interface for a given sensor using
- * {@link org.swerverobotics.library.ClassFactory#createAdaFruitTCA954A(OpMode, I2cDevice) ClassFactory.createAdaFruitTCA954A()}.
+ * {@link org.swerverobotics.library.ClassFactory#createAdaFruitTCA9548A(OpMode, I2cDevice) ClassFactory.createAdaFruitTCA954A()}.
  *
- * @see org.swerverobotics.library.ClassFactory#createAdaFruitTCA954A(OpMode, I2cDevice)
+ * @see org.swerverobotics.library.ClassFactory#createAdaFruitTCA9548A(OpMode, I2cDevice)
  * @see <a href="http://www.adafruit.com/products/2717">http://www.adafruit.com/products/2717</a>
  */
 public interface TCA9548A
