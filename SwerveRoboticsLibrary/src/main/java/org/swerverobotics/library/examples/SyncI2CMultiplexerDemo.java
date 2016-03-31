@@ -9,8 +9,10 @@ import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.INA219;
 import org.swerverobotics.library.interfaces.TCA9548A;
+import org.swerverobotics.library.interfaces.TCS34725;
 import org.swerverobotics.library.interfaces.TeleOp;
 import org.swerverobotics.library.internal.AdaFruitINA219CurrentSensor;
+import org.swerverobotics.library.internal.AdaFruitTCS34725ColorSensor;
 
 
 /**
@@ -18,7 +20,7 @@ import org.swerverobotics.library.internal.AdaFruitINA219CurrentSensor;
  * http://www.adafruit.com/products/2717
  */
 @TeleOp(name = "I2C Multiplexer Demo", group = "Swerve Examples")
-@Disabled
+//@Disabled
 public class SyncI2CMultiplexerDemo extends SynchronousOpMode
 {
     //----------------------------------------------------------------------------------------------
@@ -27,11 +29,15 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
 
     // Our sensors, motors, and other devices go here, along with other long term state
     I2cDevice i2cDevice;
-    TCA9548A multiplexer;
     ElapsedTime elapsed = new ElapsedTime();
 
-    TCA9548A.Parameters parameters = new TCA9548A.Parameters();
 
+    //initialize a multiplexer device
+    TCA9548A multiplexer;
+    TCA9548A.Parameters multiplexerParameters = new TCA9548A.Parameters();
+
+    TCS34725 colorSensor1;
+    AdaFruitTCS34725ColorSensor.Parameters colorSensorParameters = new  AdaFruitTCS34725ColorSensor.Parameters();
 
     // Here we have state we use for updating the dashboard.
 
@@ -51,11 +57,15 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
         // module and named "current". Retrieve that raw I2cDevice and then wrap it in an object that
         // semantically understands this particular kind of sensor.
 
-        parameters.loggingEnabled = false;
+        multiplexerParameters.loggingEnabled = false;
 
-        ///instantiate our object
+        ///instantiate our multiplexer
         i2cDevice = hardwareMap.i2cDevice.get("multiplexer");
-        multiplexer = ClassFactory.createAdaFruitTCSTCA9548A(i2cDevice, parameters);
+        multiplexer = ClassFactory.createAdaFruitTCSTCA9548A(i2cDevice, multiplexerParameters);
+
+        //the tricky part...switch multiplexer channels each time we want to talk to a device
+        multiplexer.switchToChannel(1);
+        this.colorSensor1 = ClassFactory.createAdaFruitTCS34725(i2cDevice, colorSensorParameters);
 
         // Set up our dashboard computations
         composeDashboard();
@@ -129,8 +139,25 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
                     }
                 }));
 */
+        telemetry.addLine(
+                telemetry.item("1  red: ", new IFunc<Object>() {
+                    public Object value() {
+                        return (colorSensor1.red());
+                    }
+                }),
+                telemetry.item("green: ", new IFunc<Object>() {
+                    public Object value() {
+                        return (colorSensor1.green());
+                    }
+                }),
+                telemetry.item("blue: ", new IFunc<Object>() {
+                    public Object value() {
+                        return (colorSensor1.blue());
+                    }
+                })
+        );
 
     }
 
-    
+
 }

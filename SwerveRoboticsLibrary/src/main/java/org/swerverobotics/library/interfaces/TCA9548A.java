@@ -44,7 +44,7 @@ public interface TCA9548A
         /**
          * debugging aid: the logging tag to use when logging
          */
-        public String loggingTag = "AdaFruitINA219";
+        public String loggingTag = "AdaFruitTCA9548AMultiplexer";
     }
 
     /**
@@ -53,72 +53,12 @@ public interface TCA9548A
      */
     /*void close();*/
 
-
-
     //----------------------------------------------------------------------------------------------
-    // Low level reading and writing 
+    // Control the multiplexer
     //----------------------------------------------------------------------------------------------
 
-    /**
-     * Low level: read the byte starting at the indicated register
-     *
-     * @param register the location from which to read the data
-     * @return the data that was read
-     */
-    byte read8(REGISTER register);
+    void switchToChannel(int channel) throws IllegalArgumentException;
 
-    /**
-     * Low level: read data starting at the indicated register
-     *
-     * @param register the location from which to read the data
-     * @param cb       the number of bytes to read
-     * @return the data that was read
-     */
-    byte[] read(REGISTER register, int cb);
-
-
-    /**
-     * Low level: read two bytes of data starting at the indicated register
-     * and return the results as an unsigned integer
-     *
-     * @param ireg the location from which to read the data; should be an integer register.
-     * @return the data that was read
-     */
-    int readTwoByteUnsignedRegister(REGISTER ireg);
-
-
-    /**
-     * Low level: read two bytes of data starting at the indicated register
-     * and return the results as a signed integer
-     *
-     * @param ireg the location from which to read the data; should be an integer register.
-     * @return the data that was read
-     */
-    int readTwoByteSignedRegister(REGISTER ireg);
-
-    /**
-     * Low level: write a byte to the indicated register
-     *
-     * @param register the location at which to write the data
-     * @param bVal     the data to write
-     */
-    void write8(REGISTER register, int bVal);
-
-    /**
-     * Low level: write data starting at the indicated register
-     *
-     * @param register the location at which to write the data
-     * @param data     the data to write
-     */
-    void write(REGISTER register, byte[] data);
-
-    /**
-     * Low level: write two bytes of data starting at the indicated register
-     *
-     * @param ireg the location into which to write the data; should be an integer register.
-     * @param value the integer to write
-     */
-    void writeTwoByteRegister(REGISTER ireg, int value);
 
     //------------------------------------------------------------------------------------------
     // Constants
@@ -138,16 +78,8 @@ public interface TCA9548A
     /**
      * REGISTER provides symbolic names for each of the device registers
      */
-    enum REGISTER {
-        CONTROL(0x00); //this device has a single register that lets us pick the i2c device 0..7
-
-        //------------------------------------------------------------------------------------------
-        public final byte bVal;
-
-        private REGISTER(int i) {
-            this.bVal = (byte) i;
-        }
-    }
+    //This device does not use registers.
+    //To control the device, we write a single byte (0..7) to the device's i2c address to switch to that port number.
 
 
 }

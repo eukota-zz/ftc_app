@@ -20,10 +20,9 @@ import static org.swerverobotics.library.internal.Util.handleCapturedInterrupt;
  * <a href="https://www.adafruit.com/products/2717">AdaFruit I2C Multiplexer</a> that
  * is attached to a Modern Robotics Core Device Interface module.
  *
- * Register Set
- *
- *  HEX      Register Name      Value at Power On      Register Type     Notes
- *  00       Control                   0                 R/W             Allows you to switch to I2C device 0..7 attached to the multiplexer
+ * This device has no registers. You switch to the I2C device 0..7
+ * attached to the multiplexer by writing the value 1 << (0..7)
+ * to this device's I2C address.
  */
 public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser, TCA9548A, IOpModeStateTransitionEvents
 {
@@ -93,10 +92,23 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
         // Remember the parameters for future use
         this.parameters = parameters;
 
-        //@todo is there any register we can read to be sure it's the device we think it is?
+        //Unfortunately there's no register we can read to confirm this is the device we think it is.
     }
 
 
+    //----------------------------------------------------------------------------------------------
+    // Control the multiplexer
+    //----------------------------------------------------------------------------------------------
+
+    @Override
+    public void switchToChannel(int channel) throws IllegalArgumentException
+    {
+        if (channel > 7)
+        {
+            throw new IllegalArgumentException("Multiplexer port must be 0..7 but was " + channel);
+        }
+        write8((byte)(1 << channel));
+    }
 
 
     //------------------------------------------------------------------------------------------
@@ -111,69 +123,16 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
 
 
     //------------------------------------------------------------------------------------------
-    // Calibration
-    //------------------------------------------------------------------------------------------
-
-
-    //------------------------------------------------------------------------------------------
     // Data retrieval
     //------------------------------------------------------------------------------------------
 
 
-    @Override public synchronized byte read8(final REGISTER reg) {
-                return deviceClient.read8(reg.bVal);
-    }
-
-    @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
-        return deviceClient.read(reg.bVal, cb);
-    }
-
-    @Override public void write8(REGISTER reg, int data) {
-        this.deviceClient.write8(reg.bVal, data);
+    public void write8(byte data) {
+        //This device expects us to write a single byte, not a register address + a byte.
+        //But, deviceClient insists that we give it both a register address and a value.
+        //So, we'll send the same data twice. It's a tiny bit wasteful but doesn't hurt anything.
+        this.deviceClient.write8(data, data);
         this.deviceClient.waitForWriteCompletions();
-    }
-
-    @Override public void write(REGISTER reg, byte[] data) {
-        this.deviceClient.write(reg.bVal, data);
-        this.deviceClient.waitForWriteCompletions();
-    }
-
-    @Override public int readTwoByteSignedRegister(REGISTER ireg) {
-        byte[] bytes = this.read(ireg, 2);
-        int result = 0;
-
-        if (bytes.length==2)
-        {
-            ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            result = buffer.getShort(); //signed integer
-        }
-
-        return result;
-    }
-
-    @Override public int readTwoByteUnsignedRegister(REGISTER ireg) {
-        byte[] bytes = this.read(ireg, 2);
-        int result = 0;
-
-        if (bytes.length==2)
-        {
-            ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            //make unsigned by and'ing with 0x0000FFFF
-            //this will cause Java to treat the resulting value as an unsigned int, rather than as a signed short
-            //because the most significant bit won't be 1 (which denotes "is negative" in 2's complement numbers)
-            result = buffer.getShort() & 0xFFFF;
-        }
-
-        return result;
-    }
-
-
-    @Override public void writeTwoByteRegister(REGISTER ireg, int value)
-    {
-        byte[] b = new byte[2];
-        b[0] = (byte) ((value & 0x0000FF00) >> 8); //most significant byte
-        b[1] = (byte)  (value & 0x000000FF); //least significant byte
-        this.write(ireg, b);
     }
 
     //------------------------------------------------------------------------------------------
@@ -238,7 +197,7 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
     }
 
     /**
-     * delay() implements delays which are known to be necessary according to the BNO055 specification
+     * delay() implements delays which are known to be necessary according to the specification
      *
      * @see #delayLore(int)
      */
