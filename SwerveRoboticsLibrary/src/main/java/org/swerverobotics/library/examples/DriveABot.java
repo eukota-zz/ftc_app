@@ -79,7 +79,7 @@ public class DriveABot extends SynchronousOpMode
     public void gameDrive()
     {
         double forwardPower = gamepad1.right_trigger - gamepad1.left_trigger;
-        double turningPower = gamepad1.left_stick_x;
+        double turningPower = gamepad1.left_stick_x * 0.5;
 
         double leftPower = forwardPower + turningPower;
         double rightPower = forwardPower - turningPower;
