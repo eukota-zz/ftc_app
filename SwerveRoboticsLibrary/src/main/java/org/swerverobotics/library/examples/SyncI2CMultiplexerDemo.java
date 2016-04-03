@@ -26,7 +26,8 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
 
     // Our sensors, motors, and other devices go here, along with other long term state
     I2cDevice i2cDeviceMux;
-    I2cDevice i2cDeviceColor;
+    I2cDevice i2cDeviceColor1;
+    I2cDevice i2cDeviceColor2;
     ElapsedTime elapsed = new ElapsedTime();
 
 
@@ -65,13 +66,14 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
 
         this.manager = new MultiplexedColorSensorManager(multiplexer);
 
-        //create a color sensor connected to a multiplexer channel
-//        this.manager.createColorSensorInChannel(i2cDeviceMux, colorSensorParameters,
-//                MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL0);
+        //create a color sensor connected to multiplexer channel 2
+        this.i2cDeviceColor1 = hardwareMap.i2cDevice.get("adacolor1");
+        this.manager.createColorSensorInChannel(i2cDeviceColor1, colorSensorParameters,
+                MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL2);
 
-        //create a color sensor connected to another multiplexer channel
-        this.i2cDeviceColor = hardwareMap.i2cDevice.get("adacolor");
-        this.manager.createColorSensorInChannel(i2cDeviceColor, colorSensorParameters,
+        //create a color sensor connected to multiplexer channel 7
+        this.i2cDeviceColor2 = hardwareMap.i2cDevice.get("adacolor2");
+        this.manager.createColorSensorInChannel(i2cDeviceColor2, colorSensorParameters,
                 MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL7);
 
 
@@ -109,7 +111,7 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
         telemetry.setUpdateIntervalMs(200);
 
         // At the beginning of each telemetry update, grab a bunch of data
-        // from the INA219 that we will display in separate lines.
+        // from the device that we will display in separate lines.
         telemetry.addAction(new Runnable() { @Override public void run()
         {
             loopCycles = getLoopCount();
@@ -158,25 +160,25 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
                 }));
 */
 
-        /*
+
         telemetry.addLine(
-                telemetry.item("0  red: ", new IFunc<Object>() {
+                telemetry.item("2  red: ", new IFunc<Object>() {
                     public Object value() {
-                        return (manager.red(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL0));
+                        return (manager.red(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL2));
                     }
                 }),
                 telemetry.item("green: ", new IFunc<Object>() {
                     public Object value() {
-                        return (manager.green(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL0));
+                        return (manager.green(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL2));
                     }
                 }),
                 telemetry.item("blue: ", new IFunc<Object>() {
                     public Object value() {
-                        return (manager.blue(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL0));
+                        return (manager.blue(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL2));
                     }
                 })
         );
-        */
+
 
 
         telemetry.addLine(
