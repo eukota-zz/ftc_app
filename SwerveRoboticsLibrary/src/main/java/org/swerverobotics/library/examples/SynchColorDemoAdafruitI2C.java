@@ -64,7 +64,7 @@ public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
         telemetry.setUpdateIntervalMs(200);
 
         // At the beginning of each telemetry update, grab a bunch of data
-        // from the INA219 that we will display in separate lines.
+        // from the device that we will display in separate lines.
         telemetry.addAction(new Runnable() { @Override public void run()
         {
             loopCycles = getLoopCount();
