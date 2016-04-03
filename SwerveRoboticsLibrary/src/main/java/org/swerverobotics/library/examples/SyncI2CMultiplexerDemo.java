@@ -54,9 +54,17 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
 
     @Override
     public void main() throws InterruptedException {
-        // We are expecting the current sensor to be attached to an I2C port on a core device interface
-        // module and named "current". Retrieve that raw I2cDevice and then wrap it in an object that
-        // semantically understands this particular kind of sensor.
+
+        // We are expecting the multiplexer to be attached to an I2C port on a core device interface
+        // module and named "multiplexer".
+        // Unfortunately, to get an i2cDevice, we still need to tell the config file we have color sensors on
+        // specific i2c ports, even though the color sensors are actually connected to ports
+        // on the multiplexer boards.  I would like to eliminate the need to do that in the future,
+        // but for now, that's the way it is.
+        // So... you'll also need two color sensor boards, connected to ports 2 and 7 on the
+        // multiplexer board, and you'll need to set up your robot config file to think
+        // that the color sensors are connected to (any) i2c ports on the core device interface module.
+        // This opmode expects the color sensors to be called "adacolor1" and "adacolor2".
 
         this.multiplexerParameters.loggingEnabled = false;
 
@@ -67,11 +75,17 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
         this.manager = new MultiplexedColorSensorManager(multiplexer);
 
         //create a color sensor connected to multiplexer channel 2
+        //note: to get an i2cDevice, we still need to tell the config file we have a color sensor on
+        //a specific i2c port, even though it's not actually connected there!
+        //I would like to eliminate the need to do that in the future, but for now, that's the way it is.
         this.i2cDeviceColor1 = hardwareMap.i2cDevice.get("adacolor1");
         this.manager.createColorSensorInChannel(i2cDeviceColor1, colorSensorParameters,
                 MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL2);
 
         //create a color sensor connected to multiplexer channel 7
+        //note: to get an i2cDevice, we still need to tell the config file we have a color sensor on
+        //a specific i2c port, even though it's not actually connected there!
+        //I would like to eliminate the need to do that in the future, but for now, that's the way it is.
         this.i2cDeviceColor2 = hardwareMap.i2cDevice.get("adacolor2");
         this.manager.createColorSensorInChannel(i2cDeviceColor2, colorSensorParameters,
                 MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL7);
