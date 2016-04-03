@@ -100,6 +100,8 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
     // Control the multiplexer
     //----------------------------------------------------------------------------------------------
 
+    //Note: the multiplexer actually allows you to have multiple channels on at a time.
+    //I'm not currently making use of that capability.
     @Override
     public void switchToChannel(int channel) throws IllegalArgumentException
     {
@@ -131,7 +133,7 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
         //This device expects us to write a single byte, not a register address + a byte.
         //But, deviceClient insists that we give it both a register address and a value.
         //So, we'll send the same data twice. It's a tiny bit wasteful but doesn't hurt anything.
-        this.deviceClient.write8(data, data);
+        this.deviceClient.write8(0, data);
         this.deviceClient.waitForWriteCompletions();
     }
 

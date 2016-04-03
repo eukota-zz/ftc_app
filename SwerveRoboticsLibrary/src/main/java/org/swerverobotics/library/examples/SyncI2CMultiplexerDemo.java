@@ -5,10 +5,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TCA9548A;
-import org.swerverobotics.library.interfaces.TCS34725;
 import org.swerverobotics.library.interfaces.TeleOp;
 import org.swerverobotics.library.internal.AdaFruitTCS34725ColorSensor;
 import org.swerverobotics.library.internal.MultiplexedColorSensorManager;
@@ -27,7 +25,8 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
     //----------------------------------------------------------------------------------------------
 
     // Our sensors, motors, and other devices go here, along with other long term state
-    I2cDevice i2cDevice;
+    I2cDevice i2cDeviceMux;
+    I2cDevice i2cDeviceColor;
     ElapsedTime elapsed = new ElapsedTime();
 
 
@@ -61,18 +60,19 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
         this.multiplexerParameters.loggingEnabled = false;
 
         ///instantiate our multiplexer
-        this.i2cDevice = hardwareMap.i2cDevice.get("multiplexer");
-        this.multiplexer = ClassFactory.createAdaFruitTCSTCA9548A(i2cDevice, multiplexerParameters);
+        this.i2cDeviceMux = hardwareMap.i2cDevice.get("multiplexer");
+        this.multiplexer = ClassFactory.createAdaFruitTCSTCA9548A(i2cDeviceMux, multiplexerParameters);
 
         this.manager = new MultiplexedColorSensorManager(multiplexer);
 
         //create a color sensor connected to a multiplexer channel
-        this.manager.createColorSensorInChannel(i2cDevice, colorSensorParameters,
-                MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL0);
+//        this.manager.createColorSensorInChannel(i2cDeviceMux, colorSensorParameters,
+//                MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL0);
 
         //create a color sensor connected to another multiplexer channel
-        this.manager.createColorSensorInChannel(i2cDevice, colorSensorParameters,
-                MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL1);
+        this.i2cDeviceColor = hardwareMap.i2cDevice.get("adacolor");
+        this.manager.createColorSensorInChannel(i2cDeviceColor, colorSensorParameters,
+                MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL7);
 
 
         // Set up our dashboard computations
@@ -82,10 +82,20 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
         waitForStart();
 
 
+        int i=0;
+
         // Loop and update the dashboard
        while (opModeIsActive()) {
             telemetry.update();
             idle();
+
+           /*i++;
+
+           if (i==200)
+           {
+               int r = manager.red(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL7);
+               telemetry.log.add("red: " + r);
+           }*/
         }
 
     }
@@ -103,7 +113,7 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
         telemetry.addAction(new Runnable() { @Override public void run()
         {
             loopCycles = getLoopCount();
-            i2cCycles  = i2cDevice.getCallbackCount();
+            i2cCycles  = i2cDeviceMux.getCallbackCount();
             ms         = elapsed.milliseconds();
             //i2cArmed = ((I2cDeviceSynchUser) currentSensor).getI2cDeviceSynch().isArmed();
             //i2cEngaged = ((I2cDeviceSynchUser) currentSensor).getI2cDeviceSynch().isEngaged();
@@ -147,6 +157,8 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
                     }
                 }));
 */
+
+        /*
         telemetry.addLine(
                 telemetry.item("0  red: ", new IFunc<Object>() {
                     public Object value() {
@@ -164,25 +176,27 @@ public class SyncI2CMultiplexerDemo extends SynchronousOpMode
                     }
                 })
         );
+        */
 
 
         telemetry.addLine(
-                telemetry.item("1  red: ", new IFunc<Object>() {
+                telemetry.item("7  red: ", new IFunc<Object>() {
                     public Object value() {
-                        return (manager.red(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL1));
+                        return (manager.red(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL7));
                     }
                 }),
                 telemetry.item("green: ", new IFunc<Object>() {
                     public Object value() {
-                        return (manager.green(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL1));
+                        return (manager.green(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL7));
                     }
                 }),
                 telemetry.item("blue: ", new IFunc<Object>() {
                     public Object value() {
-                        return (manager.blue(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL1));
+                        return (manager.blue(MultiplexedColorSensorManager.MULTIPLEXER_CHANNEL.CHANNEL7));
                     }
                 })
         );
+
     }
 
 

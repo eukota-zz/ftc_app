@@ -49,6 +49,7 @@ public class MultiplexedColorSensorManager
     public synchronized void createColorSensorInChannel(I2cDevice i2cDevice, TCS34725.Parameters parameters, MULTIPLEXER_CHANNEL channel)
     {
         multiplexer.switchToChannel(channel.iVal);
+
         TCS34725 sensor = ClassFactory.createAdaFruitTCS34725(i2cDevice, parameters);
         colorSensor[channel.iVal] = sensor;
         //don't return sensor! we can't read from it without switching the multiplexer.
