@@ -3,6 +3,8 @@ package org.swerverobotics.ftc6220.yourcodehere;
 import org.swerverobotics.library.SynchronousOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.swerverobotics.library.interfaces.IBNO055IMU;
 import org.swerverobotics.library.SynchronousOpMode;
@@ -78,6 +80,9 @@ public abstract class MasterOpMode extends SynchronousOpMode
     ServoToggler RightHolder;
     ServoToggler HikerDropper;
 
+    boolean autoWaitAtStart = false;
+    boolean autoStartingPlace = Constants.START_POSITION_1;
+    boolean autoSide = Constants.RED;
 
     //drive the wheels
     public void driveWheels(double leftPower, double rightPower)
@@ -144,7 +149,29 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.LeftMotorHanger.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         this.RightMotorHanger.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
 
+        this.initializeAutonomousParmeters();
+
         stopAllMotors();
+    }
+
+    public void initializeAutonomousParmeters()
+    {
+        DigitalChannel wait = hardwareMap.digitalChannel.get("SwitchWait");
+        wait.setMode(DigitalChannelController.Mode.INPUT);
+        autoWaitAtStart = wait.getState();
+        telemetry.log.add("Wait is " + autoWaitAtStart);
+
+        DigitalChannel startPosition = hardwareMap.digitalChannel.get("SwitchStartPosition");
+        startPosition.setMode(DigitalChannelController.Mode.INPUT);
+        autoStartingPlace = startPosition.getState();
+        telemetry.log.add("Start is " + (autoStartingPlace ? "1" : "2"));
+
+
+        DigitalChannel redOrBlue = hardwareMap.digitalChannel.get("RedorBlue");
+        redOrBlue.setMode(DigitalChannelController.Mode.INPUT);
+        autoSide = redOrBlue.getState();
+        telemetry.log.add("Side is " + (autoSide ? "red" : "blue"));
+
     }
 
     //this is so we can be able to initialize servos after pause for start (robot needs to fit in sizing box)

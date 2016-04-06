@@ -1,11 +1,13 @@
 package org.swerverobotics.ftc6220.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 
 /**
  * Created by Cole on 1/14/2016.
  */
 @Autonomous(name = "AUTO Red2 -> Park", group = "Swerve Examples")
+@Disabled
 public class Red2ToPark extends MasterAutonomous
 {
     @Override

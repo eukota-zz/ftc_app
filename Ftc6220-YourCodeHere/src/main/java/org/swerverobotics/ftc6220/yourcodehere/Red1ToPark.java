@@ -1,11 +1,13 @@
 package org.swerverobotics.ftc6220.yourcodehere;
 
 import org.swerverobotics.library.interfaces.Autonomous;
+import org.swerverobotics.library.interfaces.Disabled;
 
 /*
 	Autonomous program turns 90 degrees.
 */
 @Autonomous(name = "AUTO Red 1 -> Park", group = "Swerve Examples")
+@Disabled
 public class Red1ToPark extends MasterAutonomous
 {
     @Override

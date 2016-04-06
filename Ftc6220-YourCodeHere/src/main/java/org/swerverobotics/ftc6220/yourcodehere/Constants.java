@@ -44,6 +44,12 @@ public class Constants
     public static final int ANDYMARK_ENC_TICKS = 1120;
     public static final int TETRIX_ENC_TICKS = 1440;
 
+    public static final boolean RED = true;
+    public static final boolean BLUE = false;
+    public static final boolean START_POSITION_1 = true;
+    public static final boolean START_POSITION_2 = false;
+
+
     //this accounts for the small difference between the wheel assemblies on the left and right side of the robot during driving
     public static final double LEFT_ASSEMBLY_DIFF = 0.84;
 }
