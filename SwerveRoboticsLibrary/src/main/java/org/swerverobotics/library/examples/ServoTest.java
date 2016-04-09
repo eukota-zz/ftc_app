@@ -21,6 +21,8 @@ public class ServoTest extends SynchronousOpMode
         // The configuration file needs to have a servo named "servo"
         servo = hardwareMap.servo.get("servo");
 
+        composeDashboard();
+
         waitForStart();
 
         while (this.opModeIsActive())
