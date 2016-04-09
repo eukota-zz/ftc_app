@@ -1,5 +1,7 @@
 package org.swerverobotics.library.examples;
 
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
@@ -11,16 +13,24 @@ import org.swerverobotics.library.interfaces.TeleOp;
 @TeleOp(name = "Servo Test")
 public class ServoTest extends SynchronousOpMode
 {
+    Servo servo = null;
+
     @Override
     public void main() throws InterruptedException
     {
+        // The configuration file needs to have a servo named "servo"
+        servo = hardwareMap.servo.get("servo");
+
         waitForStart();
 
         while (this.opModeIsActive())
         {
             if (updateGamepads())
             {
-
+                // This converts the joystick range of
+                // [-1.0, 1.0] to the servo range of [0.0, 1.0]
+                double pos = (gamepad1.left_stick_y) / 2.0;
+                servo.setPosition(pos);
             }
 
             telemetry.update();
@@ -32,26 +42,18 @@ public class ServoTest extends SynchronousOpMode
     {
         telemetry.addLine
                 (
-                        this.telemetry.item("Foo: ", new IFunc<Object>() {
+                        this.telemetry.item("Position: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return 0;
-                            }
-                        }),
-                        this.telemetry.item("Bar: ", new IFunc<Object>() {
-                            @Override
-                            public Object value() {
-                                return 0;
+                                return formatNumber(servo.getPosition());
                             }
                         })
                 );
 
     }
 
-    String formatConfig (int config) { return String.format("0x%04X", config); }
-
     public String formatNumber(double number)
     {
-        return String.format("%.2f", number);
+        return String.format("%.3f", number);
     }
 }
