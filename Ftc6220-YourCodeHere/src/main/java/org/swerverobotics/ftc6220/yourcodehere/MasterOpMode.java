@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.swerverobotics.library.interfaces.IBNO055IMU;
 import org.swerverobotics.library.SynchronousOpMode;
@@ -84,6 +85,12 @@ public abstract class MasterOpMode extends SynchronousOpMode
     boolean autoStartingPlace = Constants.START_POSITION_1;
     boolean autoSide = Constants.RED;
 
+
+    LED greenLight;
+    LED blueLight;
+    LED yellowLight;
+    boolean led_state;
+
     //drive the wheels
     public void driveWheels(double leftPower, double rightPower)
     {
@@ -151,6 +158,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
         this.initializeAutonomousParmeters();
 
+        this.initializeLight();
+
         stopAllMotors();
     }
 
@@ -172,6 +181,18 @@ public abstract class MasterOpMode extends SynchronousOpMode
         autoSide = redOrBlue.getState();
         telemetry.log.add("Side is " + (autoSide ? "red" : "blue"));
 
+    }
+
+    public void initializeLight()
+    {
+        greenLight = hardwareMap.led.get("GreenLight");
+        telemetry.log.add("Green Light is " + (led_state));
+
+        blueLight = hardwareMap.led.get("BlueLight");
+        telemetry.log.add("Blue Light is " + (led_state));
+
+        yellowLight = hardwareMap.led.get("YellowLight");
+        telemetry.log.add("Yellow Light is " + (led_state));
     }
 
     //this is so we can be able to initialize servos after pause for start (robot needs to fit in sizing box)

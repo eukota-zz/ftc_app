@@ -88,17 +88,28 @@ public class SynchTeleOp extends MasterTeleOp
         if (pad1.a)
         {
             setFieldDrivingMode();
+            led_state = Constants.GREEN_LED;
+            greenLight.enable(led_state);
+            telemetry.update();
         }
         //set "ready" mode for getting ready to climb the ramp
         //need to drive backwards so we can line up against the ramp
         else if (pad1.b)
         {
             setBackwardsDriveMode();
+            greenLight.close();
+            led_state = Constants.BLUE_LED;
+            blueLight.enable(led_state);
+            telemetry.update();
         }
         //set drive climb mode
         else if (pad1.y)
         {
             setRampClimbingMode();
+            blueLight.close();
+            led_state = Constants.YELLOW_LED;
+            yellowLight.enable(led_state);
+            telemetry.update();
         }
 
         //reduce power so we can go slower ("slow mode") and have more control

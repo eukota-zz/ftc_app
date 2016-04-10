@@ -87,7 +87,7 @@ public abstract class MasterTeleOp extends MasterOpMode
         HangerServo.setPosition((0.5 * p2LeftStickPower + 1) / 2);
 
         //field driving mode
-        if (currentDriveMode == DriveMode.Field)
+        if ((currentDriveMode == DriveMode.Field))
         {
             //the sticks and power are flipped
             leftSidePower  = p1RightStickPower;
@@ -95,9 +95,10 @@ public abstract class MasterTeleOp extends MasterOpMode
             driveWheels(leftSidePower, rightSidePower);
             driveClimbers(climberPower, climberPower);
         }
+
         //"ready" mode for getting ready to climb the ramp
         //we need to drive backwards when aligning with the ramp
-        else if (currentDriveMode == DriveMode.PreRamp)
+        else if ((currentDriveMode == DriveMode.PreRamp))
         {
             //read input from the controller
             leftSidePower  = -p1LeftStickPower;
@@ -107,7 +108,7 @@ public abstract class MasterTeleOp extends MasterOpMode
         }
 
         //drive climb mode
-        else if (currentDriveMode == DriveMode.Ramp)
+        else if ((currentDriveMode == DriveMode.Ramp))
         {
             //read input from the controller. The climbers should turn with the wheels
             if (Math.signum(adjustedPower) == 1.0)
@@ -116,7 +117,7 @@ public abstract class MasterTeleOp extends MasterOpMode
                 MotorRightBack.setPower(0.625 * -p1RightStickPower);
                 MotorLeftTriangle.setPower(-p1LeftStickPower);
                 MotorRightTriangle.setPower(-p1RightStickPower);
-                driveClimbers(0.5 * -p1LeftStickPower,0.5 * -p1RightStickPower);
+                driveClimbers(0.5 * -p1LeftStickPower, 0.5 * -p1RightStickPower);
             }
 
             else
