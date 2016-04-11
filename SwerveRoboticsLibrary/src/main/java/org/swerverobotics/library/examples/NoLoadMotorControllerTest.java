@@ -31,6 +31,9 @@ public class NoLoadMotorControllerTest extends SynchronousOpMode
     // The number of log readings taken thus far
     int readings = 1;
 
+    // The total time to run the test, in minutes
+    int testTime = 30;
+
     // Substring is used to only take the date and time from the Date object
     String FILENAME = "NoLoadMCTest " + String.format("%tc", new Date(System.currentTimeMillis())).substring(4, 19) + ".txt";
     PrintWriter outputFile;
@@ -53,6 +56,13 @@ public class NoLoadMotorControllerTest extends SynchronousOpMode
 
         while (this.opModeIsActive() && keepRunning)
         {
+            // Break if elapsed time has exceeded test time
+            if(eTime.time() >= testTime * 60)
+            {
+                telemetry.log.add("[STOPPED] Test time exceeded");
+                keepRunning = false;
+            }
+
             // Checks to see if another period has passed
             if(eTime.time() - (readings * period) >= 0)
             {
