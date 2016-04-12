@@ -50,11 +50,6 @@ public class Constants
     public static final boolean START_POSITION_1 = true;
     public static final boolean START_POSITION_2 = false;
 
-    //Led mode constants
-    public static final boolean GREEN_LED = true;
-    public static final boolean BLUE_LED = false;
-    public static final boolean YELLOW_LED = true;
-
     //this accounts for the small difference between the wheel assemblies on the left and right side of the robot during driving
     public static final double LEFT_ASSEMBLY_DIFF = 0.84;
 }

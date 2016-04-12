@@ -12,6 +12,9 @@ public abstract class MasterTeleOp extends MasterOpMode
 {
 
     Hanger hanger;
+    double hangerServoTrim = 0.0;
+
+    public static final double hangerServoTrimValue = -0.025;
 
     protected void initialize()
     {
@@ -33,18 +36,24 @@ public abstract class MasterTeleOp extends MasterOpMode
     DriveMode currentDriveMode = DriveMode.Field;
 
     //This is the driving mode for going up the ramp
-    protected void setRampClimbingMode() {
+    protected void setRampClimbingMode() 
+    {
         setDriveMode(DriveMode.Ramp);
+        ledManager.turnOnYellowLight();
     }
 
     //This is the driving mode we use when we want to drive backwards to align with the ramp
-    protected void setBackwardsDriveMode() {
+    protected void setBackwardsDriveMode()
+    {
         setDriveMode(DriveMode.PreRamp);
+        ledManager.turnOnBlueLight();
     }
 
     //This is the driving mode we use when driving around the field
-    protected void setFieldDrivingMode() {
+    protected void setFieldDrivingMode()
+    {
         setDriveMode(DriveMode.Field);
+        ledManager.turnOnGreenLight();
     }
 
     private void setDriveMode(DriveMode mode) {
@@ -84,7 +93,8 @@ public abstract class MasterTeleOp extends MasterOpMode
 
         telemetry.addData("Hanger Power:", adjustedPower);
 
-        HangerServo.setPosition((0.5 * p2LeftStickPower + 1) / 2);
+
+        HangerServo.setPosition(hangerServoTrim + ((0.5 * p2LeftStickPower + 1) / 2));
 
         //field driving mode
         if ((currentDriveMode == DriveMode.Field))
