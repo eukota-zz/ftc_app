@@ -51,6 +51,7 @@ public class BatteryTest extends SynchronousOpMode
     PrintWriter outputFile;
 
     boolean keepRunning = true;
+    boolean initialized = false;
 
     @Override
     public void main() throws InterruptedException
@@ -65,12 +66,38 @@ public class BatteryTest extends SynchronousOpMode
 
         currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("currentSensor"), parameters);
 
-        composeDashboard();
         openPublicFileForWriting(FILENAME);
 
         waitForStart();
 
+        telemetry.addLine
+                (
+                        this.telemetry.item("Choose a period, then press start: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return period;
+                            }
+                        })
+                );
+
+        while(this.opModeIsActive() && !initialized)
+        {
+            if(updateGamepads())
+            {
+                if(gamepad1.dpad_up)
+                    period += 1;
+                if(gamepad1.dpad_down)
+                    if(period > 1)
+                        period -= 1;
+                if(gamepad1.start)
+                    initialized = true;
+            }
+        }
+
+        telemetry.clearDashboard();
+
         eTime.reset();
+        composeDashboard();
 
         startTest();
 
