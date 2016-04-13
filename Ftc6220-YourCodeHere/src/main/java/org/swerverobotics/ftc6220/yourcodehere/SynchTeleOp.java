@@ -44,6 +44,8 @@ public class SynchTeleOp extends MasterTeleOp
                 this.driveRobot(this.gamepad1, this.gamepad2);
             }
 
+            flipPreventor.checkForFlip();
+
             hanger.checkHanger();
             //telemetry.addData("tapeposition", hanger.getTapePosition());
 

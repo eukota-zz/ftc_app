@@ -55,7 +55,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(105, Constants.BACKWARDS, false);
             turnTo(225);
             driveStraight(56, Constants.BACKWARDS, false);
-            pause(100);
+            pause(1400);
             HikerDropper.slowToggle();
             pause(1000);
             driveStraight(56, Constants.FORWARDS * 0.4, false);
@@ -87,7 +87,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(100, Constants.BACKWARDS, false);
             turnTo(-45);
             driveStraight(56, Constants.BACKWARDS, false);
-            pause(100);
+            pause(1400);
             HikerDropper.slowToggle();
             pause(1000);
             driveStraight(56, Constants.FORWARDS * 0.4, false);

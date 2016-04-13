@@ -16,11 +16,6 @@ public abstract class MasterAutonomous extends MasterOpMode
 {
     //auto start position info
     public Transform autoStartPosition = new Transform(0.0,0.0,-90.0);
-    //IMU variable declaration
-    ElapsedTime elapsed = new ElapsedTime();
-    IBNO055IMU.Parameters parameters = new IBNO055IMU.Parameters();
-
-    EulerAngles angles;
 
 
 
@@ -38,15 +33,7 @@ public abstract class MasterAutonomous extends MasterOpMode
         MotorLeftBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         MotorRightBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
-        //IMU initialization
-        parameters.angleUnit = IBNO055IMU.ANGLEUNIT.DEGREES;
-        parameters.accelUnit = IBNO055IMU.ACCELUNIT.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "BNO055";
-        imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
-        //TODO adjust imu frequency dampening
-        //imu.write8(IBNO055IMU.REGISTER.OPR_MODE, );
 
     }
 
@@ -112,17 +99,17 @@ public abstract class MasterAutonomous extends MasterOpMode
             {
                 satisfactionCounter++;
             }
-            else if (Math.abs(angleDiff) < 6.0)
+            else if (Math.abs(angleDiff) < 5.0)
             {
-                satisfactionCounter+= 0.58;
+                satisfactionCounter+= 0.6;
             }
             else
             {
-                satisfactionCounter = 0;
+                satisfactionCounter += 0.15;
             }
 
 
-            if (satisfactionCounter > 80)
+            if (satisfactionCounter > 60)
             {
                 isTurnCompleted = true;
             }
