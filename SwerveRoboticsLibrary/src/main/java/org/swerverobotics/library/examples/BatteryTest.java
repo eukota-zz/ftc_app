@@ -92,6 +92,9 @@ public class BatteryTest extends SynchronousOpMode
                 if(gamepad1.start)
                     initialized = true;
             }
+
+            telemetry.update();
+            idle();
         }
 
         telemetry.clearDashboard();
