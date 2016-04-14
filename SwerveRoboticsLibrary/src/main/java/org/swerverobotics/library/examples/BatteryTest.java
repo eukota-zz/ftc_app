@@ -18,8 +18,11 @@ import java.io.PrintWriter;
 import java.util.Date;
 
 /**
- * Tests batteries by slowly draining them
- * and periodically measuring the voltage
+ * Tests batteries by slowly draining them and periodically measuring the voltage.
+ * Connect phone and battery to battery testing station, designed by Sig Johnson.
+ * Basic wiring consists of two relays wired in parallel to each other, and
+ * a resistor in series with each relay. A single INA219 current sensor is in
+ * series with the battery and parallel relays.
  */
 @TeleOp(name = "Battery Test")
 public class BatteryTest extends SynchronousOpMode
@@ -72,10 +75,10 @@ public class BatteryTest extends SynchronousOpMode
 
         telemetry.addLine
                 (
-                        this.telemetry.item("Choose a period, then press start: ", new IFunc<Object>() {
+                        this.telemetry.item("Choose a measurement period, then press start: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return period;
+                                return period + " sec";
                             }
                         })
                 );
