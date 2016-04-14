@@ -82,7 +82,7 @@ public abstract class MasterTeleOp extends MasterOpMode
 
         double p2LeftStickPower  = pad2.left_stick_y * currentDrivePowerFactor;
         double p2RightStickPower = pad2.right_stick_y * currentDrivePowerFactor;
-        double adjustedPower = p2RightStickPower; //hanger.checkStalled(p2RightStickPower);
+        double adjustedPower = p2RightStickPower;
 
         double leftSidePower;
         double rightSidePower;

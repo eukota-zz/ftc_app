@@ -20,16 +20,14 @@ public class FlipPreventor
 
     double hangerEncoderValue;
 
-
-
     public void checkForFlip() throws InterruptedException
     {
-        hangerEncoderValue = masterOpMode.getTapePosition();
+        hangerEncoderValue = -1 * masterOpMode.getTapePosition();
 
         masterOpMode.telemetry.addData("hanger encoder value: ", hangerEncoderValue);
         masterOpMode.telemetry.update();
 
-        if(hangerEncoderValue > 1120)
+        if(hangerEncoderValue > 2240)
         {
             hanging = true;
         }
