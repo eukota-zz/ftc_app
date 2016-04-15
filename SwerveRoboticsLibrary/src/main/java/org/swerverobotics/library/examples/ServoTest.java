@@ -12,7 +12,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * A single servo is controlled by a joystick
  */
 @TeleOp(name = "Servo Test")
-@Disabled
+
 public class ServoTest extends SynchronousOpMode
 {
     Servo servo = null;

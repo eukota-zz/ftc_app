@@ -20,7 +20,7 @@ import java.util.Date;
  * with no load per Sig's request
  */
 @TeleOp(name = "No Load Motor Controller Test")
-@Disabled
+
 public class NoLoadMotorControllerTest extends SynchronousOpMode
 {
     VoltageSensor voltageSensor = null;

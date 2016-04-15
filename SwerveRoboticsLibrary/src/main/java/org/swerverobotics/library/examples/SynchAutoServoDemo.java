@@ -12,7 +12,7 @@ import org.swerverobotics.library.interfaces.*;
  * "servo". It works with both modern and legacy servo controllers.
  */
 @Autonomous(name="Auto Servo (Synch)", group="Swerve Examples")
-@Disabled
+
 public class SynchAutoServoDemo extends SynchronousOpMode
     {
     Servo servo;

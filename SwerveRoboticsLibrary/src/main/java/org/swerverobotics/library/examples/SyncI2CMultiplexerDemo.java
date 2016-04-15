@@ -18,7 +18,7 @@ import org.swerverobotics.library.internal.MultiplexedColorSensorManager;
  * http://www.adafruit.com/products/2717
  */
 @TeleOp(name = "I2C Multiplexer Demo", group = "Swerve Examples")
-@Disabled
+
 public class SyncI2CMultiplexerDemo extends SynchronousOpMode
 {
     //----------------------------------------------------------------------------------------------
