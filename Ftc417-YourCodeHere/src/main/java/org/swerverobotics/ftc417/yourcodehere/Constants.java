@@ -28,10 +28,10 @@ public class Constants {
     public static final double FLAT = .5;
 
     //Servo positions
-    public static final double LEFT_CLOSED = .1;
-    public static final double LEFT_OPEN = 1;
-    public static final double RIGHT_OPEN = 0;
-    public static final double RIGHT_CLOSED = 1;
+    public static final double LEFT_CLOSED = .2;
+    public static final double LEFT_OPEN = .8;
+    public static final double RIGHT_OPEN = .2;
+    public static final double RIGHT_CLOSED = .6;
 
 
 }
