@@ -47,7 +47,7 @@ public class BatteryTest extends SynchronousOpMode
 
     double resistance = 0.0;
     double resistor0 = 200.0;
-    double resistor1 = 3.0;
+    double resistor1 = 3.2;
 
     // Substring is used to only take the date and time from the Date object
     String FILENAME = "BatteryTest " + String.format("%tc", new Date(System.currentTimeMillis())).substring(4, 19) + ".txt";
