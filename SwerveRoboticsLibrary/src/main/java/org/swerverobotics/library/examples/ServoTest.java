@@ -3,6 +3,7 @@ package org.swerverobotics.library.examples;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -11,6 +12,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * A single servo is controlled by a joystick
  */
 @TeleOp(name = "Servo Test")
+@Disabled
 public class ServoTest extends SynchronousOpMode
 {
     Servo servo = null;

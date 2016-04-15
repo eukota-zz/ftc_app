@@ -170,7 +170,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             turnFilter.roll(angleDiff);
 
             //set filtered motor powers
-            power = Constants.TURNING_POW_ADJUSTMENT * turnFilter.getFilteredValue();
+            power = turnFilter.getFilteredValue();
             //cap power at 1 magnitude
             if (Math.abs(power) > 1)
             {
@@ -207,6 +207,9 @@ public abstract class MasterAutonomous extends MasterOpMode
             }
 
             pause(1);
+
+            flipPreventor.checkForFlip();
+
             idle();
         }
         stopDriveMotors();

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -19,6 +20,7 @@ import java.util.Date;
  * with no load per Sig's request
  */
 @TeleOp(name = "No Load Motor Controller Test")
+@Disabled
 public class NoLoadMotorControllerTest extends SynchronousOpMode
 {
     VoltageSensor voltageSensor = null;
