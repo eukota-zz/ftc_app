@@ -1,13 +1,17 @@
 package org.swerverobotics.ftc6220.yourcodehere;
 
+import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.swerverobotics.library.interfaces.EulerAngles;
 import org.swerverobotics.library.interfaces.IBNO055IMU;
-import org.swerverobotics.library.SynchronousOpMode;
 import org.swerverobotics.library.interfaces.IFunc;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +57,12 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
     //sensors
     IBNO055IMU imu = null;
+    //IMU variable declaration
+    ElapsedTime elapsed = new ElapsedTime();
+    IBNO055IMU.Parameters parameters = new IBNO055IMU.Parameters();
+
+    EulerAngles angles;
+
 
     //Declare motors
     DcMotor MotorRightBack = null;
@@ -61,8 +71,8 @@ public abstract class MasterOpMode extends SynchronousOpMode
     DcMotor MotorLeftTriangle = null;
     DcMotor MotorRightClimber = null;
     DcMotor MotorLeftClimber = null;
-    DcMotor LeftMotorHanger = null;
-    DcMotor RightMotorHanger = null;
+    public DcMotor LeftMotorHanger = null;
+    public DcMotor RightMotorHanger = null;
 
     // Declare servos
     Servo ServoLeftZiplineHitter = null;
@@ -84,6 +94,10 @@ public abstract class MasterOpMode extends SynchronousOpMode
     boolean autoStartingPlace = Constants.START_POSITION_1;
     boolean autoSide = Constants.RED;
 
+    DriverLEDManager ledManager;
+
+    FlipPreventor flipPreventor;
+
     //drive the wheels
     public void driveWheels(double leftPower, double rightPower)
     {
@@ -100,8 +114,28 @@ public abstract class MasterOpMode extends SynchronousOpMode
         MotorRightClimber.setPower(rightPower);
     }
 
+    public void driveAllMotors(double leftPower, double rightPower)
+    {
+        MotorLeftTriangle.setPower(Constants.LEFT_ASSEMBLY_DIFF * leftPower );
+        MotorRightTriangle.setPower(rightPower);
+        MotorLeftBack.setPower(Constants.LEFT_ASSEMBLY_DIFF * Constants.REAR_WHEEL_POWER_FACTOR * leftPower );
+        MotorRightBack.setPower(Constants.REAR_WHEEL_POWER_FACTOR * rightPower);
+        MotorLeftClimber.setPower(leftPower);
+        MotorRightClimber.setPower(rightPower);
+    }
+
     protected void initialize()
     {
+        //IMU initialization
+        parameters.angleUnit = IBNO055IMU.ANGLEUNIT.DEGREES;
+        parameters.accelUnit = IBNO055IMU.ACCELUNIT.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "BNO055";
+        imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
+
+        //TODO adjust imu frequency dampening
+        //imu.write8(IBNO055IMU.REGISTER.OPR_MODE, );
+
         //dynamically load all servos
         for (String curServoName : Servo6220.GetNames())
         {
@@ -145,11 +179,15 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.MotorLeftClimber.setDirection(DcMotor.Direction.REVERSE);
 
         //the left side hanger motor moves the opposite direction of the right side hanger.
-        this.RightMotorHanger.setDirection(DcMotor.Direction.REVERSE);
+        this.LeftMotorHanger.setDirection(DcMotor.Direction.REVERSE);
         this.LeftMotorHanger.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         this.RightMotorHanger.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
 
         this.initializeAutonomousParmeters();
+
+        this.ledManager = new DriverLEDManager(this);
+
+        this.flipPreventor = new FlipPreventor(this);
 
         stopAllMotors();
     }
@@ -174,6 +212,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
     }
 
+
     //this is so we can be able to initialize servos after pause for start (robot needs to fit in sizing box)
     public void initializeServoPositions()
     {
@@ -190,6 +229,11 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.HikerDropper = new ServoToggler(ServoHikerDropper, Constants.HIKER_DROPPER_NOTDEPLOYED, Constants.HIKER_DROPPER_DEPLOYED, this);
 
         this.HangerServo.setPosition(Constants.HANGER_SERVO_STOP);
+    }
+
+    public int getTapePosition()
+    {
+        return this.LeftMotorHanger.getCurrentPosition();
     }
 
     protected void stopDriveMotors()

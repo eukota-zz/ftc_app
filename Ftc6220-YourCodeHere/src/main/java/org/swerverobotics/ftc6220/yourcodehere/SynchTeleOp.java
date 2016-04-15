@@ -31,6 +31,8 @@ public class SynchTeleOp extends MasterTeleOp
 
         initializeServoPositions();
 
+        setFieldDrivingMode();
+
         // Enter a loop processing all the input we receive
         while (this.opModeIsActive())
         {
@@ -41,6 +43,8 @@ public class SynchTeleOp extends MasterTeleOp
 
                 this.driveRobot(this.gamepad1, this.gamepad2);
             }
+
+            flipPreventor.checkForFlip();
 
             hanger.checkHanger();
             //telemetry.addData("tapeposition", hanger.getTapePosition());
@@ -55,6 +59,16 @@ public class SynchTeleOp extends MasterTeleOp
 
     private void handleDriverInput(Gamepad pad1, Gamepad pad2) throws InterruptedException
     {
+        if (pad2.dpad_down)
+        {
+            hangerServoTrim -= hangerServoTrimValue;
+        }
+
+        if (pad2.dpad_up)
+        {
+            hangerServoTrim += hangerServoTrimValue;
+        }
+
         if (pad2.y && !lastBtn[Y])
         {
             HikerDropper.slowToggle();

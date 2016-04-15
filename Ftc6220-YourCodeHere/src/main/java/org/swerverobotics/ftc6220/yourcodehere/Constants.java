@@ -38,17 +38,17 @@ public class Constants
     public static final double BACKWARDS = -FORWARDS;
     public static final double SLOW_FORWARDS = 0.3 * FORWARDS;
     public static final double SLOW_BACKWARDS = 0.3 * BACKWARDS;
-    public static final double TURNING_POW_ADJUSTMENT = 1.8;
+    public static final double TURNING_POW_ADJUSTMENT = 1.5;
 
     //IMU and encoder constants
     public static final int ANDYMARK_ENC_TICKS = 1120;
     public static final int TETRIX_ENC_TICKS = 1440;
 
+    //autonomous switch constants
     public static final boolean RED = true;
     public static final boolean BLUE = false;
     public static final boolean START_POSITION_1 = true;
     public static final boolean START_POSITION_2 = false;
-
 
     //this accounts for the small difference between the wheel assemblies on the left and right side of the robot during driving
     public static final double LEFT_ASSEMBLY_DIFF = 0.84;

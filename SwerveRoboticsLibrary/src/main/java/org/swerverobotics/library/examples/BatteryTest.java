@@ -1,4 +1,4 @@
-package org.swerverobotics.ftc8923.yourcodehere;
+package org.swerverobotics.library.examples;
 
 import android.os.Environment;
 
@@ -18,8 +18,11 @@ import java.io.PrintWriter;
 import java.util.Date;
 
 /**
- * Tests batteries by slowly draining them
- * and periodically measuring the voltage
+ * Tests batteries by slowly draining them and periodically measuring the voltage.
+ * Connect phone and battery to battery testing station, designed by Sig Johnson.
+ * Basic wiring consists of two relays wired in parallel to each other, and
+ * a resistor in series with each relay. A single INA219 current sensor is in
+ * series with the battery and parallel relays.
  */
 @TeleOp(name = "Battery Test")
 public class BatteryTest extends SynchronousOpMode
@@ -51,6 +54,7 @@ public class BatteryTest extends SynchronousOpMode
     PrintWriter outputFile;
 
     boolean keepRunning = true;
+    boolean initialized = false;
 
     @Override
     public void main() throws InterruptedException
@@ -65,12 +69,41 @@ public class BatteryTest extends SynchronousOpMode
 
         currentSensor = ClassFactory.createAdaFruitINA219(hardwareMap.i2cDevice.get("currentSensor"), parameters);
 
-        composeDashboard();
         openPublicFileForWriting(FILENAME);
 
         waitForStart();
 
+        telemetry.addLine
+                (
+                        this.telemetry.item("Choose a measurement period, then press start: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return period + " sec";
+                            }
+                        })
+                );
+
+        while(this.opModeIsActive() && !initialized)
+        {
+            if(updateGamepads())
+            {
+                if(gamepad1.dpad_up)
+                    period += 1;
+                if(gamepad1.dpad_down)
+                    if(period > 1)
+                        period -= 1;
+                if(gamepad1.start)
+                    initialized = true;
+            }
+
+            telemetry.update();
+            idle();
+        }
+
+        telemetry.clearDashboard();
+
         eTime.reset();
+        composeDashboard();
 
         startTest();
 
