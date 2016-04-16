@@ -35,7 +35,7 @@ public class DriveABot extends SynchronousOpMode
             // Gamepads have a new state, so update things that need updating
             if(updateGamepads())
             {
-                gameDrive();
+                tankDrive(); //use tank drive. DO NOT change this without talking to Heidi first!!!
             }
 
             telemetry.update();
@@ -82,8 +82,8 @@ public class DriveABot extends SynchronousOpMode
         double forwardPower = gamepad1.right_trigger - gamepad1.left_trigger;
         double turningPower = gamepad1.left_stick_x * 0.5;
 
-        double leftPower = forwardPower + turningPower;
-        double rightPower = forwardPower - turningPower;
+        double leftPower = forwardPower - turningPower;
+        double rightPower = forwardPower + turningPower;
 
         motorLeft.setPower(leftPower);
         motorRight.setPower(rightPower);
@@ -100,7 +100,9 @@ public class DriveABot extends SynchronousOpMode
         motorRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // The motors will run in opposite directions, so flip one
-        motorRight.setDirection(DcMotor.Direction.REVERSE);
+        //THIS IS SET UP FOR TANK MODE WITH OUR CURRENT DRIVABOTS
+        //DON'T CHANGE IT!
+        motorLeft.setDirection(DcMotor.Direction.REVERSE); //DO NOT change without talking to Heidi first!!!
 
         // Set up telemetry data
         configureDashboard();
