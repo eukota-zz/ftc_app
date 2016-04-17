@@ -12,7 +12,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
-@TeleOp(name="Drive-A-Bot", group="Swerve Examples")
+@TeleOp(name="Drive-A-Bot Timed", group="Swerve Examples")
 
 public class DriveABotWithTimer extends SynchronousOpMode
 {
@@ -21,7 +21,7 @@ public class DriveABotWithTimer extends SynchronousOpMode
 
     ElapsedTime timer;
 
-    static final int TIME_PER_KID_IN_SECONDS = (30); //5 minute turns per kid
+    static final int TIME_PER_KID_IN_SECONDS = (5*60); //5 minute turns per kid
     boolean kidHasTimeLeft = true;
 
     @Override protected void main() throws InterruptedException
@@ -47,6 +47,7 @@ public class DriveABotWithTimer extends SynchronousOpMode
             telemetry.update();
             idle();
 
+            //this is calculating a boolean value: true or false, is there time left?
             kidHasTimeLeft = ((TIME_PER_KID_IN_SECONDS - timer.seconds()) > 0);
         }
     }
@@ -142,13 +143,7 @@ public class DriveABotWithTimer extends SynchronousOpMode
                         telemetry.item("Time remaining: ", new IFunc<Object>() {
                             @Override
                             public Object value() {
-                                return TIME_PER_KID_IN_SECONDS - timer.seconds();
-                            }
-                        }),
-                        telemetry.item("Timer: ", new IFunc<Object>() {
-                            @Override
-                            public Object value() {
-                                return timer.seconds();
+                                return formatAsInteger(TIME_PER_KID_IN_SECONDS - timer.seconds());
                             }
                         })
                 );
@@ -157,5 +152,9 @@ public class DriveABotWithTimer extends SynchronousOpMode
     public String formatNumber(double d)
     {
         return String.format("%.2f", d);
+    }
+    public String formatAsInteger(double d)
+    {
+        return String.format("%d", (int)d);
     }
 }
