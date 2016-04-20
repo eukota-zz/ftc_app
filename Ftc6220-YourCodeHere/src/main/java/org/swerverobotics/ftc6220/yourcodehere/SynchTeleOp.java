@@ -15,8 +15,8 @@ public class SynchTeleOp extends MasterTeleOp
     //TODO encapsulate
     //lefthang,righthang,leftzip,rightzip,hiker
     boolean[] lastBtn = new boolean[5];
-    static final int LEFT_BUMPER = 0;
-    static final int RIGHT_BUMPER = 1;
+    static final int LEFT_TRIGGER = 0;
+    static final int RIGHT_TRIGGER = 1;
     static final int B = 2;
     static final int X = 3;
     static final int Y = 4;
@@ -88,15 +88,20 @@ public class SynchTeleOp extends MasterTeleOp
             LeftHolder.toggle();
         }
 
-        if (pad2.left_bumper && !lastBtn[LEFT_BUMPER])
+        ServoLeftZiplineHitter.setPosition(1 - (pad2.left_trigger + 1) / 2);
+
+        ServoRightZiplineHitter.setPosition((pad2.right_trigger + 1) / 2);
+
+        if(pad2.dpad_left)
         {
-            LeftZiplineHitter.toggle();
+            ServoLeftZiplineHitter.setPosition(1.0);
         }
 
-        if (pad2.right_bumper && !lastBtn[RIGHT_BUMPER])
+        if(pad2.dpad_right)
         {
-            RightZiplineHitter.toggle();
+            ServoRightZiplineHitter.setPosition(0.0);
         }
+
 
         //set field driving mode
         if (pad1.a)
@@ -125,8 +130,8 @@ public class SynchTeleOp extends MasterTeleOp
         }
 
         //update button prev states
-        lastBtn[LEFT_BUMPER] = pad2.left_bumper;
-        lastBtn[RIGHT_BUMPER] = pad2.right_bumper;
+        //lastBtn[LEFT_BUMPER] = pad2.left_bumper;
+        //lastBtn[RIGHT_BUMPER] = pad2.right_bumper;
         lastBtn[B] = pad2.b;
         lastBtn[X] = pad2.x;
         lastBtn[Y] = pad2.y;
