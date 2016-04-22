@@ -218,8 +218,12 @@ public abstract class MasterOpMode extends SynchronousOpMode
     {
         this.ServoRightZiplineHitter.setDirection(Servo.Direction.REVERSE);
 
-        this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED, this);
-        this.RightZiplineHitter = new ServoToggler(ServoRightZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED, this);
+        //changed zipline hitters from ServoTogglers to cr servos
+        this.ServoLeftZiplineHitter.setPosition(0.5);
+        this.ServoRightZiplineHitter.setPosition(0.5);
+
+        //this.LeftZiplineHitter = new ServoToggler(ServoLeftZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED, this);
+        //this.RightZiplineHitter = new ServoToggler(ServoRightZiplineHitter, Constants.ZIPLINEHITTER_NOTDEPLOYED, Constants.ZIPLINEHITTER_DEPLOYED, this);
 
         this.HolderServoLeft.setDirection(Servo.Direction.REVERSE);
 
