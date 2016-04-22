@@ -14,6 +14,7 @@ public class AutoBlueInsideBeaconClimberZipliner extends MasterAutonomous
 {
     @Override public void main() throws InterruptedException
     {
+        /*
         robotInit();
         configureTelemtry();
         telemetry.setUpdateIntervalMs(50);
@@ -29,7 +30,7 @@ public class AutoBlueInsideBeaconClimberZipliner extends MasterAutonomous
 
         //driveBackwardDistanceIMU(DRIVE_POWER, 11500);
         alignWithBlueSideWhiteLine();
-        /*
+
         correctDistanceToWall();
 
         readBeaconColors();

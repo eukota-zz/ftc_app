@@ -12,6 +12,7 @@ public class AutoRedInsideParkCollect extends MasterAutonomous
 {
     @Override public void main() throws InterruptedException
     {
+        /*
         robotInit();
         configureTelemtry();
 
@@ -21,5 +22,6 @@ public class AutoRedInsideParkCollect extends MasterAutonomous
         motorCollector.setPower(-POWER_FULL);
         driveForwardDistanceIMU(DRIVE_POWER, 13000);
         stopDriving();
+        */
     }
 }

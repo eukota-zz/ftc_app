@@ -12,6 +12,7 @@ public class AutoBlueOutsideParkCollect extends MasterAutonomous
 {
     @Override public void main() throws InterruptedException
     {
+        /*
         robotInit();
         configureTelemtry();
 
@@ -23,5 +24,6 @@ public class AutoBlueOutsideParkCollect extends MasterAutonomous
         turnRightDegrees(DRIVE_POWER, 40);
         driveForwardDistanceIMU(DRIVE_POWER, 5000);
         stopDriving();
+        */
     }
 }

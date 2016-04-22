@@ -23,7 +23,7 @@ public class SynchAutonomous extends MasterAutonomous
 
         if (autoWaitAtStart)
         {
-            pause(8000);
+            pause(14000);
         }
         else
         {
@@ -54,20 +54,20 @@ public class SynchAutonomous extends MasterAutonomous
             turnTo(180);
             driveStraight(91, Constants.BACKWARDS, false);
             turnTo(220);
-            driveStraight(59, Constants.BACKWARDS, false);
+            driveStraight(62, Constants.BACKWARDS, false);
             pause(400);
             HikerDropper.slowToggle();
             pause(400);
             HikerDropper.slowToggle();
-            driveStraight(59, Constants.FORWARDS, false);
+            driveStraight(62, Constants.FORWARDS, false);
             //driveStraight(56, Constants.BACKWARDS * 0.4, false);
             turnTo(135);
             pause(500);
-            driveStraight(65, Constants.FORWARDS, false);
+            driveStraight(64, Constants.FORWARDS, false);
             turnTo(88);
             pause(1400);
             driveStraight(60, Constants.FORWARDS, false);
-            driveStraight(65, Constants.FORWARDS, true);
+            driveStraight(64, Constants.FORWARDS, true);
         }
         //Blue 1
         else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide))

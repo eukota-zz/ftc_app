@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
  */
 public class MasterAutonomous extends Master
 {
+    /*
     // Variables for beacon colors
     int leftBlue = 0;
     int leftRed = 0;
@@ -211,7 +212,7 @@ public class MasterAutonomous extends Master
         }
         whiteLineValue = 0.3;
 
-        /*
+
         turnRight(DRIVE_POWER / 2);
         while(lightSensorFront.getLightDetected() > whiteLineValue)
         {
@@ -219,7 +220,7 @@ public class MasterAutonomous extends Master
             // Wait until front light sensor detects line
             telemetry.update();
             idle();
-        }*/
+        }
         stopDriving();
     }
 
@@ -239,14 +240,14 @@ public class MasterAutonomous extends Master
             telemetry.update();
             idle();
         }
-        /*
+
         while(lightSensorFront.getLightDetected() < 0.6)
         {
             // Wait until front light sensor detects line
             telemetry.update();
             idle();
         }
-        */
+
     }
 
     public double getDistance()
@@ -257,5 +258,5 @@ public class MasterAutonomous extends Master
     public void correctDistanceToWall() throws InterruptedException
     {
         driveForwardDistance(DRIVE_POWER / 2, (int) ((30.0 - getDistance()) * 100.0));
-    }
+    }*/
 }

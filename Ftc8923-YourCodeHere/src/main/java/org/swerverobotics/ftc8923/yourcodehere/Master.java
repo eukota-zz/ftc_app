@@ -32,13 +32,14 @@ public class Master extends SynchronousOpMode
     Servo servoCollectorHinge = null;
     Servo servoClimberDumper = null;
 
+    /*
     ColorSensor colorSensorBeacon;
     OpticalDistanceSensor lightSensorFront;
     OpticalDistanceSensor lightSensorBack;
     UltrasonicSensor ultrasonicSensor;
     IBNO055IMU imu;
     int calibratedBlue;
-
+    */
     //TODO change this
     int FOO = 1;
 
@@ -117,6 +118,7 @@ public class Master extends SynchronousOpMode
          */
 
         // Initialize sensors
+        /*
         colorSensorBeacon = hardwareMap.colorSensor.get("colorSensorBeacon");
         colorSensorBeacon.enableLed(false);
         lightSensorFront = hardwareMap.opticalDistanceSensor.get("lightSensorFront");
@@ -124,6 +126,7 @@ public class Master extends SynchronousOpMode
         ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonicSensor");
         parameters.angleUnit = IBNO055IMU.ANGLEUNIT.DEGREES;
         imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
+        */
     }
 
     public void initializeServoPositions()
@@ -174,6 +177,7 @@ public class Master extends SynchronousOpMode
                 );
 
         // Light sensor info
+        /*
         telemetry.addLine
                 (
                         this.telemetry.item("Front light sensor: ", new IFunc<Object>() {
@@ -208,7 +212,7 @@ public class Master extends SynchronousOpMode
                                 return imu.getAngularOrientation().heading;
                             }
                         })
-                );
+                );*/
     }
 
     public String formatNumber(double number)

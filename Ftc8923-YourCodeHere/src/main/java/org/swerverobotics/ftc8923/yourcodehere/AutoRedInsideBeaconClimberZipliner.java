@@ -14,6 +14,7 @@ public class AutoRedInsideBeaconClimberZipliner extends MasterAutonomous
 {
     @Override public void main() throws InterruptedException
     {
+        /*
         robotInit();
         configureTelemtry();
 
@@ -39,5 +40,6 @@ public class AutoRedInsideBeaconClimberZipliner extends MasterAutonomous
         driveBackwardDistance(DRIVE_POWER, FOO);
         servoLeftZipline.setPosition(ZIPLINE_RIGHT_UP);
         stopDriving();
+        */
     }
 }

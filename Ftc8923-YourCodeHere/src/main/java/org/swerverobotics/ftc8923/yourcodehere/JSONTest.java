@@ -9,8 +9,10 @@ public class JSONTest extends Master
 
     public void setCalibratedBlue() throws JSONException
     {
+        /*
         colorSensorValueStorage.put("Calibrated Blue", colorSensorBeacon.blue());
         calibratedBlue = colorSensorBeacon.blue();
+        */
     }
 
     public int receiveCalibratedBlue() throws JSONException
