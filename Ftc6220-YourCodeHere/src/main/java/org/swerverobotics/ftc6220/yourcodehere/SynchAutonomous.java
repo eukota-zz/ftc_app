@@ -21,6 +21,8 @@ public class SynchAutonomous extends MasterAutonomous
 
         initializeServoPositions();
 
+        HikerDropper.halfDeploy();
+
         if (autoWaitAtStart)
         {
             pause(14000);
@@ -57,17 +59,26 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(62, Constants.BACKWARDS, false);
             pause(400);
             HikerDropper.slowToggle();
-            pause(400);
+            pause(800);
+            driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
-            driveStraight(62, Constants.FORWARDS, false);
+            turnTo(265);
+            pause(400);
+            driveStraight(75, Constants.FORWARDS, false);
+            turnTo(355);
+            pause(600);
+            driveStraight(72, Constants.BACKWARDS, false);
+            turnTo(265);
+            pause(600);
+            driveStraight(220, Constants.BACKWARDS, false);
             //driveStraight(56, Constants.BACKWARDS * 0.4, false);
-            turnTo(135);
-            pause(500);
-            driveStraight(64, Constants.FORWARDS, false);
-            turnTo(88);
-            pause(1400);
-            driveStraight(60, Constants.FORWARDS, false);
-            driveStraight(64, Constants.FORWARDS, true);
+            //turnTo(135);
+            //pause(500);
+            //driveStraight(64, Constants.FORWARDS, false);
+            //turnTo(85);
+            //pause(1400);
+            //driveStraight(60, Constants.FORWARDS, false);
+            //driveStraight(64, Constants.FORWARDS, true);
         }
         //Blue 1
         else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide))

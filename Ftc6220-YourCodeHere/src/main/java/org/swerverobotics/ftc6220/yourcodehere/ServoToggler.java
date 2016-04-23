@@ -94,4 +94,9 @@ public class ServoToggler
         servo.setPosition(servoRetractedPosition);
         isDeployed = false;
     }
+
+    public void halfDeploy() throws InterruptedException
+    {
+        servo.setPosition(Constants.HIKER_DROPPER_HALF_DEPLOYED);
+    }
 }
