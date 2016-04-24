@@ -8,12 +8,12 @@ import org.swerverobotics.library.SynchronousOpMode;
 /**
  * Created by Cole on 4/7/2016.
  */
-public class FlipPreventor
+public class FlipPreventer
 {
     MasterOpMode masterOpMode;
     boolean hanging = false;
 
-    public FlipPreventor(MasterOpMode master)
+    public FlipPreventer(MasterOpMode master)
     {
         this.masterOpMode = master;
     }

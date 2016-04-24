@@ -37,7 +37,8 @@ public class HangerWithEncoders extends Hanger
     {
         int currentPosition = getTapePosition();
 
-        if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION)) {
+        if ( (currentPosition < MINPOSITION) || (currentPosition > MAXPOSITION))
+        {
             stopHangerMotors();
         }
         else

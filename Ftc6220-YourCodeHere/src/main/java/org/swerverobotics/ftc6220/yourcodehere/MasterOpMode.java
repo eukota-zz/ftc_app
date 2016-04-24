@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
-import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -93,10 +92,11 @@ public abstract class MasterOpMode extends SynchronousOpMode
     boolean autoWaitAtStart = false;
     boolean autoStartingPlace = Constants.START_POSITION_1;
     boolean autoSide = Constants.RED;
+    boolean autoPosition = Constants.RAMP;
 
     DriverLEDManager ledManager;
 
-    FlipPreventor flipPreventor;
+    FlipPreventer flipPreventer;
 
     //drive the wheels
     public void driveWheels(double leftPower, double rightPower)
@@ -187,7 +187,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
 
         this.ledManager = new DriverLEDManager(this);
 
-        this.flipPreventor = new FlipPreventor(this);
+        this.flipPreventer = new FlipPreventer(this);
 
         stopAllMotors();
     }
@@ -209,6 +209,11 @@ public abstract class MasterOpMode extends SynchronousOpMode
         redOrBlue.setMode(DigitalChannelController.Mode.INPUT);
         autoSide = redOrBlue.getState();
         telemetry.log.add("Side is " + (autoSide ? "red" : "blue"));
+
+        DigitalChannel scoreStrategy = hardwareMap.digitalChannel.get("RamporNoRamp");
+        scoreStrategy.setMode(DigitalChannelController.Mode.INPUT);
+        autoPosition = scoreStrategy.getState();
+        telemetry.log.add("Strategy is " + (autoPosition ? "ramp" : "no ramp"));
 
     }
 

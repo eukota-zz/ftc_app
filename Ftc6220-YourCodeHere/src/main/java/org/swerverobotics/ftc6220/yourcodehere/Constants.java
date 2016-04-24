@@ -50,6 +50,9 @@ public class Constants
     public static final boolean BLUE = false;
     public static final boolean START_POSITION_1 = true;
     public static final boolean START_POSITION_2 = false;
+    public static final boolean RAMP = true;
+    public static final boolean NO_RAMP = false;
+
 
     //this accounts for the small difference between the wheel assemblies on the left and right side of the robot during driving
     public static final double LEFT_ASSEMBLY_DIFF = 0.84;

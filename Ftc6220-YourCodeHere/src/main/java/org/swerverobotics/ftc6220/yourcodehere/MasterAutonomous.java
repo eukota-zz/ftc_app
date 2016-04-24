@@ -1,11 +1,6 @@
 package org.swerverobotics.ftc6220.yourcodehere;
 
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.swerverobotics.library.ClassFactory;
-import org.swerverobotics.library.interfaces.EulerAngles;
-import org.swerverobotics.library.interfaces.IBNO055IMU;
 
 
 /*
@@ -19,7 +14,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
 
 
-    PIDFilter turnFilter = new PIDFilter( 0.04, 0.00001, 0.01 );
+    PIDFilter turnFilter = new PIDFilter( 0.03, 0.00005, 0.08 );
 
 
     protected void initialize()
@@ -90,8 +85,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
             telemetry.addData("power:", power);
             telemetry.addData("dA:", angleDiff);
-
-
+            telemetry.update();
 
             //check if the turn is finished and the robot is settled
 
@@ -101,11 +95,11 @@ public abstract class MasterAutonomous extends MasterOpMode
             }
             else if (Math.abs(angleDiff) < 5.0)
             {
-                satisfactionCounter+= 0.6;
+                satisfactionCounter+= 0.55;
             }
             else
             {
-                satisfactionCounter += 0.15;
+                satisfactionCounter += 0.12;
             }
 
 
@@ -121,7 +115,6 @@ public abstract class MasterAutonomous extends MasterOpMode
             idle();
         }
         stopAllMotors();
-
     }
 
     public void driveStraight(double distance, double direction, boolean climbers) throws InterruptedException
@@ -181,6 +174,8 @@ public abstract class MasterAutonomous extends MasterOpMode
             rightpower = 0.9 - power;
 
             telemetry.addData("power:", power);
+            telemetry.addData("currentAngle:", currentOrientation);
+
             telemetry.update();
             //cap power at 1 magnitude
             if (Math.abs(leftpower) > 1)
@@ -208,7 +203,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
             pause(1);
 
-            flipPreventor.checkForFlip();
+            flipPreventer.checkForFlip();
 
             idle();
         }
