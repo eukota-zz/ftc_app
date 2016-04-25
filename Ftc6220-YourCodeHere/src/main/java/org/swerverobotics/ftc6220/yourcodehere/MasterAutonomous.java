@@ -14,7 +14,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
 
 
-    PIDFilter turnFilter = new PIDFilter( 0.03, 0.00005, 0.08 );
+    PIDFilter turnFilter = new PIDFilter( 0.015, 0.0000005, 0.003 );
 
 
     protected void initialize()
@@ -27,9 +27,6 @@ public abstract class MasterAutonomous extends MasterOpMode
         MotorRightBack.setMode(DcMotorController.RunMode.RESET_ENCODERS);
         MotorLeftBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         MotorRightBack.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-
-
-
     }
 
     public void setAutoStartPosition (double startingAngle) throws InterruptedException
@@ -103,7 +100,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             }
 
 
-            if (satisfactionCounter > 60)
+            if (satisfactionCounter > 65)
             {
                 isTurnCompleted = true;
             }
@@ -203,7 +200,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
             pause(1);
 
-            flipPreventer.checkForFlip();
+            flipPreventer.checkForReversedFlip();
 
             idle();
         }

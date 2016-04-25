@@ -42,4 +42,27 @@ public class FlipPreventer
         }
 
     }
+
+    public void checkForReversedFlip() throws InterruptedException
+    {
+        hangerEncoderValue = -1 * masterOpMode.getTapePosition();
+
+        masterOpMode.telemetry.addData("hanger encoder value: ", hangerEncoderValue);
+        masterOpMode.telemetry.update();
+
+        if(hangerEncoderValue > 2240)
+        {
+            hanging = true;
+        }
+
+        masterOpMode.angles = masterOpMode.imu.getAngularOrientation();
+
+        if((masterOpMode.angles.roll > 45) && (hanging == false))
+        {
+            masterOpMode.driveAllMotors(-1,-1);
+            masterOpMode.pause(400);
+            masterOpMode.stopAllMotors();
+        }
+
+    }
 }

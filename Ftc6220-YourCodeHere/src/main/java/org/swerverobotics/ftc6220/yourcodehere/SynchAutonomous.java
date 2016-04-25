@@ -40,7 +40,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(272, Constants.BACKWARDS, false);
             turnTo(135);
             driveStraight(70, Constants.BACKWARDS, false);
-            pause(100);
+            pause(200);
             HikerDropper.slowToggle();
             pause(800);
             driveStraight(70, Constants.FORWARDS * 0.4, false);
@@ -56,20 +56,22 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(272, Constants.BACKWARDS, false);
             turnTo(135);
             driveStraight(70, Constants.BACKWARDS, false);
-            pause(100);
+            pause(200);
             HikerDropper.slowToggle();
             pause(800);
             driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
-            pause(400);
+            pause(200);
             driveStraight(75, Constants.FORWARDS, false);
             turnTo(0);
-            pause(600);
-            driveStraight(72, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(104, Constants.BACKWARDS, false);
+            driveStraight(10, Constants.FORWARDS, false);
+            pause(200);
             turnTo(270);
-            pause(600);
-            driveStraight(220, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(265, Constants.BACKWARDS, false);
         }
         //Red 2 NoRamp
         else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.RED == autoSide) && (Constants.NO_RAMP))
@@ -78,7 +80,7 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(180);
-            driveStraight(88, Constants.BACKWARDS, false);
+            driveStraight(96, Constants.BACKWARDS, false);
             turnTo(225);
             driveStraight(62, Constants.BACKWARDS, false);
             pause(400);
@@ -94,23 +96,25 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(180);
-            driveStraight(88, Constants.BACKWARDS, false);
+            driveStraight(96, Constants.BACKWARDS, false);
             turnTo(225);
             driveStraight(62, Constants.BACKWARDS, false);
-            pause(400);
+            pause(200);
             HikerDropper.slowToggle();
             pause(800);
             driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
-            pause(400);
-            driveStraight(75, Constants.FORWARDS, false);
+            pause(200);
+            driveStraight(75, Constants.BACKWARDS, false);
             turnTo(0);
-            pause(600);
-            driveStraight(72, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(104, Constants.BACKWARDS, false);
+            driveStraight(10, Constants.FORWARDS, false);
+            pause(200);
             turnTo(270);
-            pause(600);
-            driveStraight(220, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(265, Constants.BACKWARDS, false);
         }
         //Blue 1 NoRamp
         else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide) && (Constants.NO_RAMP))
@@ -120,7 +124,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(260, Constants.BACKWARDS, false);
             turnTo(45);
             driveStraight(70, Constants.BACKWARDS, false);
-            pause(100);
+            pause(200);
             HikerDropper.slowToggle();
             pause(800);
             driveStraight(70, Constants.FORWARDS * 0.4, false);
@@ -135,20 +139,22 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(260, Constants.BACKWARDS, false);
             turnTo(45);
             driveStraight(70, Constants.BACKWARDS, false);
-            pause(100);
+            pause(200);
             HikerDropper.slowToggle();
             pause(800);
             driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
-            pause(400);
-            driveStraight(75, Constants.FORWARDS, false);
+            pause(200);
+            driveStraight(75, Constants.BACKWARDS, false);
             turnTo(180);
-            pause(600);
-            driveStraight(72, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(104, Constants.BACKWARDS, false);
+            driveStraight(10, Constants.FORWARDS, false);
+            pause(200);
             turnTo(270);
-            pause(600);
-            driveStraight(220, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(265, Constants.BACKWARDS, false);
         }
         //Blue 2 NoRamp
         else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.BLUE == autoSide) && (Constants.NO_RAMP)) {
@@ -156,10 +162,10 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(0);
-            driveStraight(88, Constants.BACKWARDS, false);
+            driveStraight(96, Constants.BACKWARDS, false);
             turnTo(315);
             driveStraight(62, Constants.BACKWARDS, false);
-            pause(400);
+            pause(200);
             HikerDropper.slowToggle();
             pause(800);
             driveStraight(25, Constants.FORWARDS, false);
@@ -172,23 +178,25 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(0);
-            driveStraight(88, Constants.BACKWARDS, false);
+            driveStraight(96, Constants.BACKWARDS, false);
             turnTo(315);
             driveStraight(62, Constants.BACKWARDS, false);
-            pause(400);
+            pause(200);
             HikerDropper.slowToggle();
             pause(800);
             driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
-            pause(400);
-            driveStraight(75, Constants.FORWARDS, false);
+            pause(200);
+            driveStraight(75, Constants.BACKWARDS, false);
             turnTo(180);
-            pause(600);
-            driveStraight(72, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(104, Constants.BACKWARDS, false);
+            driveStraight(10, Constants.FORWARDS, false);
+            pause(200);
             turnTo(270);
-            pause(600);
-            driveStraight(220, Constants.BACKWARDS, false);
+            pause(200);
+            driveStraight(265, Constants.BACKWARDS, false);
         }
     }
 }

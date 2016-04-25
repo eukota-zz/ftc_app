@@ -90,7 +90,7 @@ public class SynchTeleOp extends MasterTeleOp
 
         ServoLeftZiplineHitter.setPosition(1 - (pad2.left_trigger + 0.93) / 2);
 
-        ServoRightZiplineHitter.setPosition((pad2.right_trigger + 0.955) / 2);
+        ServoRightZiplineHitter.setPosition((pad2.right_trigger + 0.95) / 2);
 
         if(pad2.left_bumper)
         {
