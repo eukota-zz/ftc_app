@@ -14,7 +14,7 @@ public abstract class MasterAutonomous extends MasterOpMode
 
 
 
-    PIDFilter turnFilter = new PIDFilter( 0.015, 0.0000005, 0.003 );
+    PIDFilter turnFilter = new PIDFilter( 0.015, 0.0000005, 0.005 );
 
 
     protected void initialize()
@@ -58,7 +58,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             lasts[0] = angleDiff;
             sensorDiff = lasts[0]-lasts[1];
             //check 360-0 case
-            if (Math.abs(sensorDiff) > 350)
+            if (Math.abs(sensorDiff) > 180)
             {
                 offset -= Math.signum(sensorDiff) * 360;
             }
@@ -146,7 +146,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             lasts[0] = angleDiff;
             sensorDiff = lasts[0]-lasts[1];
             //check 360-0 case
-            if (Math.abs(sensorDiff) > 350)
+            if (Math.abs(sensorDiff) > 180)
             {
                 offset -= Math.signum(sensorDiff) * 360;
             }

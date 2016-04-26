@@ -33,7 +33,7 @@ public class SynchAutonomous extends MasterAutonomous
         }
 
         //Red 1 NoRamp
-        if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.RED == autoSide) && (Constants.NO_RAMP))
+        if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.RED == autoSide) && (Constants.NO_RAMP == autoPosition))
         {
             setAutoStartPosition(90);
 
@@ -49,7 +49,7 @@ public class SynchAutonomous extends MasterAutonomous
         }
 
         //Red 1 Ramp
-        if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.RED == autoSide) && (Constants.RAMP))
+        if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.RED == autoSide) && (Constants.RAMP == autoPosition))
         {
             setAutoStartPosition(90);
 
@@ -74,7 +74,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(265, Constants.BACKWARDS, false);
         }
         //Red 2 NoRamp
-        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.RED == autoSide) && (Constants.NO_RAMP))
+        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.RED == autoSide) && (Constants.NO_RAMP == autoPosition))
         {
             setAutoStartPosition(135);
 
@@ -82,15 +82,15 @@ public class SynchAutonomous extends MasterAutonomous
             turnTo(180);
             driveStraight(96, Constants.BACKWARDS, false);
             turnTo(225);
-            driveStraight(62, Constants.BACKWARDS, false);
+            driveStraight(74, Constants.BACKWARDS, false);
             pause(400);
             HikerDropper.slowToggle();
             pause(800);
-            driveStraight(25, Constants.FORWARDS, false);
+            driveStraight(37, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
         }
         //Red 2 Ramp
-        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.RED == autoSide) && (Constants.RAMP))
+        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.RED == autoSide) && (Constants.RAMP == autoPosition))
         {
             setAutoStartPosition(135);
 
@@ -98,11 +98,11 @@ public class SynchAutonomous extends MasterAutonomous
             turnTo(180);
             driveStraight(96, Constants.BACKWARDS, false);
             turnTo(225);
-            driveStraight(62, Constants.BACKWARDS, false);
+            driveStraight(74, Constants.BACKWARDS, false);
             pause(200);
             HikerDropper.slowToggle();
             pause(800);
-            driveStraight(25, Constants.FORWARDS, false);
+            driveStraight(37, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
             pause(200);
@@ -117,11 +117,11 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(265, Constants.BACKWARDS, false);
         }
         //Blue 1 NoRamp
-        else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide) && (Constants.NO_RAMP))
+        else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide) && (Constants.NO_RAMP == autoPosition))
         {
             setAutoStartPosition(90);
 
-            driveStraight(260, Constants.BACKWARDS, false);
+            driveStraight(255, Constants.BACKWARDS, false);
             turnTo(45);
             driveStraight(70, Constants.BACKWARDS, false);
             pause(200);
@@ -132,11 +132,11 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(70, Constants.BACKWARDS * 0.4, false);
         }
         //Blue 1 Ramp
-        else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide) && (Constants.RAMP))
+        else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide) && (Constants.RAMP == autoPosition))
         {
             setAutoStartPosition(90);
 
-            driveStraight(260, Constants.BACKWARDS, false);
+            driveStraight(255, Constants.BACKWARDS, false);
             turnTo(45);
             driveStraight(70, Constants.BACKWARDS, false);
             pause(200);
@@ -149,7 +149,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(75, Constants.BACKWARDS, false);
             turnTo(180);
             pause(200);
-            driveStraight(104, Constants.BACKWARDS, false);
+            driveStraight(126, Constants.BACKWARDS, false);
             driveStraight(10, Constants.FORWARDS, false);
             pause(200);
             turnTo(270);
@@ -157,12 +157,12 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(265, Constants.BACKWARDS, false);
         }
         //Blue 2 NoRamp
-        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.BLUE == autoSide) && (Constants.NO_RAMP)) {
+        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.BLUE == autoSide) && (Constants.NO_RAMP == autoPosition)) {
             setAutoStartPosition(45);
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(0);
-            driveStraight(96, Constants.BACKWARDS, false);
+            driveStraight(82, Constants.BACKWARDS, false);
             turnTo(315);
             driveStraight(62, Constants.BACKWARDS, false);
             pause(200);
@@ -172,13 +172,13 @@ public class SynchAutonomous extends MasterAutonomous
             HikerDropper.slowToggle();
         }
         //Blue 2 Ramp
-        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.BLUE == autoSide) && (Constants.RAMP))
+        else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.BLUE == autoSide) && (Constants.RAMP == autoPosition))
         {
             setAutoStartPosition(45);
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(0);
-            driveStraight(96, Constants.BACKWARDS, false);
+            driveStraight(82, Constants.BACKWARDS, false);
             turnTo(315);
             driveStraight(62, Constants.BACKWARDS, false);
             pause(200);
@@ -191,7 +191,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(75, Constants.BACKWARDS, false);
             turnTo(180);
             pause(200);
-            driveStraight(104, Constants.BACKWARDS, false);
+            driveStraight(126, Constants.BACKWARDS, false);
             driveStraight(10, Constants.FORWARDS, false);
             pause(200);
             turnTo(270);
