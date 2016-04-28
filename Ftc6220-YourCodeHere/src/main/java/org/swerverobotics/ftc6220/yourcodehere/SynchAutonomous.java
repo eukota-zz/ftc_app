@@ -37,7 +37,7 @@ public class SynchAutonomous extends MasterAutonomous
         {
             setAutoStartPosition(90);
 
-            driveStraight(272, Constants.BACKWARDS, false);
+            driveStraight(269, Constants.BACKWARDS, false);
             turnTo(135);
             driveStraight(70, Constants.BACKWARDS, false);
             pause(200);
@@ -53,7 +53,7 @@ public class SynchAutonomous extends MasterAutonomous
         {
             setAutoStartPosition(90);
 
-            driveStraight(272, Constants.BACKWARDS, false);
+            driveStraight(269, Constants.BACKWARDS, false);
             turnTo(135);
             driveStraight(70, Constants.BACKWARDS, false);
             pause(200);
@@ -80,13 +80,13 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(180);
-            driveStraight(96, Constants.BACKWARDS, false);
+            driveStraight(77, Constants.BACKWARDS, false);
             turnTo(225);
-            driveStraight(74, Constants.BACKWARDS, false);
+            driveStraight(88, Constants.BACKWARDS, false);
             pause(400);
             HikerDropper.slowToggle();
             pause(800);
-            driveStraight(37, Constants.FORWARDS, false);
+            driveStraight(51, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
         }
         //Red 2 Ramp
@@ -96,13 +96,13 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(180);
-            driveStraight(96, Constants.BACKWARDS, false);
+            driveStraight(77, Constants.BACKWARDS, false);
             turnTo(225);
-            driveStraight(74, Constants.BACKWARDS, false);
+            driveStraight(88, Constants.BACKWARDS, false);
             pause(200);
             HikerDropper.slowToggle();
             pause(800);
-            driveStraight(37, Constants.FORWARDS, false);
+            driveStraight(51, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
             pause(200);
@@ -171,7 +171,7 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
         }
-        //Blue 2 Ramp
+        //Blue 2 Ramp defensive
         else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.BLUE == autoSide) && (Constants.RAMP == autoPosition))
         {
             setAutoStartPosition(45);
@@ -181,14 +181,18 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(82, Constants.BACKWARDS, false);
             turnTo(315);
             driveStraight(62, Constants.BACKWARDS, false);
-            pause(200);
+            //200
+            pause(100);
             HikerDropper.slowToggle();
-            pause(800);
+            //800
+            pause(600);
             driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
-            pause(200);
-            driveStraight(75, Constants.BACKWARDS, false);
+            //200
+            pause(100);
+            driveStraight(100, Constants.BACKWARDS, false);
+            /*driveStraight(75, Constants.BACKWARDS, false);
             turnTo(180);
             pause(200);
             driveStraight(126, Constants.BACKWARDS, false);
@@ -196,7 +200,7 @@ public class SynchAutonomous extends MasterAutonomous
             pause(200);
             turnTo(270);
             pause(200);
-            driveStraight(265, Constants.BACKWARDS, false);
+            driveStraight(265, Constants.BACKWARDS, false);*/
         }
     }
 }

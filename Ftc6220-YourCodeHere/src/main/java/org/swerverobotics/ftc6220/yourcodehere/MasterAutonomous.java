@@ -92,15 +92,15 @@ public abstract class MasterAutonomous extends MasterOpMode
             }
             else if (Math.abs(angleDiff) < 5.0)
             {
-                satisfactionCounter+= 0.55;
+                satisfactionCounter+= 0.6;
             }
             else
             {
-                satisfactionCounter += 0.12;
+                satisfactionCounter += 0.15;
             }
 
 
-            if (satisfactionCounter > 65)
+            if (satisfactionCounter > 60)
             {
                 isTurnCompleted = true;
             }

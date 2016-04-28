@@ -39,7 +39,7 @@ public class Constants
     public static final double BACKWARDS = -FORWARDS;
     public static final double SLOW_FORWARDS = 0.3 * FORWARDS;
     public static final double SLOW_BACKWARDS = 0.3 * BACKWARDS;
-    public static final double TURNING_POW_ADJUSTMENT = 1.7;
+    public static final double TURNING_POW_ADJUSTMENT = 1.75;
 
     //IMU and encoder constants
     public static final int ANDYMARK_ENC_TICKS = 1120;
