@@ -90,7 +90,7 @@ public abstract class MasterAutonomous extends MasterOpMode
             {
                 satisfactionCounter++;
             }
-            else if (Math.abs(angleDiff) < 5.0)
+            else if (Math.abs(angleDiff) < 6.0)
             {
                 satisfactionCounter+= 0.6;
             }

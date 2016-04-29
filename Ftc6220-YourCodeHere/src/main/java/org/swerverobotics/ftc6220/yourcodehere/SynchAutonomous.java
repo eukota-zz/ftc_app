@@ -178,21 +178,21 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(0);
-            driveStraight(82, Constants.BACKWARDS, false);
+            driveStraight(70, Constants.BACKWARDS, false);
             turnTo(315);
-            driveStraight(62, Constants.BACKWARDS, false);
-            //200
+            driveStraight(75, Constants.BACKWARDS, false);
+            //alternate pause 200
             pause(100);
             HikerDropper.slowToggle();
             //800
+            driveStraight(32, Constants.FORWARDS, false);
+            //driveStraight(189, Constants.FORWARDS, false);
             pause(600);
-            driveStraight(25, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
             //200
             pause(100);
-            driveStraight(100, Constants.BACKWARDS, false);
-            /*driveStraight(75, Constants.BACKWARDS, false);
+            driveStraight(75, Constants.BACKWARDS, false);
             turnTo(180);
             pause(200);
             driveStraight(126, Constants.BACKWARDS, false);
@@ -200,7 +200,7 @@ public class SynchAutonomous extends MasterAutonomous
             pause(200);
             turnTo(270);
             pause(200);
-            driveStraight(265, Constants.BACKWARDS, false);*/
+            driveStraight(265, Constants.BACKWARDS, false);
         }
     }
 }
