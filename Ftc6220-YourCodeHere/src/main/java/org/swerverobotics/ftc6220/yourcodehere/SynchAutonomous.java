@@ -89,20 +89,25 @@ public class SynchAutonomous extends MasterAutonomous
             driveStraight(51, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
         }
-        //Red 2 Ramp
+        //Red 2 defense
         else if ((autoStartingPlace == Constants.START_POSITION_2) && (Constants.RED == autoSide) && (Constants.RAMP == autoPosition))
         {
             setAutoStartPosition(135);
 
-            driveStraight(110, Constants.BACKWARDS, false);
+            driveStraight(85, Constants.BACKWARDS, false);
             turnTo(180);
-            driveStraight(77, Constants.BACKWARDS, false);
+            pause(100);
+            driveStraight(118, Constants.BACKWARDS, false);
             turnTo(225);
-            driveStraight(88, Constants.BACKWARDS, false);
-            pause(200);
+            pause(100);
+            driveStraight(86, Constants.BACKWARDS, false);
             HikerDropper.slowToggle();
-            pause(800);
-            driveStraight(51, Constants.FORWARDS, false);
+            //800
+            pause(600);
+            //driveStraight(32, Constants.FORWARDS, false);
+            driveStraight(189, Constants.FORWARDS, false);
+            HikerDropper.slowToggle();
+            /*driveStraight(51, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
             turnTo(90);
             pause(200);
@@ -114,7 +119,7 @@ public class SynchAutonomous extends MasterAutonomous
             pause(200);
             turnTo(270);
             pause(200);
-            driveStraight(265, Constants.BACKWARDS, false);
+            driveStraight(265, Constants.BACKWARDS, false);*/
         }
         //Blue 1 NoRamp
         else if ((autoStartingPlace == Constants.START_POSITION_1) && (Constants.BLUE == autoSide) && (Constants.NO_RAMP == autoPosition))
@@ -162,13 +167,13 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(0);
-            driveStraight(82, Constants.BACKWARDS, false);
+            driveStraight(73, Constants.BACKWARDS, false);
             turnTo(315);
-            driveStraight(62, Constants.BACKWARDS, false);
+            driveStraight(75, Constants.BACKWARDS, false);
             pause(200);
             HikerDropper.slowToggle();
             pause(800);
-            driveStraight(25, Constants.FORWARDS, false);
+            driveStraight(32, Constants.FORWARDS, false);
             HikerDropper.slowToggle();
         }
         //Blue 2 Ramp defensive
@@ -178,18 +183,20 @@ public class SynchAutonomous extends MasterAutonomous
 
             driveStraight(110, Constants.BACKWARDS, false);
             turnTo(0);
-            driveStraight(70, Constants.BACKWARDS, false);
+            pause(100);
+            driveStraight(73, Constants.BACKWARDS, false);
             turnTo(315);
+            pause(100);
             driveStraight(75, Constants.BACKWARDS, false);
             //alternate pause 200
-            pause(100);
-            HikerDropper.slowToggle();
-            //800
-            driveStraight(32, Constants.FORWARDS, false);
-            //driveStraight(189, Constants.FORWARDS, false);
             pause(600);
             HikerDropper.slowToggle();
-            turnTo(90);
+            //800
+            //driveStraight(32, Constants.FORWARDS, false);
+            driveStraight(189, Constants.FORWARDS, false);
+            pause(100);
+            HikerDropper.slowToggle();
+            /*turnTo(90);
             //200
             pause(100);
             driveStraight(75, Constants.BACKWARDS, false);
@@ -200,7 +207,7 @@ public class SynchAutonomous extends MasterAutonomous
             pause(200);
             turnTo(270);
             pause(200);
-            driveStraight(265, Constants.BACKWARDS, false);
+            driveStraight(265, Constants.BACKWARDS, false);*/
         }
     }
 }
