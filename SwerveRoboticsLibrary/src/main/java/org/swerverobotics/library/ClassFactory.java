@@ -239,6 +239,8 @@ public final class ClassFactory
 
 
 
+        //----------------------------------------------------------------------------------------------
+        // AdaFruit INA219 current sensor
         /**
          * Instantiates a driver object for a  AdaFruit INA219 sensor which resides at the indicated I2cDevice using
          * default values for configuration parameters.
@@ -253,7 +255,7 @@ public final class ClassFactory
             return createAdaFruitINA219(opmodeContext, i2cDevice, new INA219.Parameters());
         }
 
-        /**
+       /**
          * Instantiates a driver object for an AdaFruit INA219 sensor which resides at the indicated I2cDevice using
          * the provided configuration parameters. This creation method only functions in a SynchronousOpMode.
          *
@@ -288,9 +290,13 @@ public final class ClassFactory
             return AdaFruitINA219CurrentSensor.create(opmodeContext, i2cDevice, parameters);
         }
 
+        //----------------------------------------------------------------------------------------------
 
-        //AdaFruit i2c color sensor
 
+
+
+        //----------------------------------------------------------------------------------------------
+        //AdaFruit i2c TCS34725 color sensor
         /**
          * Instantiates a driver object for an AdaFruit TCS34725 color sensor which resides at the indicated I2cDevice using
          * default values for configuration parameters.
@@ -340,7 +346,69 @@ public final class ClassFactory
             return AdaFruitTCS34725ColorSensor.create(opmodeContext, i2cDevice, parameters);
         }
 
+        //----------------------------------------------------------------------------------------------
 
+
+
+
+        //----------------------------------------------------------------------------------------------
+        //AdaFruit i2c light sensor based on TSL2561 chip
+
+        /**
+         * Instantiates a driver object for an AdaFruit TSL2561 light sensor which resides at the indicated I2cDevice using
+         * default values for configuration parameters.
+         *
+         * @param opmodeContext the OpMode within which this creation is taking place
+         * @param i2cDevice     the robot controller runtime object representing the sensor
+         * @return              the interface to the instantiated sensor object.
+         * @see #createAdaFruitTCS34725(OpMode, I2cDevice, TCS34725.Parameters)
+         */
+        public static TSL2561LightSensor createAdaFruitTSL2561LightSensor(OpMode opmodeContext, I2cDevice i2cDevice)
+        {
+            return createAdaFruitTSL2561LightSensor(opmodeContext, i2cDevice, new TSL2561LightSensor.Parameters());
+        }
+
+        /**
+         * Instantiates a driver object for an AdaFruit TSL2561 light sensor which resides at the indicated I2cDevice using
+         * default values for configuration parameters.
+         *
+         * @param i2cDevice     the robot controller runtime object representing the sensor
+         * @param parameters    the parameters with which the sensor should be initialized
+         * @return              the interface to the instantiated sensor object.
+         * @see #createAdaFruitTCS34725(OpMode, I2cDevice, TCS34725.Parameters) (OpMode, I2cDevice, INA219.Parameters)
+         */
+        public static TSL2561LightSensor createAdaFruitTSL2561LightSensor(I2cDevice i2cDevice, TSL2561LightSensor.Parameters parameters)
+        {
+            SwerveThreadContext.assertSynchronousThread();
+            return createAdaFruitTSL2561LightSensor(SwerveThreadContext.getOpMode(), i2cDevice, parameters);
+        }
+
+        /**
+         * Instantiates a driver object for an AdaFruit TSL2561 light sensor which resides at the indicated I2cDevice using
+         * default values for configuration parameters.
+         *
+         * <p>This sensor is used to sense illumination.</p>
+         *
+         *
+         * @param opmodeContext the OpMode within which this creation is taking place
+         * @param i2cDevice     the robot controller runtime object representing the sensor
+         * @param parameters    the parameters with which the sensor should be initialized
+         * @return              the interface to the instantiated sensor object. This object also
+         *                      supports the II2cDeviceClientUser interface, which can be useful
+         *                      for debugging.
+         * @see #createAdaFruitTCS34725(OpMode, I2cDevice) (OpMode, I2cDevice)
+         */
+        public static TSL2561LightSensor createAdaFruitTSL2561LightSensor(OpMode opmodeContext, I2cDevice i2cDevice, TSL2561LightSensor.Parameters parameters)
+        {
+            return AdaFruitTSL2561LightSensor.create(opmodeContext, i2cDevice, parameters);
+        }
+
+        //----------------------------------------------------------------------------------------------
+
+
+
+
+        //----------------------------------------------------------------------------------------------
         //AdaFruit i2c multiplexer
 
         /**
@@ -390,12 +458,13 @@ public final class ClassFactory
             return AdaFruitTCA9548AI2CMultiplexer.create(opmodeContext, i2cDevice, parameters);
         }
 
+        //----------------------------------------------------------------------------------------------
 
 
 
         //----------------------------------------------------------------------------------------------
-    // Low level I2cDevice creation
-    //----------------------------------------------------------------------------------------------
+        // Low level I2cDevice creation
+        //----------------------------------------------------------------------------------------------
 
     /**
      * Creates an independent I2cDevice implementation using information from an existing
