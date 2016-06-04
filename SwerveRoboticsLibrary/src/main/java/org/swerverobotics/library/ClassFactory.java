@@ -306,13 +306,13 @@ public final class ClassFactory
         }
 
         /**
-         * Instantiates a driver object for an AdaFruit INA219 sensor which resides at the indicated I2cDevice using
-         * the provided configuration parameters. This creation method only functions in a SynchronousOpMode.
+         * Instantiates a driver object for an AdaFruit TCS34725 color sensor which resides at the indicated I2cDevice using
+         * default values for configuration parameters.
          *
          * @param i2cDevice     the robot controller runtime object representing the sensor
          * @param parameters    the parameters with which the sensor should be initialized
          * @return              the interface to the instantiated sensor object.
-         * @see #createAdaFruitINA219(OpMode, I2cDevice, INA219.Parameters)
+         * @see #createAdaFruitTCS34725(OpMode, I2cDevice, TCS34725.Parameters) (OpMode, I2cDevice, INA219.Parameters)
          */
         public static TCS34725 createAdaFruitTCS34725(I2cDevice i2cDevice, TCS34725.Parameters parameters)
         {
@@ -321,10 +321,10 @@ public final class ClassFactory
         }
 
         /**
-         * Instantiates a driver object for an AdaFruit INA219 sensor which resides at the indicated I2cDevice using
-         * the provided configuration parameters.
+         * Instantiates a driver object for an AdaFruit TCS34725 color sensor which resides at the indicated I2cDevice using
+         * default values for configuration parameters.
          *
-         * <p>This sensor is used to sense current.</p>
+         * <p>This sensor is used to sense color.</p>
          *
          *
          * @param opmodeContext the OpMode within which this creation is taking place
@@ -333,7 +333,7 @@ public final class ClassFactory
          * @return              the interface to the instantiated sensor object. This object also
          *                      supports the II2cDeviceClientUser interface, which can be useful
          *                      for debugging.
-         * @see #createAdaFruitINA219(OpMode, I2cDevice)
+         * @see #createAdaFruitTCS34725(OpMode, I2cDevice) (OpMode, I2cDevice)
          */
         public static TCS34725 createAdaFruitTCS34725(OpMode opmodeContext, I2cDevice i2cDevice, TCS34725.Parameters parameters)
         {
