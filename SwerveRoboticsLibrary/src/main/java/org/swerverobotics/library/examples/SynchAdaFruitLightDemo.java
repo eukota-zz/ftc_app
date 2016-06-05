@@ -28,7 +28,7 @@ public class SynchAdaFruitLightDemo extends SynchronousOpMode
     I2cDevice i2cDevice;
     TSL2561LightSensor lightSensor;
 
-    //NOTE: the Adafruit light sensor's LED is not controllable via I2C.
+    //NOTE: unlike the base LightSensor class, the Adafruit light sensor does not have an LED
 
     AdaFruitTSL2561LightSensor.Parameters parameters = new  AdaFruitTSL2561LightSensor.Parameters();
 
@@ -46,6 +46,8 @@ public class SynchAdaFruitLightDemo extends SynchronousOpMode
         i2cDevice = hardwareMap.i2cDevice.get("adalight");
 
         parameters.gain = TSL2561LightSensor.GAIN.GAIN_1; //select the chip's gain
+        parameters.detectionMode = TSL2561LightSensor.LIGHT_DETECTION_MODE.BROADBAND; //measure visible light + IR light
+        parameters.integrationTime = TSL2561LightSensor.INTEGRATION_TIME.MS_13; //fast but low resolution
 
         this.lightSensor = ClassFactory.createAdaFruitTSL2561LightSensor(i2cDevice, parameters);
 

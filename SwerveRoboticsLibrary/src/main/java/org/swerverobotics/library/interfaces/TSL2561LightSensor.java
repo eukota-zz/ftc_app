@@ -199,9 +199,9 @@ public interface TSL2561LightSensor extends LightSensor
     }
 
     enum INTEGRATION_TIME {
-        MS_13(0x00),
-        MS_101(0x01),
-        MS_402(0x02);
+        MS_13(0x00), //fast but low resolution
+        MS_101(0x01), //medium speed and resolution
+        MS_402(0x02); //16-bit data but slowest conversions
 
         public final byte byteVal;
 

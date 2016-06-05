@@ -74,11 +74,10 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
         setIntegrationTimeAndGain(parameters.integrationTime, parameters.gain);
 
         //wait x milliseconds for first integration to complete
-        if (parameters.integrationTime == INTEGRATION_TIME.MS_13)  delay(TSL2561_INTEGRATION_DELAY_13MS);
-        else if (parameters.integrationTime == INTEGRATION_TIME.MS_101) delay(TSL2561_INTEGRATION_DELAY_101MS);
-        else /*if (parameters.integrationTime == INTEGRATION_TIME.MS_402)*/ delay(TSL2561_INTEGRATION_DELAY_402MS);
+        waitForIntegrationToComplete();
 
         // Enable the device
+        //todo in Adafruit's implelmentation they enable/disable the device for each read, presumably to save power. Should we?
         enable();
     }
 
@@ -98,6 +97,14 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
         write8(REGISTER.TIMING, time.byteVal | gain.byteVal);
     }
 
+    private synchronized void waitForIntegrationToComplete()
+    {
+        //wait x milliseconds for integration to complete
+        if (parameters.integrationTime == INTEGRATION_TIME.MS_13)  delay(TSL2561_INTEGRATION_DELAY_13MS);
+        else if (parameters.integrationTime == INTEGRATION_TIME.MS_101) delay(TSL2561_INTEGRATION_DELAY_101MS);
+        else /*if (parameters.integrationTime == INTEGRATION_TIME.MS_402)*/ delay(TSL2561_INTEGRATION_DELAY_402MS);
+    }
+
     public synchronized byte getState()
     {
         byte b = this.read8(REGISTER.CONTROL);
@@ -115,7 +122,6 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
     // LightSensor methods
     //----------------------------------------------------------------------------------------------
 
-    @Override
     /**
      *  I assume this method is intended to return the value in standard SI lux units,
      *  but that isn't clear from the LightSensor class definition (which doesn't appear to be public code).
@@ -124,6 +130,7 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
      *  The code in this method has been ported from AdaFruit's sample implementation,
      *  which itself appears to be adapted from the datasheet's implementation.
      */
+    @Override
     public double getLightDetected()
     {
         int broadband = 0;
@@ -236,8 +243,8 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
         return lux;
     }
 
-    @Override
     //return the raw value of the sensor, considering which light detection mode the user has asked for.
+    @Override
     public int getLightDetectedRaw()
     {
         if (parameters.detectionMode == LIGHT_DETECTION_MODE.BROADBAND)
@@ -258,7 +265,7 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
     @Override
     public synchronized void enableLed(boolean enable)
     {
-        throw new IllegalArgumentException("controlling the LED is not supported on the Adafruit light sensor.");
+        throw new IllegalArgumentException("The AdaFruit light sensor does not support controlling an LED.");
     }
 
     @Override
@@ -338,14 +345,25 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
 
     private int getRawBroadbandLight()
     {
+        //todo In AdaFruit's implementation, they always enable, read, disable. Should we?
+        //enable();
+        //waitForIntegrationToComplete();
+        //int returnValue = readTwoByteUnsignedRegister(REGISTER.CHAN0_LOW);
+        //disable();
+        //return returnValue;
         return readTwoByteUnsignedRegister(REGISTER.CHAN0_LOW);
     }
 
     private int getRawIRSpectrumLight()
     {
+        //todo In AdaFruit's implementation, they always enable, read, disable. Should we?
+        //enable();
+        //waitForIntegrationToComplete();
+        //int returnValue = readTwoByteUnsignedRegister(REGISTER.CHAN0_LOW);
+        //disable();
+        //return returnValue;
         return readTwoByteUnsignedRegister(REGISTER.CHAN1_LOW);
     }
-
 
     @Override public synchronized byte read8(final REGISTER reg) {
         //this device likes the COMMAND bit to be set when specifying registers
@@ -354,8 +372,8 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
 
     @Override public synchronized byte[] read(final REGISTER reg, final int cb) {
         //this device likes the COMMAND bit to be set when specifying registers,
-        // and the WORD bit to be set when reading or writing more than one byte
-        return deviceClient.read(reg.byteVal | TSL2561_COMMAND_BIT | TSL2561_WORD_BIT, cb);
+        //todo the device also has a WORD bit to be set when reading or writing a word instead of a byte; should we use it? I think not.
+        return deviceClient.read(reg.byteVal | TSL2561_COMMAND_BIT /*| TSL2561_WORD_BIT */, cb);
     }
 
     @Override public void write8(REGISTER reg, int data) {
@@ -366,8 +384,8 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
 
     @Override public void write(REGISTER reg, byte[] data) {
         //this device likes the COMMAND bit to be set when specifying registers,
-        // and the WORD bit to be set when reading or writing more than one byte
-        this.deviceClient.write(reg.byteVal | TSL2561_COMMAND_BIT | TSL2561_WORD_BIT, data);
+        //todo the device also has a WORD bit to be set when reading or writing a word instead of a byte; should we use it? I think not.
+        this.deviceClient.write(reg.byteVal | TSL2561_COMMAND_BIT /*| TSL2561_WORD_BIT*/, data);
         this.deviceClient.waitForWriteCompletions();
     }
 
