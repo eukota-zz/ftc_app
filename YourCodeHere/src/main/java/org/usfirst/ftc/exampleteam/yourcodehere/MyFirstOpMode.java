@@ -1,6 +1,7 @@
 package org.usfirst.ftc.exampleteam.yourcodehere;
 
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.TeleOp;
 
 /**
@@ -9,6 +10,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Java package.
  */
 @TeleOp(name="My First OpMode")
+@Disabled
 public class MyFirstOpMode extends SynchronousOpMode
     {
     /* Declare here any fields you might find useful. */

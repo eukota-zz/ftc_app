@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.INA219;
 import org.swerverobotics.library.interfaces.TeleOp;
@@ -25,7 +26,7 @@ import java.util.Date;
  * series with the battery and parallel relays.
  */
 @TeleOp(name = "Battery Internal Resistance Test")
-
+@Disabled
 public class BatteryInternalResistanceTest extends SynchronousOpMode
 {
     DigitalChannel relay200Ohm = null;

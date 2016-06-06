@@ -26,7 +26,7 @@ import java.util.Date;
  * series with the battery and parallel relays.
  */
 @TeleOp(name = "Battery Test")
-
+@Disabled
 public class BatteryTest extends SynchronousOpMode
 {
     DigitalChannel relay0 = null;
