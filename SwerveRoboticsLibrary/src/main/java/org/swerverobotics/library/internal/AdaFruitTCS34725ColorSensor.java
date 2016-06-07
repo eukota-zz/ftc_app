@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.*;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.exceptions.UnexpectedI2CDeviceException;
+import org.swerverobotics.library.interfaces.Multiplexable;
+import org.swerverobotics.library.interfaces.TCA9548A;
 import org.swerverobotics.library.interfaces.TCS34725;
 
 import java.nio.ByteBuffer;
@@ -18,10 +20,10 @@ import static org.swerverobotics.library.internal.Util.handleCapturedInterrupt;
  * https://www.adafruit.com/products/1334?&main_page=product_info&products_id=1334
  * https://github.com/adafruit/Adafruit_TCS34725
  */
-public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransitionEvents
+public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransitionEvents, Multiplexable
 {
     private final OpMode opmodeContext;
-    private final I2cDeviceSynch deviceClient;
+    private final I2cMultiplexedDeviceSync deviceClient;
 
     private TCS34725.Parameters parameters;
 
@@ -175,6 +177,12 @@ public class AdaFruitTCS34725ColorSensor implements TCS34725, IOpModeStateTransi
 
     private void disengage() {
         this.deviceClient.disengage();
+    }
+
+    //Implement Multiplexable
+    public void attachToMultiplexer(TCA9548A mux, TCA9548A.MULTIPLEXER_CHANNEL channel)
+    {
+        deviceClient.attachToMultiplexer(mux, channel);
     }
 
     //----------------------------------------------------------------------------------------------

@@ -508,9 +508,9 @@ public final class ClassFactory
      * @return                      the newly instantiated device
      * @see Engagable#engage()
      */
-    public static I2cDeviceSynch createI2cDeviceSynch(I2cDevice i2cDevice, int i2cAddr8Bit)
+    public static I2cMultiplexedDeviceSync createI2cDeviceSynch(I2cDevice i2cDevice, int i2cAddr8Bit)
         {
-        return new I2cDeviceSynchImpl(i2cDevice, i2cAddr8Bit, false);
+        return new I2cMultiplexedDeviceSync(i2cDevice, i2cAddr8Bit, false);
         }
 
     /**
@@ -519,7 +519,7 @@ public final class ClassFactory
      * @see #createI2cDeviceSynch(I2cDevice, int)
      */
     @Deprecated
-    public static I2cDeviceSynch createI2cDeviceClient(OpMode opmodeContext, I2cDevice i2cDevice, int i2cAddr8Bit, boolean closeOnOpModeStop)
+    public static I2cMultiplexedDeviceSync createI2cDeviceClient(OpMode opmodeContext, I2cDevice i2cDevice, int i2cAddr8Bit, boolean closeOnOpModeStop)
         {
         if (closeOnOpModeStop)
             throw new UnsupportedOperationException("support for auto-closing on opmode stop has been removed");

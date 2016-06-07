@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
  * https://www.adafruit.com/products/1334?&main_page=product_info&products_id=1334
  * https://github.com/adafruit/Adafruit_TCS34725
  */
-public interface TCS34725 extends ColorSensor
+public interface TCS34725 extends ColorSensor, Multiplexable
 {
     //----------------------------------------------------------------------------------------------
     // Construction

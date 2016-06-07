@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.exceptions.UnexpectedI2CDeviceException;
 import org.swerverobotics.library.interfaces.I2cDeviceSynchUser;
+import org.swerverobotics.library.interfaces.Multiplexable;
 import org.swerverobotics.library.interfaces.TCA9548A;
 
 import java.nio.ByteBuffer;
@@ -32,9 +33,11 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
     //------------------------------------------------------------------------------------------
 
     private final OpMode opmodeContext;
-    private final I2cDeviceSynch deviceClient;
+    private final I2cDeviceSynch deviceClient; //device client of the multiplexer itself
 
     private Parameters parameters;
+
+    //private Multiplexable devices[] = null;
 
     // We always read as much as we can when we have nothing else to do
     private static final I2cDeviceSynch.ReadMode readMode = I2cDeviceSynch.ReadMode.REPEAT;
@@ -60,6 +63,8 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
         this.deviceClient.setLoggingTag(params.loggingTag);
 
         this.parameters = params;
+
+        //this.devices = new Multiplexable[TCA9548A.NUM_CHANNELS];
     }
 
     /**
@@ -100,16 +105,27 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
     // Control the multiplexer
     //----------------------------------------------------------------------------------------------
 
+
+    @Override
+    public void addMultiplexableDevice(Multiplexable multiplexableDevice, MULTIPLEXER_CHANNEL channel)
+    {
+        //devices[channel.iVal] = multiplexableDevice;
+        multiplexableDevice.attachToMultiplexer(this, channel);
+    }
+
+
     //Note: the multiplexer actually allows you to have multiple channels on at a time.
     //I'm not currently making use of that capability.
     @Override
-    public void switchToChannel(int channel) throws IllegalArgumentException
+    public void switchToChannel(MULTIPLEXER_CHANNEL channel) throws IllegalArgumentException
     {
-        if (channel > 7)
+        int channelIVal = channel.iVal;
+
+        if (channelIVal > 7)
         {
             throw new IllegalArgumentException("Multiplexer port must be 0..7 but was " + channel);
         }
-        write8((byte)(1 << channel));
+        write8((byte)(1 << channelIVal));
     }
 
 
@@ -132,7 +148,7 @@ public final class AdaFruitTCA9548AI2CMultiplexer implements I2cDeviceSynchUser,
     public void write8(byte data) {
         //This device expects us to write a single byte, not a register address + a byte.
         //But, deviceClient insists that we give it both a register address and a value.
-        //So, we'll send the same data twice. It's a tiny bit wasteful but doesn't hurt anything.
+        //So, we'll send register as 0, which will essentially be ignored. It's a tiny bit wasteful but doesn't hurt anything.
         this.deviceClient.write8(0, data);
         this.deviceClient.waitForWriteCompletions();
     }
