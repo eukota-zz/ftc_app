@@ -10,8 +10,6 @@ import org.swerverobotics.library.interfaces.TCA9548A;
 import org.swerverobotics.library.interfaces.TCS34725;
 import org.swerverobotics.library.interfaces.TeleOp;
 import org.swerverobotics.library.internal.AdaFruitTCS34725ColorSensor;
-import org.swerverobotics.library.internal.MultiplexedColorSensorManager;
-
 
 /**
  * SyncI2CMultiplexerDemo gives a short demo on how to use the Adafruit I2C Multiplexer board.
