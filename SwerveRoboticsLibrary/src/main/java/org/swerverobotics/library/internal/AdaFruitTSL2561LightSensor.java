@@ -77,7 +77,9 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
         waitForIntegrationToComplete();
 
         // Enable the device
-        //todo in Adafruit's implelmentation they enable/disable the device for each read, presumably to save power. Should we?
+        // todo: in Adafruit's implelmentation they enable/disable the device for each read,
+        // presumably to save power. Should we? If we do, that would delay the read time
+        // while we wait for integration to complete. I'll skip that for now.
         enable();
     }
 
@@ -122,16 +124,48 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
     // LightSensor methods
     //----------------------------------------------------------------------------------------------
 
-    /**
-     *  I assume this method is intended to return the value in standard SI lux units,
-     *  but that isn't clear from the LightSensor class definition (which doesn't appear to be public code).
-     *  This method returns -1 if the sensor is saturated and the values aren't reliable.
-     *  //todo update error code; use -1 or 0 or AdaFruit's 65536...?
-     *  The code in this method has been ported from AdaFruit's sample implementation,
-     *  which itself appears to be adapted from the datasheet's implementation.
+    /*
+     * Get the amount of light detected by the sensor. 1.0 is max possible light, 0.0 is least possible light.
+     * Returns amount of light, on a scale of 0 to 1
      */
     @Override
     public double getLightDetected()
+    {
+        double raw = getLightDetectedRaw(); //get this as a double so the division below will use double math
+
+        return (raw/TSL2561_MAX_RAW_VALUE);
+    }
+
+
+    //return the raw value of the sensor, considering which light detection mode the user has asked for.
+    @Override
+    public int getLightDetectedRaw()
+    {
+        if (parameters.detectionMode == LIGHT_DETECTION_MODE.BROADBAND)
+        {
+            return getRawBroadbandLight();
+        }
+        else if (parameters.detectionMode == LIGHT_DETECTION_MODE.INFRARED)
+        {
+            return getRawIRSpectrumLight();
+        }
+        else /* if (parameters.detectionMode == LIGHT_DETECTION_MODE.VISIBLE) */
+        {
+            return ( getRawBroadbandLight() - getRawIRSpectrumLight());
+        }
+    }
+
+    /**
+     *  This method is intended to return the value in standard SI lux units.
+     *  The code in this method has been ported from AdaFruit's sample implementation,
+     *  which itself appears to be adapted from the datasheet's implementation.
+     *  This code returns an error value of -1 if the sensor is saturated such that the value is not reliable.
+     *
+     *  ToDo: the output values from this method need validation and checking with a light meter.
+     *  ToDo: THIS METHOD NEEDS DEBUGGING: IT'S PROBABLY WRONG!
+     */
+    @Override
+    public int getLightLux()
     {
         int broadband = 0;
         int ir = 0;
@@ -169,7 +203,7 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
         long channel0;
 
         /* Get the correct scale depending on the integration time. 402ms doesn't need to be scaled */
-        if (parameters.integrationTime == INTEGRATION_TIME.MS_13) clipThreshold = TSL2561_CLIPPING_13MS;
+        if (parameters.integrationTime == INTEGRATION_TIME.MS_13) chScale = TSL2561_LUX_CHSCALE_TINT0;
         else if (parameters.integrationTime == INTEGRATION_TIME.MS_101) chScale = TSL2561_LUX_CHSCALE_TINT1;
         else /*if (parameters.integrationTime == INTEGRATION_TIME.MS_402)*/ /* no scaling if 402ms*/ chScale = (1 << TSL2561_LUX_CHSCALE);
 
@@ -241,25 +275,6 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
 
         /* Signal I2C had no errors */
         return lux;
-    }
-
-    //return the raw value of the sensor, considering which light detection mode the user has asked for.
-    @Override
-    public int getLightDetectedRaw()
-    {
-        if (parameters.detectionMode == LIGHT_DETECTION_MODE.BROADBAND)
-        {
-            return getRawBroadbandLight();
-        }
-        else if (parameters.detectionMode == LIGHT_DETECTION_MODE.INFRARED)
-        {
-            return getRawIRSpectrumLight();
-        }
-        else /* if (parameters.detectionMode == LIGHT_DETECTION_MODE.VISIBLE) */
-        {
-            //todo Ask Dr. Fraser if this is legit ;)
-            return ( getRawBroadbandLight() - getRawIRSpectrumLight());
-        }
     }
 
     @Override
@@ -357,6 +372,7 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
     private int getRawIRSpectrumLight()
     {
         //todo In AdaFruit's implementation, they always enable, read, disable. Should we?
+        // No for now.
         //enable();
         //waitForIntegrationToComplete();
         //int returnValue = readTwoByteUnsignedRegister(REGISTER.CHAN0_LOW);

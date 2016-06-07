@@ -15,6 +15,7 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
 
 /**
  * This SynchronousOpMode illustrates using an AdaFruit TSL2561 Light Sensor over i2c.
+ * http://adafru.it/439
  * It includes support for setting the Gain and Integration Time of the chip,
  * as well as reading various components of the light: broadband, IR-only, or visible spectrum only.
  *
@@ -22,7 +23,7 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
  * This sample assumes a single light sensor called "adalight" using its default i2c address.
  */
 @TeleOp(name = "AdaFruit I2C Light Demo", group = "Swerve Examples")
-//@Disabled
+@Disabled
 public class SynchAdaFruitLightDemo extends SynchronousOpMode
 {
     I2cDevice i2cDevice;
@@ -118,9 +119,9 @@ public class SynchAdaFruitLightDemo extends SynchronousOpMode
 
 
         telemetry.addLine(
-                telemetry.item("lux: ", new IFunc<Object>() {
+                telemetry.item("light: ", new IFunc<Object>() {
                     public Object value() {
-                        return (lightSensor.getLightDetected());
+                        return formatLightLevel(lightSensor.getLightDetected());
                     }
                 }),
                 telemetry.item("raw: ", new IFunc<Object>() {
@@ -149,4 +150,5 @@ public class SynchAdaFruitLightDemo extends SynchronousOpMode
     {
         return String.format("0x%02X", b);
     }
+    String formatLightLevel(double light) { return String.format("%.3f", light); }
 }

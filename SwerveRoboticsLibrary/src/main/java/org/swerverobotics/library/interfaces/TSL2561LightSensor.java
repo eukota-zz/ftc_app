@@ -71,6 +71,8 @@ public interface TSL2561LightSensor extends LightSensor
         String status();
     */
 
+    int getLightLux();
+
     //----------------------------------------------------------------------------------------------
     // Status inquiry
     //----------------------------------------------------------------------------------------------
@@ -260,6 +262,8 @@ public interface TSL2561LightSensor extends LightSensor
     //int TSL2561_ADDR_HIGH        = (0x49);
 
     byte ADAFRUIT_TSL2561_ID     = (0x50);  //this doesn't match the datasheet I read, but matches actual device?!
+
+    int TSL2561_MAX_RAW_VALUE                = (0x0000FFFF);
 
     int TSL2561_INTEGRATION_DELAY_13MS       =  (15);    // These values come from AdaFruit's implementation
     int TSL2561_INTEGRATION_DELAY_101MS      = (120);    // These values come from AdaFruit's implementation
