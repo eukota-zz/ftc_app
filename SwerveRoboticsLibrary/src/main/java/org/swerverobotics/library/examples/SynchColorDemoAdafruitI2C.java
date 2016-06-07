@@ -45,6 +45,7 @@ public class SynchColorDemoAdafruitI2C extends SynchronousOpMode
         i2cDevice = hardwareMap.i2cDevice.get("adacolor");
 
         parameters.gain = TCS34725.GAIN.GAIN_4; //select the chip's gain
+        parameters.integrationTime = TCS34725.INTEGRATION_TIME.MS_2_4;  //set the integration time (trading off precision and speed)
 
         this.colorSensor = ClassFactory.createAdaFruitTCS34725(i2cDevice, parameters);
 
