@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.LightSensor;
  * Some code borrowed from AdaFruit's sample implementation at
  * https://github.com/adafruit/Adafruit_TSL2561
  */
-public interface TSL2561LightSensor extends LightSensor
+public interface TSL2561LightSensor extends LightSensor, Multiplexable
 {
     //----------------------------------------------------------------------------------------------
     // Construction

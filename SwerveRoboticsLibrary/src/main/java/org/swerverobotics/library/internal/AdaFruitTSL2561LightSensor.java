@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.exceptions.UnexpectedI2CDeviceException;
+import org.swerverobotics.library.interfaces.TCA9548A;
 import org.swerverobotics.library.interfaces.TSL2561LightSensor;
 
 import java.nio.ByteBuffer;
@@ -20,7 +21,7 @@ import static org.swerverobotics.library.internal.Util.handleCapturedInterrupt;
 public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeStateTransitionEvents
 {
     private final OpMode opmodeContext;
-    private final I2cDeviceSynch deviceClient;
+    private final I2cMultiplexedDeviceSync deviceClient;
 
     private Parameters parameters;
 
@@ -309,6 +310,12 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
 
     private void disengage() {
         this.deviceClient.disengage();
+    }
+
+    //Implement Multiplexable
+    public void attachToMultiplexer(TCA9548A mux, TCA9548A.MULTIPLEXER_CHANNEL channel)
+    {
+        deviceClient.attachToMultiplexer(mux, channel);
     }
 
     //----------------------------------------------------------------------------------------------
