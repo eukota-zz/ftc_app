@@ -84,10 +84,10 @@ public class Master extends SynchronousOpMode
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorScorer = hardwareMap.dcMotor.get("motorScorer");
         motorTapeMeasure = hardwareMap.dcMotor.get("motorTapeMeasure");
-        lights = hardwareMap.dcMotor.get("lights");
+        //lights = hardwareMap.dcMotor.get("lights");
 
-        servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
-        servoRightZipline = hardwareMap.servo.get("servoRightZipline");
+        //servoLeftZipline = hardwareMap.servo.get("servoLeftZipline");
+        //servoRightZipline = hardwareMap.servo.get("servoRightZipline");
         servoTapeMeasureElevation = hardwareMap.servo.get("servoTapeMeasureElevation");
         servoTapeMeasureLock = hardwareMap.servo.get("servoTapeMeasureLock");
         servoCollectorHinge = hardwareMap.servo.get("servoCollectorHinge");
@@ -132,8 +132,8 @@ public class Master extends SynchronousOpMode
     public void initializeServoPositions()
     {
         // Initialize servos to starting positions
-        servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
-        servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
+        //servoLeftZipline.setPosition(ZIPLINE_LEFT_UP);
+        //servoRightZipline.setPosition(ZIPLINE_RIGHT_UP);
         servoCollectorHinge.setPosition(COLLECTOR_HINGE_DOWN);
         servoClimberDumper.setPosition(CLIMBER_ARM_IN);
         servoTapeMeasureElevation.setPosition(TAPE_MEASURE_START_POS);
