@@ -71,16 +71,19 @@ public class MasterTeleOp extends Master
 
     public void controlTapeMeasureServos(Gamepad gamepad)
     {
-        // Tape Measure of Doom elevation based on controller 1
-        if((gamepad1.dpad_up && servoTapeMeasureElevation.getPosition() <= 1 - TAPE_MEASURE_ELEVATION_RATE)
-                || (gamepad2.dpad_up && servoTapeMeasureElevation.getPosition() <= 1 - TAPE_MEASURE_ELEVATION_RATE))
+        // TODO: Use constants
+        // Tape Measure of Doom elevation based on controller 2
+        if(gamepad.dpad_up || gamepad2.dpad_up)
         {
-            servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() + TAPE_MEASURE_ELEVATION_RATE);
+            servoTapeMeasureElevation.setPosition(0.4);
         }
-        else if((gamepad1.dpad_down && servoTapeMeasureElevation.getPosition() >= 0 + TAPE_MEASURE_ELEVATION_RATE)
-                || (gamepad2.dpad_down && servoTapeMeasureElevation.getPosition() >= 0 + TAPE_MEASURE_ELEVATION_RATE))
+        else if(gamepad1.dpad_down || gamepad2.dpad_down)
         {
-            servoTapeMeasureElevation.setPosition(servoTapeMeasureElevation.getPosition() - TAPE_MEASURE_ELEVATION_RATE);
+            servoTapeMeasureElevation.setPosition(0.6);
+        }
+        else
+        {
+            servoTapeMeasureElevation.setPosition(0.5);
         }
 
         // Tape Measure of Doom locking
