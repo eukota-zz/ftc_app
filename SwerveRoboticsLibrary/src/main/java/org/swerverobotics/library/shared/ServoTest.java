@@ -1,4 +1,4 @@
-package org.swerverobotics.library.examples;
+package org.swerverobotics.library.shared;
 
 import com.qualcomm.robotcore.hardware.Servo;
 

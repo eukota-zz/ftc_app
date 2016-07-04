@@ -1,12 +1,10 @@
-package org.swerverobotics.library.examples;
+package org.swerverobotics.library.shared;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.SynchronousOpMode;
-import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -14,12 +12,17 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
-@TeleOp(name="Drive-A-Bot", group="Swerve Examples")
+@TeleOp(name="Drive-A-Bot Timed", group="Swerve Examples")
 
-public class DriveABot extends SynchronousOpMode
+public class DriveABotWithTimer extends SynchronousOpMode
 {
     DcMotor motorLeft = null;
     DcMotor motorRight = null;
+
+    ElapsedTime timer;
+
+    static final int TIME_PER_KID_IN_SECONDS = (5*60); //5 minute turns per kid
+    boolean kidHasTimeLeft = true;
 
     @Override protected void main() throws InterruptedException
     {
@@ -29,8 +32,11 @@ public class DriveABot extends SynchronousOpMode
         // Wait until start button has been pressed
         waitForStart();
 
+        timer.reset();
+        timer.startTime();
+
         // Main loop
-        while(opModeIsActive())
+        while(opModeIsActive() && kidHasTimeLeft)
         {
             // Gamepads have a new state, so update things that need updating
             if(updateGamepads())
@@ -40,6 +46,9 @@ public class DriveABot extends SynchronousOpMode
 
             telemetry.update();
             idle();
+
+            //this is calculating a boolean value: true or false, is there time left?
+            kidHasTimeLeft = ((TIME_PER_KID_IN_SECONDS - timer.seconds()) > 0);
         }
     }
 
@@ -104,6 +113,8 @@ public class DriveABot extends SynchronousOpMode
         //DON'T CHANGE IT!
         motorLeft.setDirection(DcMotor.Direction.REVERSE); //DO NOT change without talking to Heidi first!!!
 
+        timer = new ElapsedTime();
+
         // Set up telemetry data
         configureDashboard();
     }
@@ -127,10 +138,23 @@ public class DriveABot extends SynchronousOpMode
                             }
                         })
                 );
+        telemetry.addLine
+                (
+                        telemetry.item("Time remaining: ", new IFunc<Object>() {
+                            @Override
+                            public Object value() {
+                                return formatAsInteger(TIME_PER_KID_IN_SECONDS - timer.seconds());
+                            }
+                        })
+                );
     }
 
     public String formatNumber(double d)
     {
         return String.format("%.2f", d);
+    }
+    public String formatAsInteger(double d)
+    {
+        return String.format("%d", (int)d);
     }
 }

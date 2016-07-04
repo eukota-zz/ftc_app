@@ -1,27 +1,25 @@
-package org.swerverobotics.library.examples;
+package org.swerverobotics.library.shared;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.Range;
 
-import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
-import org.swerverobotics.library.interfaces.TSL2561LightSensor;
 import org.swerverobotics.library.interfaces.TeleOp;
-import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
 
 /**
- * Program used to test line following bots
+ * Program used to control Drive-A-Bots.
+ * This can be a good reference for drive controls.
  */
-@TeleOp(name="Line-A-Bot", group="Swerve Examples")
-public class LineFollowingBot extends SynchronousOpMode
+@TeleOp(name="Drive-A-Bot", group="Swerve Examples")
+
+public class DriveABot extends SynchronousOpMode
 {
     DcMotor motorLeft = null;
     DcMotor motorRight = null;
-
-    TSL2561LightSensor lightSensorLeft;
-    TSL2561LightSensor lightSensorRight;
-    AdaFruitTSL2561LightSensor.Parameters parameters = new  AdaFruitTSL2561LightSensor.Parameters();
 
     @Override protected void main() throws InterruptedException
     {
@@ -45,15 +43,55 @@ public class LineFollowingBot extends SynchronousOpMode
         }
     }
 
+    /*
+     * Controls the robot with two joysticks
+     * Left joystick controls left side
+     * Right joystick controls right side
+     */
     public void tankDrive()
     {
         motorLeft.setPower(gamepad1.left_stick_y);
         motorRight.setPower(gamepad1.right_stick_y);
     }
 
+    /*
+     * Controls the robot with a single joystick
+     * Forward and backward on joystick control forward and backward power
+     * Left and right control turning
+     */
+    public void arcadeDrive()
+    {
+        double forwardPower = gamepad1.left_stick_y;
+        double turningPower = gamepad1.left_stick_x;
+
+        double leftPower = forwardPower + turningPower;
+        double rightPower = forwardPower - turningPower;
+
+        motorLeft.setPower(leftPower);
+        motorRight.setPower(rightPower);
+    }
+
+    /*
+     * Controls robot like a racing video game
+     * Right trigger moves robot forward
+     * Left trigger moves robot backward
+     * Left stick for turning
+     */
+    public void gameDrive()
+    {
+        double forwardPower = gamepad1.right_trigger - gamepad1.left_trigger;
+        double turningPower = gamepad1.left_stick_x * 0.5;
+
+        double leftPower = forwardPower - turningPower;
+        double rightPower = forwardPower + turningPower;
+
+        motorLeft.setPower(leftPower);
+        motorRight.setPower(rightPower);
+    }
+
     public void initializeRobot()
     {
-        // Initialize motors
+        // Initialize motors to be the hardware motors
         motorLeft = hardwareMap.dcMotor.get("motorLeft");
         motorRight = hardwareMap.dcMotor.get("motorRight");
 
@@ -62,16 +100,9 @@ public class LineFollowingBot extends SynchronousOpMode
         motorRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // The motors will run in opposite directions, so flip one
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
-
-        // Setup light sensors to see white line on black surface quickly
-        parameters.gain = TSL2561LightSensor.GAIN.GAIN_16;
-        parameters.detectionMode = TSL2561LightSensor.LIGHT_DETECTION_MODE.VISIBLE;
-        parameters.integrationTime = TSL2561LightSensor.INTEGRATION_TIME.MS_13;
-
-        // Initialize light sensors
-        lightSensorLeft = ClassFactory.createAdaFruitTSL2561LightSensor(hardwareMap.i2cDevice.get("lightSensorLeft"), parameters);
-        lightSensorRight = ClassFactory.createAdaFruitTSL2561LightSensor(hardwareMap.i2cDevice.get("lightSensorRight"), parameters);
+        //THIS IS SET UP FOR TANK MODE WITH OUR CURRENT DRIVABOTS
+        //DON'T CHANGE IT!
+        motorLeft.setDirection(DcMotor.Direction.REVERSE); //DO NOT change without talking to Heidi first!!!
 
         // Set up telemetry data
         configureDashboard();
@@ -79,7 +110,6 @@ public class LineFollowingBot extends SynchronousOpMode
 
     public void configureDashboard()
     {
-        // Drive motor power
         telemetry.addLine
                 (
                         telemetry.item("Power | Left:", new IFunc<Object>()
@@ -97,29 +127,10 @@ public class LineFollowingBot extends SynchronousOpMode
                             }
                         })
                 );
-        // Light sensor readings
-        telemetry.addLine
-                (
-                        telemetry.item("Light | Left:", new IFunc<Object>()
-                        {
-                            @Override public Object value()
-                            {
-                                return formatNumber(lightSensorLeft.getLightDetected());
-                            }
-                        }),
-                        telemetry.item("Right: ", new IFunc<Object>()
-                        {
-                            @Override public Object value()
-                            {
-                                return formatNumber(lightSensorRight.getLightDetected());
-                            }
-                        })
-                );
     }
 
-    // Truncate doubles to 3 decimal places
     public String formatNumber(double d)
     {
-        return String.format("%.3f", d);
+        return String.format("%.2f", d);
     }
 }
