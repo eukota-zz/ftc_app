@@ -14,7 +14,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
-@TeleOp(name="Drive-A-Bot", group="Swerve Examples")
+@TeleOp(name="Drive-A-Bot")
 
 public class DriveABot extends SynchronousOpMode
 {

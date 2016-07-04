@@ -12,7 +12,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
-@TeleOp(name="Drive-A-Bot Timed", group="Swerve Examples")
+@TeleOp(name="Drive-A-Bot Timed")
 
 public class DriveABotWithTimer extends SynchronousOpMode
 {

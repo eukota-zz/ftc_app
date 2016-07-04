@@ -13,7 +13,7 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
 /**
  * Program used to test line following bots
  */
-@TeleOp(name="Line-A-Bot", group="Swerve Examples")
+@TeleOp(name="Line-A-Bot")
 public class LineFollowingBot extends SynchronousOpMode
 {
     DcMotor motorLeft = null;
