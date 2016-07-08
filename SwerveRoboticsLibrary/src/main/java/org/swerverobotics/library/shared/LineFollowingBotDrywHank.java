@@ -2,7 +2,6 @@ package org.swerverobotics.library.shared;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
@@ -28,6 +27,7 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
     TSL2561LightSensor lightSensorRight;
     AdaFruitTSL2561LightSensor.Parameters parameters = new  AdaFruitTSL2561LightSensor.Parameters();
 
+    // TODO: Change these to reasonable values via testing
     // Declare constants
     static final double MIN_LIGHT_THRESHOLD = 0.1;
     static final double MAX_LIGHT_THRESHOLD = 0.5;
@@ -43,8 +43,9 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
     double deltaError = 0.0;
     double P =0.0, I = 0.0, D = 0.0;
     double PID = 0.0;
-
-    ElapsedTime deltaTime = new ElapsedTime();
+    double lastPosition = 0.0;
+    double currentPosition = 0.0;
+    double deltaPosition = 0.0;
 
     @Override protected void main() throws InterruptedException
     {
@@ -54,21 +55,13 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
         // Wait until start button has been pressed
         waitForStart();
 
-        // Delta time needs to be reset and not 0, otherwise
-        // we might divide by 0 when calculating D
-        deltaTime.reset();
-        idle();
-
         // Main loop
         while(opModeIsActive() && isOnLine())
         {
             // Calculate error to calculate PID to control motors
-            calculateError();
+            updateVariables();
             calculatePID();
             setMotorPower();
-
-            // Helps to calculate time since last loop
-            deltaTime.reset();
 
             telemetry.update();
             idle();
@@ -79,8 +72,13 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
         motorRight.setPower(0);
     }
 
-    public void calculateError()
+    public void updateVariables()
     {
+        // Calculate current position based on average of encoders
+        currentPosition = (motorLeft.getCurrentPosition() + motorRight.getCurrentPosition()) / 2;
+        deltaPosition = currentPosition - lastPosition;
+        lastPosition = currentPosition;
+
         // Used to calculate delta error below
         double lastError = error;
 
@@ -112,7 +110,7 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
         // Just in case delta time is 0
         try
         {
-            D = D_CONSTANT * deltaError / deltaTime.milliseconds();
+            D = D_CONSTANT * deltaError / deltaPosition;
         }
         catch (ArithmeticException e)
         {
@@ -238,11 +236,11 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
         // Misc telemetry info
         telemetry.addLine
                 (
-                        telemetry.item("Millis since last loop:", new IFunc<Object>()
+                        telemetry.item("Distance Travelled:", new IFunc<Object>()
                         {
                             @Override public Object value()
                             {
-                                return formatNumber(deltaTime.milliseconds());
+                                return formatNumber(deltaPosition);
                             }
                         })
                 );
