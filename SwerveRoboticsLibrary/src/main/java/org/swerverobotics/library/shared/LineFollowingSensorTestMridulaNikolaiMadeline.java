@@ -1,4 +1,4 @@
-package org.swerverobotics.library.examples;
+package org.swerverobotics.library.shared;
 
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.LED;
@@ -23,7 +23,7 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
  */
 @TeleOp(name = "Line Following Sensor Test", group = "Swerve Examples")
 
-public class LineFollowingSensorTest extends SynchronousOpMode
+public class LineFollowingSensorTestMridulaNikolaiMadeline extends SynchronousOpMode
 {
     I2cDevice i2cDevice;
     I2cDevice i2cDeviceLeft;
