@@ -21,8 +21,6 @@ public class LineFollowingBot extends SynchronousOpMode
 {
     DcMotor motorLeft = null;
     DcMotor motorRight = null;
-    I2cDevice i2cDevice;
-    I2cDevice i2cDeviceLeft;
     LED led;
 
     TSL2561LightSensor lightSensorRight;
@@ -31,15 +29,7 @@ public class LineFollowingBot extends SynchronousOpMode
     //NOTE: unlike the base LightSensor class, the Adafruit light sensor does not have an LED
 
     AdaFruitTSL2561LightSensor.Parameters parameters = new  AdaFruitTSL2561LightSensor.Parameters();
-    AdaFruitTSL2561LightSensor.Parameters parametersLeft = new AdaFruitTSL2561LightSensor.Parameters();
 
-    // Here we have state we use for updating the dashboard.
-    ElapsedTime elapsed = new ElapsedTime();
-    int loopCycles;
-    int i2cCycles;
-    double ms;
-    boolean i2cArmed;
-    boolean i2cEngaged;
     boolean led_state = false;
 
     @Override protected void main() throws InterruptedException
@@ -49,30 +39,6 @@ public class LineFollowingBot extends SynchronousOpMode
 
         // Wait until start button has been pressed
         waitForStart();
-        i2cDevice = hardwareMap.i2cDevice.get("adalight");
-        i2cDeviceLeft = hardwareMap.i2cDevice.get("adalightleft");
-        led = hardwareMap.led.get("led");
-
-        parameters.gain = TSL2561LightSensor.GAIN.GAIN_1; //select the chip's gain
-        parameters.detectionMode = TSL2561LightSensor.LIGHT_DETECTION_MODE.BROADBAND; //measure visible light + IR light
-        parameters.integrationTime = TSL2561LightSensor.INTEGRATION_TIME.MS_13; //fast but low resolution
-        parametersLeft.gain = TSL2561LightSensor.GAIN.GAIN_1; //select the chip's gain
-        parametersLeft.detectionMode = TSL2561LightSensor.LIGHT_DETECTION_MODE.BROADBAND; //measure visible light + IR light
-        parametersLeft.integrationTime = TSL2561LightSensor.INTEGRATION_TIME.MS_13; //fast but low resolution
-
-        parameters.i2cAddress = TSL2561LightSensor.I2CADDR.DEFAULT;
-        parametersLeft.i2cAddress = TSL2561LightSensor.I2CADDR.ADDR_29;
-
-        this.lightSensorRight = ClassFactory.createAdaFruitTSL2561LightSensor(i2cDevice, parameters);
-        this.lightSensorLeft = ClassFactory.createAdaFruitTSL2561LightSensor(i2cDeviceLeft,parametersLeft);
-
-
-        // Set up our dashboard computations
-        configureDashboard();
-
-        waitForStart();
-
-        led.enable(true);
 
         // Main loop
         while(opModeIsActive())
@@ -114,16 +80,22 @@ public class LineFollowingBot extends SynchronousOpMode
         motorRight.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         // The motors will run in opposite directions, so flip one
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Setup light sensors to see white line on black surface quickly
         parameters.gain = TSL2561LightSensor.GAIN.GAIN_16;
         parameters.detectionMode = TSL2561LightSensor.LIGHT_DETECTION_MODE.VISIBLE;
         parameters.integrationTime = TSL2561LightSensor.INTEGRATION_TIME.MS_13;
+        parameters.i2cAddress = TSL2561LightSensor.I2CADDR.DEFAULT;
 
         // Initialize light sensors
         lightSensorLeft = ClassFactory.createAdaFruitTSL2561LightSensor(hardwareMap.i2cDevice.get("lightSensorLeft"), parameters);
+        parameters.i2cAddress = TSL2561LightSensor.I2CADDR.ADDR_29; //reusing variable
         lightSensorRight = ClassFactory.createAdaFruitTSL2561LightSensor(hardwareMap.i2cDevice.get("lightSensorRight"), parameters);
+
+        // Initialize LED
+        led = hardwareMap.led.get("led");
+        led.enable(true);
 
         // Set up telemetry data
         configureDashboard();
@@ -135,23 +107,11 @@ public class LineFollowingBot extends SynchronousOpMode
         // The default dashboard update rate is a little too slow for our taste here, so we update faster
         telemetry.setUpdateIntervalMs(200);
 
-        // At the beginning of each telemetry update, grab a bunch of data
-        // from the device that we will display in separate lines.
-        telemetry.addAction(new Runnable() {
-            @Override
-            public void run() {
-                loopCycles = getLoopCount();
-                i2cCycles = i2cDevice.getCallbackCount();
-                ms = elapsed.milliseconds();
-                //i2cArmed = ((I2cDeviceSynchUser) currentSensor).getI2cDeviceSynch().isArmed();
-                //i2cEngaged = ((I2cDeviceSynchUser) currentSensor).getI2cDeviceSynch().isEngaged();
-            }
-        });
 
         telemetry.addLine(
                 telemetry.item("light right: ", new IFunc<Object>() {
                     public Object value() {
-                        return formatLightLevel(lightSensorRight.getLightDetected());
+                        return formatNumber(lightSensorRight.getLightDetected());
                     }
                 }),
                 telemetry.item("raw right: ", new IFunc<Object>() {
@@ -165,7 +125,7 @@ public class LineFollowingBot extends SynchronousOpMode
         telemetry.addLine(
                 telemetry.item("light left: ", new IFunc<Object>() {
                     public Object value() {
-                        return formatLightLevel(lightSensorLeft.getLightDetected());
+                        return formatNumber(lightSensorLeft.getLightDetected());
                     }
                 }),
                 telemetry.item("raw left: ", new IFunc<Object>() {
@@ -191,30 +151,8 @@ public class LineFollowingBot extends SynchronousOpMode
                             }
                         })
                 );
-        // Light sensor readings
-        telemetry.addLine
-                (
-                        telemetry.item("Light | Left:", new IFunc<Object>() {
-                            @Override
-                            public Object value() {
-                                return formatNumber(lightSensorLeft.getLightDetected());
-                            }
-                        }),
-                        telemetry.item("Right: ", new IFunc<Object>() {
-                            @Override
-                            public Object value() {
-                                return formatNumber(lightSensorRight.getLightDetected());
-                            }
-                        })
-                );
 
-        telemetry.addLine(
-                telemetry.item("loop count: ", new IFunc<Object>() {
-                    @Override
-                    public Object value() {
-                        return getLoopCount();
-                    }
-                }));
+
         telemetry.addLine(
                 telemetry.item("controls: ", new IFunc<Object>() {
                     @Override
@@ -237,9 +175,5 @@ public class LineFollowingBot extends SynchronousOpMode
     {
         return String.format("%.3f", d);
     }
-    String formatHEXByte(byte b)
-    {
-        return String.format("0x%02X", b);
-    }
-    String formatLightLevel(double light) { return String.format("%.3f", light); }
+
 }
