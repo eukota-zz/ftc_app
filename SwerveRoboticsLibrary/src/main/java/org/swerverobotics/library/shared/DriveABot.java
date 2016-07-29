@@ -15,7 +15,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * This can be a good reference for drive controls.
  */
 @TeleOp(name="Drive-A-Bot")
-
+@Disabled
 public class DriveABot extends SynchronousOpMode
 {
     DcMotor motorLeft = null;

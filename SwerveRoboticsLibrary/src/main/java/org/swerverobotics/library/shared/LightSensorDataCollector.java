@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TSL2561LightSensor;
 import org.swerverobotics.library.interfaces.TeleOp;
@@ -21,6 +22,7 @@ import java.util.Date;
  * Ask Hank or Dryw for further information
  */
 @TeleOp(name = "Light Sensor Data Collector")
+@Disabled
 public class LightSensorDataCollector extends SynchronousOpMode
 {
     I2cDevice i2cDevice;

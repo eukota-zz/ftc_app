@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TCA9548A;
 import org.swerverobotics.library.interfaces.TCS34725;
@@ -16,7 +17,7 @@ import org.swerverobotics.library.internal.AdaFruitTCS34725ColorSensor;
  * http://www.adafruit.com/products/2717
  */
 @TeleOp(name = "I2C Multiplexer New Demo", group = "Swerve Examples")
-//@Disabled
+@Disabled
 public class SyncI2CMultiplexerNewDemo extends SynchronousOpMode
 {
     //----------------------------------------------------------------------------------------------

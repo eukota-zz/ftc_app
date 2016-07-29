@@ -22,7 +22,7 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
  * This sample assumes a single light sensor called "adalight" using its default i2c address.
  */
 @TeleOp(name = "Line Following Sensor Test", group = "Swerve Examples")
-
+@Disabled
 public class LineFollowingSensorTestMridulaNikolaiMadeline extends SynchronousOpMode
 {
     I2cDevice i2cDevice;

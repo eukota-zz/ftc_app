@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TSL2561LightSensor;
 import org.swerverobotics.library.interfaces.TeleOp;
@@ -16,6 +17,7 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
  * Created by Hank and Dryw
  */
 @TeleOp(name="Dryw and Hank Line Following")
+@Disabled
 public class LineFollowingBotDrywHank extends SynchronousOpMode
 {
     // Declare motors

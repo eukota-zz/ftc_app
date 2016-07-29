@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.ClassFactory;
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TSL2561LightSensor;
 import org.swerverobotics.library.interfaces.TeleOp;
@@ -17,6 +18,7 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
  * Program used to test line following bots
  */
 @TeleOp(name="Line-A-Bot")
+@Disabled
 public class LineFollowingBot extends SynchronousOpMode
 {
     DcMotor motorLeft = null;

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.swerverobotics.library.SynchronousOpMode;
+import org.swerverobotics.library.interfaces.Disabled;
 import org.swerverobotics.library.interfaces.IFunc;
 import org.swerverobotics.library.interfaces.TeleOp;
 
@@ -13,7 +14,7 @@ import org.swerverobotics.library.interfaces.TeleOp;
  * This can be a good reference for drive controls.
  */
 @TeleOp(name="Drive-A-Bot Timed")
-
+@Disabled
 public class DriveABotWithTimer extends SynchronousOpMode
 {
     DcMotor motorLeft = null;
