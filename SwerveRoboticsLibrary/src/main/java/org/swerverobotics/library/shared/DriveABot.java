@@ -21,6 +21,12 @@ public class DriveABot extends SynchronousOpMode
     DcMotor motorLeft = null;
     DcMotor motorRight = null;
 
+    // Drive mode constants
+    public static final int TANK_DRIVE = 0;
+    public static final int ARCADE_DRIVE = 1;
+    public static final int GAME_DRIVE = 2;
+    public int driveMode = TANK_DRIVE;
+
     @Override protected void main() throws InterruptedException
     {
         // Initialize hardware and other important things
@@ -35,7 +41,21 @@ public class DriveABot extends SynchronousOpMode
             // Gamepads have a new state, so update things that need updating
             if(updateGamepads())
             {
-                tankDrive(); //use tank drive. DO NOT change this without talking to Heidi first!!!
+                // Set drive mode
+                if(gamepad1.back && gamepad1.x)
+                    driveMode = TANK_DRIVE;
+                else if(gamepad1.back && gamepad1.a)
+                    driveMode = ARCADE_DRIVE;
+                else if(gamepad1.back && gamepad1.b)
+                    driveMode = GAME_DRIVE;
+
+                // Run drive mode
+                if(driveMode == TANK_DRIVE)
+                    tankDrive(); // Changed by Dryw with permission from Heidi
+                else if(driveMode == ARCADE_DRIVE)
+                    arcadeDrive();
+                else if(driveMode == GAME_DRIVE)
+                    gameDrive();
             }
 
             telemetry.update();
@@ -80,7 +100,7 @@ public class DriveABot extends SynchronousOpMode
     public void gameDrive()
     {
         double forwardPower = gamepad1.right_trigger - gamepad1.left_trigger;
-        double turningPower = gamepad1.left_stick_x * 0.5;
+        double turningPower = gamepad1.left_stick_x * 0.5; // This multiplier is because the robot turns too quickly
 
         double leftPower = forwardPower - turningPower;
         double rightPower = forwardPower + turningPower;
