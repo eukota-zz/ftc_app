@@ -82,10 +82,10 @@ public class DriveABot extends SynchronousOpMode
     public void arcadeDrive()
     {
         double forwardPower = gamepad1.left_stick_y;
-        double turningPower = gamepad1.left_stick_x;
+        double turningPower = Math.pow(Math.abs(gamepad1.left_stick_x), 2) * Math.signum(gamepad1.left_stick_x);
 
-        double leftPower = forwardPower + turningPower;
-        double rightPower = forwardPower - turningPower;
+        double leftPower = forwardPower - turningPower;
+        double rightPower = forwardPower + turningPower;
 
         motorLeft.setPower(leftPower);
         motorRight.setPower(rightPower);
@@ -99,8 +99,8 @@ public class DriveABot extends SynchronousOpMode
      */
     public void gameDrive()
     {
-        double forwardPower = gamepad1.right_trigger - gamepad1.left_trigger;
-        double turningPower = gamepad1.left_stick_x * 0.5; // This multiplier is because the robot turns too quickly
+        double forwardPower = gamepad1.left_trigger - gamepad1.right_trigger;
+        double turningPower = Math.pow(gamepad1.left_stick_x, 2) * Math.signum(gamepad1.left_stick_x); // This multiplier is because the robot turns too quickly
 
         double leftPower = forwardPower - turningPower;
         double rightPower = forwardPower + turningPower;
@@ -122,7 +122,7 @@ public class DriveABot extends SynchronousOpMode
         // The motors will run in opposite directions, so flip one
         //THIS IS SET UP FOR TANK MODE WITH OUR CURRENT DRIVABOTS
         //DON'T CHANGE IT!
-        motorLeft.setDirection(DcMotor.Direction.REVERSE); //DO NOT change without talking to Heidi first!!!
+        motorRight.setDirection(DcMotor.Direction.REVERSE); //DO NOT change without talking to Heidi first!!!
 
         // Set up telemetry data
         configureDashboard();
