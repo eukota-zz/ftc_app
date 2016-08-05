@@ -416,10 +416,14 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
         byte[] bytes = this.read(reg, 2);
         int result = 0;
 
+        byte[] swap = new byte[2];
+        swap[0] = bytes[1];
+        swap[1] = bytes[0];
+
         if (bytes.length==2)
         {
             //colors are two bytes, unsigned
-            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            ByteBuffer buffer = ByteBuffer.wrap(swap);
             //make unsigned by and'ing with 0x0000FFFF
             //this will cause Java to treat the resulting value as an unsigned int, rather than as a signed short
             //because the most significant bit won't be 1 (which denotes "is negative" in 2's complement numbers)
