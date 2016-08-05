@@ -18,12 +18,12 @@ import org.swerverobotics.library.internal.AdaFruitTSL2561LightSensor;
  * Program used to test line following bots
  */
 @TeleOp(name="Line-A-Bot")
-@Disabled
 public class LineFollowingBot extends SynchronousOpMode
 {
     DcMotor motorLeft = null;
     DcMotor motorRight = null;
-    LED led;
+    LED ledRight;
+    LED ledLeft;
 
     TSL2561LightSensor lightSensorRight;
     TSL2561LightSensor lightSensorLeft;
@@ -51,11 +51,20 @@ public class LineFollowingBot extends SynchronousOpMode
                 if (this.gamepad1.a)
                 {
                     led_state = true;
-                    led.enable(led_state);
+                    ledRight.enable(led_state);
                 } else if (this.gamepad1.b)
                 {
                     led_state = false;
-                    led.enable(led_state);
+                    ledRight.enable(led_state);
+                }
+                if (this.gamepad1.x)
+                {
+                    led_state = true;
+                    ledLeft.enable(led_state);
+                } else if (this.gamepad1.y)
+                {
+                    led_state = false;
+                    ledLeft.enable(led_state);
                 }
                 tankDrive(); //use tank drive. DO NOT change this without talking to Heidi first!!!
             }
@@ -96,8 +105,10 @@ public class LineFollowingBot extends SynchronousOpMode
         lightSensorRight = ClassFactory.createAdaFruitTSL2561LightSensor(hardwareMap.i2cDevice.get("lightSensorRight"), parameters);
 
         // Initialize LED
-        led = hardwareMap.led.get("led");
-        led.enable(true);
+        ledRight = hardwareMap.led.get("ledRight");
+        ledRight.enable(true);
+        ledLeft = hardwareMap.led.get("ledLeft");
+        ledLeft.enable(true);
 
         // Set up telemetry data
         configureDashboard();
