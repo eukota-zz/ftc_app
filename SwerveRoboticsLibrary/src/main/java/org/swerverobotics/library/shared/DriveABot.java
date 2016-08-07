@@ -24,8 +24,9 @@ public class DriveABot extends SynchronousOpMode
     // Drive mode constants
     public static final int TANK_DRIVE = 0;
     public static final int ARCADE_DRIVE = 1;
-    public static final int GAME_DRIVE = 2;
-    public int driveMode = TANK_DRIVE;
+    public static final int SPLIT_ARCADE_DRIVE = 2;
+    public static final int GAME_DRIVE = 3;
+    public int driveMode = SPLIT_ARCADE_DRIVE;
 
     @Override protected void main() throws InterruptedException
     {
@@ -48,6 +49,8 @@ public class DriveABot extends SynchronousOpMode
                     driveMode = ARCADE_DRIVE;
                 else if(gamepad1.back && gamepad1.b)
                     driveMode = GAME_DRIVE;
+                else if(gamepad1.back && gamepad1.y)
+                    driveMode = SPLIT_ARCADE_DRIVE;
 
                 // Run drive mode
                 if(driveMode == TANK_DRIVE)
@@ -56,6 +59,8 @@ public class DriveABot extends SynchronousOpMode
                     arcadeDrive();
                 else if(driveMode == GAME_DRIVE)
                     gameDrive();
+                else if(driveMode == SPLIT_ARCADE_DRIVE)
+                    splitArcadeDrive();
             }
 
             telemetry.update();
@@ -101,6 +106,21 @@ public class DriveABot extends SynchronousOpMode
     {
         double forwardPower = gamepad1.left_trigger - gamepad1.right_trigger;
         double turningPower = Math.pow(gamepad1.left_stick_x, 2) * Math.signum(gamepad1.left_stick_x); // This multiplier is because the robot turns too quickly
+
+        double leftPower = forwardPower - turningPower;
+        double rightPower = forwardPower + turningPower;
+
+        motorLeft.setPower(leftPower);
+        motorRight.setPower(rightPower);
+    }
+
+    /*
+     * Arcade drive with 2 joysticks
+     */
+    public void splitArcadeDrive()
+    {
+        double forwardPower = gamepad1.left_stick_y;
+        double turningPower = Math.pow(Math.abs(gamepad1.right_stick_x), 2) * Math.signum(gamepad1.right_stick_x);
 
         double leftPower = forwardPower - turningPower;
         double rightPower = forwardPower + turningPower;

@@ -22,7 +22,14 @@ public class DriveABotWithTimer extends SynchronousOpMode
 
     ElapsedTime timer;
 
-    static final int TIME_PER_KID_IN_SECONDS = (5*60); //5 minute turns per kid
+    // Drive mode constants
+    public static final int TANK_DRIVE = 0;
+    public static final int ARCADE_DRIVE = 1;
+    public static final int SPLIT_ARCADE_DRIVE = 2;
+    public static final int GAME_DRIVE = 3;
+    public int driveMode = SPLIT_ARCADE_DRIVE;
+
+    static final int TIME_PER_KID_IN_SECONDS = (90); //90 second turns per kid
     boolean kidHasTimeLeft = true;
 
     @Override protected void main() throws InterruptedException
@@ -42,7 +49,25 @@ public class DriveABotWithTimer extends SynchronousOpMode
             // Gamepads have a new state, so update things that need updating
             if(updateGamepads())
             {
-                tankDrive(); //use tank drive. DO NOT change this without talking to Heidi first!!!
+                // Set drive mode
+                if(gamepad1.back && gamepad1.x)
+                    driveMode = TANK_DRIVE;
+                else if(gamepad1.back && gamepad1.a)
+                    driveMode = ARCADE_DRIVE;
+                else if(gamepad1.back && gamepad1.b)
+                    driveMode = GAME_DRIVE;
+                else if(gamepad1.back && gamepad1.y)
+                    driveMode = SPLIT_ARCADE_DRIVE;
+
+                // Run drive mode
+                if(driveMode == TANK_DRIVE)
+                    tankDrive(); // Changed by Dryw with permission from Heidi
+                else if(driveMode == ARCADE_DRIVE)
+                    arcadeDrive();
+                else if(driveMode == GAME_DRIVE)
+                    gameDrive();
+                else if(driveMode == SPLIT_ARCADE_DRIVE)
+                    splitArcadeDrive();
             }
 
             telemetry.update();
@@ -72,10 +97,10 @@ public class DriveABotWithTimer extends SynchronousOpMode
     public void arcadeDrive()
     {
         double forwardPower = gamepad1.left_stick_y;
-        double turningPower = gamepad1.left_stick_x;
+        double turningPower = Math.pow(Math.abs(gamepad1.left_stick_x), 2) * Math.signum(gamepad1.left_stick_x);
 
-        double leftPower = forwardPower + turningPower;
-        double rightPower = forwardPower - turningPower;
+        double leftPower = forwardPower - turningPower;
+        double rightPower = forwardPower + turningPower;
 
         motorLeft.setPower(leftPower);
         motorRight.setPower(rightPower);
@@ -89,8 +114,23 @@ public class DriveABotWithTimer extends SynchronousOpMode
      */
     public void gameDrive()
     {
-        double forwardPower = gamepad1.right_trigger - gamepad1.left_trigger;
-        double turningPower = gamepad1.left_stick_x * 0.5;
+        double forwardPower = gamepad1.left_trigger - gamepad1.right_trigger;
+        double turningPower = Math.pow(gamepad1.left_stick_x, 2) * Math.signum(gamepad1.left_stick_x); // This multiplier is because the robot turns too quickly
+
+        double leftPower = forwardPower - turningPower;
+        double rightPower = forwardPower + turningPower;
+
+        motorLeft.setPower(leftPower);
+        motorRight.setPower(rightPower);
+    }
+
+    /*
+     * Arcade drive with 2 joysticks
+     */
+    public void splitArcadeDrive()
+    {
+        double forwardPower = gamepad1.left_stick_y;
+        double turningPower = Math.pow(Math.abs(gamepad1.right_stick_x), 2) * Math.signum(gamepad1.right_stick_x);
 
         double leftPower = forwardPower - turningPower;
         double rightPower = forwardPower + turningPower;
@@ -112,7 +152,7 @@ public class DriveABotWithTimer extends SynchronousOpMode
         // The motors will run in opposite directions, so flip one
         //THIS IS SET UP FOR TANK MODE WITH OUR CURRENT DRIVABOTS
         //DON'T CHANGE IT!
-        motorLeft.setDirection(DcMotor.Direction.REVERSE); //DO NOT change without talking to Heidi first!!!
+        motorRight.setDirection(DcMotor.Direction.REVERSE); //DO NOT change without talking to Heidi first!!!
 
         timer = new ElapsedTime();
 
