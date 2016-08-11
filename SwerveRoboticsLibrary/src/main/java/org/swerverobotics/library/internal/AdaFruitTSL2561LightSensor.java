@@ -158,7 +158,14 @@ public class AdaFruitTSL2561LightSensor implements TSL2561LightSensor, IOpModeSt
         }
         else /* if (parameters.detectionMode == LIGHT_DETECTION_MODE.VISIBLE) */
         {
-            return ( getRawBroadbandLight() - getRawIRSpectrumLight());
+            //todo: solve this mystery.
+            //The mystery: even though "broadband" is supposed to include visible + IR,
+            //for some reason this calculation can return a negative number.
+            //I haven't determined why this is so.
+            //In the meantime, I'm clamping the value to be no less than zero.
+            int result = getRawBroadbandLight() - getRawIRSpectrumLight();
+            if (result >= 0) return result;
+            else return 0;
         }
     }
 
