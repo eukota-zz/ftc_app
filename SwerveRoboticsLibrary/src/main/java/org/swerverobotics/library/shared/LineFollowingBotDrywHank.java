@@ -35,16 +35,14 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
 
     // TODO: Change these to reasonable values via testing
     // Declare constants
-    static final double MIN_LIGHT_THRESHOLD = 25;
+    static final double MIN_LIGHT_THRESHOLD = 23;
     static final double MAX_LIGHT_THRESHOLD = 70;
     static final double MAX_ERROR = 10;
-    static final double BASE_MOTOR_POWER = 0.1;
-    static final double P_CONSTANT = 0.005;
-    static final double I_CONSTANT = 0.0;
-    static final double D_CONSTANT = 0.0;
-
-    // TODO: Delete this when done testing
-    ElapsedTime time = new ElapsedTime();
+    double BASE_MOTOR_POWER = 0.15;
+    double P_CONSTANT = 0.01;
+    double I_CONSTANT = 0.005;
+    double D_CONSTANT = 0.0;
+    double constantDelta = 0.005;
 
     // Declare variables
     double error = 0.0;
@@ -73,8 +71,11 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
             calculatePID();
             setMotorPower();
 
-            // This is for knowing how long a loop cycle takes and is temporary
-            time.reset();
+            // Adjusts constants so we don't have to keep downloading code
+            if(updateGamepads())
+            {
+                adjustVaiables();
+            }
 
             telemetry.update();
             idle();
@@ -83,6 +84,23 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
         // Stop the robot!
         motorLeft.setPower(0);
         motorRight.setPower(0);
+    }
+
+    public void adjustVaiables()
+    {
+        if(gamepad1.dpad_up)
+            P_CONSTANT += constantDelta;
+        if(gamepad1.dpad_down)
+            P_CONSTANT -= constantDelta;
+        if(gamepad1.dpad_right)
+            I_CONSTANT += constantDelta/10;
+        if(gamepad1.dpad_left)
+            I_CONSTANT -= constantDelta/10;
+
+        if(gamepad1.b)
+            BASE_MOTOR_POWER += constantDelta * 10;
+        if(gamepad1.a)
+            BASE_MOTOR_POWER -= constantDelta * 10;
     }
 
     public void updateVariables()
@@ -260,6 +278,38 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
                             }
                         })
                 );
+        // Constants
+        telemetry.addLine
+                (
+                        telemetry.item("Constants | P:", new IFunc<Object>()
+                        {
+                            @Override public Object value()
+                            {
+                                return formatNumber(P_CONSTANT);
+                            }
+                        }),
+                        telemetry.item("I: ", new IFunc<Object>()
+                        {
+                            @Override public Object value()
+                            {
+                                return formatNumber(I_CONSTANT);
+                            }
+                        }),
+                        telemetry.item("D: ", new IFunc<Object>()
+                        {
+                            @Override public Object value()
+                            {
+                                return formatNumber(D_CONSTANT);
+                            }
+                        }),
+                        telemetry.item("Pow: ", new IFunc<Object>()
+                        {
+                            @Override public Object value()
+                            {
+                                return formatNumber(BASE_MOTOR_POWER);
+                            }
+                        })
+                );
         // Drive motor power
         telemetry.addLine
                 (
@@ -274,7 +324,7 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
                         {
                             @Override public Object value()
                             {
-                                return formatNumber(motorLeft.getPower());
+                                return formatNumber(motorRight.getPower());
                             }
                         })
                 );
@@ -286,16 +336,6 @@ public class LineFollowingBotDrywHank extends SynchronousOpMode
                             @Override public Object value()
                             {
                                 return formatNumber(deltaPosition);
-                            }
-                        })
-                );
-        telemetry.addLine
-                (
-                        telemetry.item("Time:", new IFunc<Object>()
-                        {
-                            @Override public Object value()
-                            {
-                                return formatNumber(time.milliseconds());
                             }
                         })
                 );
