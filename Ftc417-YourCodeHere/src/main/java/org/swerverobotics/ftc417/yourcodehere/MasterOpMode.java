@@ -74,7 +74,7 @@ public abstract class MasterOpMode extends SynchronousOpMode
         this.servoDelivery = this.hardwareMap.servo.get("servoDelivery");
         this.servoDebrisDoorLeft = this.hardwareMap.servo.get("servoDebrisDoorLeft");
         this.servoDebrisDoorRight = this.hardwareMap.servo.get("servoDebrisDoorRight");
-        imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
+        //imu = ClassFactory.createAdaFruitBNO055IMU(hardwareMap.i2cDevice.get("imu"), parameters);
 
         telemetry.log.add("motors and servos found");
 

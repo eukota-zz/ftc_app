@@ -205,10 +205,10 @@ public abstract class MasterOpMode extends SynchronousOpMode
         telemetry.log.add("Start is " + (autoStartingPlace ? "1" : "2"));
 
 
-        DigitalChannel redOrBlue = hardwareMap.digitalChannel.get("RedorBlue");
+        /*DigitalChannel redOrBlue = hardwareMap.digitalChannel.get("RedorBlue");
         redOrBlue.setMode(DigitalChannelController.Mode.INPUT);
         autoSide = redOrBlue.getState();
-        telemetry.log.add("Side is " + (autoSide ? "red" : "blue"));
+        telemetry.log.add("Side is " + (autoSide ? "red" : "blue"));*/
 
         DigitalChannel scoreStrategy = hardwareMap.digitalChannel.get("RamporNoRamp");
         scoreStrategy.setMode(DigitalChannelController.Mode.INPUT);
